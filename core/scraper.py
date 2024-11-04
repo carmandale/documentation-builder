@@ -2,8 +2,10 @@ from pathlib import Path
 from typing import List, Optional
 from playwright.async_api import async_playwright, Browser, Page
 from bs4 import BeautifulSoup
-from models.base import DocumentationPage
-from extractors.doc_extractor import DocumentationExtractor
+from models.base import DocumentationPage, Topic
+from extractors import CodeBlockExtractor, DocumentationExtractor
+from extractors.relationship_extractor import RelationshipExtractor
+from extractors.validation_extractor import ValidationExtractor
 import logging
 import asyncio
 import json
@@ -18,6 +20,7 @@ class DocumentationScraper:
         self.debug_dir = output_dir / 'debug'
         self.extracted_dir = output_dir / 'extracted'
         self.doc_extractor = DocumentationExtractor()
+        self.validation_extractor = ValidationExtractor()
         
         # Create necessary directories
         self.output_dir.mkdir(exist_ok=True)
@@ -50,41 +53,68 @@ class DocumentationScraper:
         return pages
     
     async def scrape_url(self, page: Page, url: str) -> Optional[DocumentationPage]:
-        """Scrape and extract content from a single URL"""
+        """Scrape a single documentation page with the new structure"""
         try:
-            logger.info(f"Scraping: {url}")
-            
-            # Navigate to the page
-            response = await page.goto(url, wait_until='networkidle', timeout=30000)
-            if not response:
-                logger.error(f"No response from {url}")
-                return None
-                
-            # Get the content
+            logger.info(f"Scraping URL: {url}")
+            # Navigate to the URL
+            await page.goto(url, wait_until='networkidle')
             content = await page.content()
             
-            # Save raw HTML
-            raw_file = self.debug_dir / f"raw_{url.split('/')[-1]}.html"
-            raw_file.write_text(content, encoding='utf-8')
-            
-            # Take screenshot
-            screenshot_file = self.debug_dir / f"screenshot_{url.split('/')[-1]}.png"
-            await page.screenshot(path=str(screenshot_file))
-            
-            # Extract content
-            soup = BeautifulSoup(content, 'html.parser')
-            doc_page = self.doc_extractor.extract_page(soup, url)
-            
-            if doc_page:
-                # Save extracted data
-                output_file = self.extracted_dir / f"extracted_{url.split('/')[-1]}.json"
-                output_file.write_text(
-                    doc_page.model_dump_json(indent=2),
-                    encoding='utf-8'
-                )
+            if not content:
+                logger.warning(f"No content found for {url}")
+                return None
                 
+            soup = BeautifulSoup(content, 'html.parser')
+            
+            # Save debug content
+            debug_file = self.debug_dir / f"raw_{url.split('/')[-1]}.html"
+            debug_file.write_text(content, encoding='utf-8')
+            logger.debug(f"Saved debug content to {debug_file}")
+            
+            # Extract code blocks and convert to patterns
+            code_blocks = CodeBlockExtractor.extract_code_blocks(soup)
+            logger.info(f"Found {len(code_blocks)} code blocks")
+            
+            code_patterns = CodeBlockExtractor().extract_patterns(code_blocks)
+            logger.info(f"Generated {len(code_patterns)} patterns")
+            
+            # Extract relationships
+            relationships = RelationshipExtractor().extract_relationships(soup, code_patterns)
+            logger.info(f"Found {len(relationships)} relationships")
+            
+            # Generate validation tests
+            validation_tests = self.validation_extractor.generate_tests(code_patterns)
+            logger.info(f"Generated {len(validation_tests)} validation tests")
+            
+            # Create page
+            doc_page = DocumentationPage(
+                title=self._extract_title(soup),
+                url=url,
+                code_blocks=code_blocks,
+                code_patterns=code_patterns,
+                relationships=relationships,
+                validation_tests=validation_tests,
+                topics=self._extract_topics(soup)
+            )
+            
+            # Save extracted data
+            output_file = self.extracted_dir / f"extracted_{url.split('/')[-1]}.json"
+            output_file.write_text(
+                doc_page.model_dump_json(indent=2),
+                encoding='utf-8'
+            )
+            logger.info(f"Saved extracted data to {output_file}")
+            
             return doc_page
             
         except Exception as e:
-            logger.error(f"Error scraping {url}: {str(e)}")
+            logger.error(f"Error scraping {url}: {str(e)}", exc_info=True)
             return None
+    
+    def _extract_title(self, soup: BeautifulSoup) -> str:
+        """Extract title from the page"""
+        return self.doc_extractor._extract_title(soup)
+    
+    def _extract_topics(self, soup: BeautifulSoup) -> List[Topic]:
+        """Extract topics from the page"""
+        return self.doc_extractor._extract_topics(soup)

@@ -10,6 +10,8 @@ from rich.logging import RichHandler
 from rich.table import Table
 from rich.panel import Panel
 from analyzers.topic_analyzer import TopicAnalyzer
+from analyzers.llm_interface import LLMDocumentationInterface
+from rich.syntax import Syntax
 
 # Set up rich logging
 logging.basicConfig(
@@ -21,6 +23,19 @@ logger = logging.getLogger("rich")
 console = Console()
 
 app = typer.Typer(help="VisionOS Documentation Scraper CLI")
+
+# Add directory structure setup
+def setup_directories():
+    base_dirs = [
+        Path("data/extracted/code_blocks"),
+        Path("data/extracted/relationships"),
+        Path("data/extracted/validation"),
+        Path("data/debug"),
+        Path("data/visualizations")
+    ]
+    
+    for dir_path in base_dirs:
+        dir_path.mkdir(parents=True, exist_ok=True)
 
 @app.command()
 def scrape(
@@ -280,6 +295,46 @@ def visualize(
     except Exception as e:
         logger.error(f"Error generating visualizations: {str(e)}")
         raise typer.Exit(code=1)
+
+@app.command()
+def show_patterns():
+    """Show patterns found in documentation"""
+    llm_interface = LLMDocumentationInterface()
+    
+    # Look for rotation patterns
+    rotation_patterns = llm_interface.find_pattern({
+        'type': '3d_content',
+        'concepts': ['rotation']
+    })
+    
+    # Look for animation patterns
+    animation_patterns = llm_interface.find_pattern({
+        'type': 'animation',
+        'frameworks': ['RealityKit']
+    })
+    
+    console = Console()
+    
+    # Show what we found
+    console.print("\n[bold cyan]Patterns Found in Documentation:")
+    
+    if rotation_patterns:
+        console.print("\n[yellow]Rotation Patterns:")
+        for pattern in rotation_patterns:
+            console.print(Panel(
+                Syntax(pattern.code, "swift"),
+                title=f"From: {pattern.source_file}",
+                subtitle=f"Used by: {', '.join(pattern.frameworks)}"
+            ))
+    
+    if animation_patterns:
+        console.print("\n[yellow]Animation Patterns:")
+        for pattern in animation_patterns:
+            console.print(Panel(
+                Syntax(pattern.code, "swift"),
+                title=f"From: {pattern.source_file}",
+                subtitle=f"Used by: {', '.join(pattern.frameworks)}"
+            ))
 
 if __name__ == "__main__":
     app() 

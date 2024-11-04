@@ -1,85 +1,74 @@
-from bs4 import BeautifulSoup, Tag
-from models.base import DocumentationPage, Topic
+from bs4 import BeautifulSoup
+from models.base import DocumentationPage, Topic, CodeBlock
 from extractors.code_extractor import CodeBlockExtractor
-from typing import Optional, List
+from typing import List, Optional
 import logging
 
 logger = logging.getLogger(__name__)
 
 class DocumentationExtractor:
-    """Main documentation page extractor"""
+    """Extracts structured documentation from HTML"""
     
-    def extract_page(self, soup: BeautifulSoup, url: str) -> Optional[DocumentationPage]:
-        """Extract all relevant information from a documentation page"""
-        try:
-            # Find main content
-            main_content = soup.find('main')
-            if not main_content:
-                logger.error("No main content found")
-                return None
-                
-            # Extract title
-            title = main_content.find('h1')
-            if not title:
-                logger.error("No title found")
-                return None
-                
-            # Extract introduction
-            intro = main_content.find(['p', 'div'], class_='introduction')
-            introduction = intro.get_text(strip=True) if intro else None
-            
-            # Extract code blocks using specialized extractor
-            code_blocks = CodeBlockExtractor.extract_code_blocks(soup)
-            
-            # Extract topics
-            topics = self._extract_topics(main_content)
-            
-            # Extract related links
-            related_links = self._extract_related_links(soup)
-            
-            return DocumentationPage(
-                title=title.get_text(strip=True),
-                url=url,
-                introduction=introduction,
-                code_blocks=code_blocks,
-                topics=topics,
-                related_links=related_links
-            )
-            
-        except Exception as e:
-            logger.error(f"Error extracting page: {str(e)}")
-            return None
+    def extract(self, soup: BeautifulSoup) -> DocumentationPage:
+        """Extract documentation page content"""
+        title = self._extract_title(soup)
+        topics = self._extract_topics(soup)
+        code_blocks = CodeBlockExtractor.extract_code_blocks(soup)
+        
+        return DocumentationPage(
+            title=title,
+            url="",  # URL will be set by scraper
+            topics=topics,
+            code_blocks=code_blocks,
+            code_patterns={},  # New functionality will be populated later
+            relationships=[],
+            validation_tests=[]
+        )
     
-    def _extract_topics(self, main_content: Tag) -> List[Topic]:
+    def _extract_title(self, soup: BeautifulSoup) -> str:
+        """Extract page title"""
+        title_elem = soup.find(['h1', 'title'])
+        return title_elem.get_text(strip=True) if title_elem else "Untitled"
+    
+    def _extract_topics(self, soup: BeautifulSoup) -> List[Topic]:
         """Extract topics from the page"""
         topics = []
-        for heading in main_content.find_all(['h2', 'h3']):
-            level = int(heading.name[1])  # Get numeric level from h2, h3
-            topics.append(Topic(
-                title=heading.get_text(strip=True),
+        headers = soup.find_all(['h1', 'h2', 'h3', 'h4'])
+        
+        for header in headers:
+            level = int(header.name[1])  # Get numeric level from h1, h2, etc.
+            content = self._extract_section_content(header)
+            
+            topic = Topic(
+                title=header.get_text(strip=True),
                 level=level,
-                content=self._get_topic_content(heading)
-            ))
+                content=content,
+                path=self._get_topic_path(header)
+            )
+            topics.append(topic)
+        
         return topics
     
-    def _get_topic_content(self, heading: Tag) -> Optional[str]:
-        """Get the content following a topic heading"""
+    def _extract_section_content(self, header_elem) -> Optional[str]:
+        """Extract content belonging to a section"""
         content = []
-        for sibling in heading.next_siblings:
-            if sibling.name in ['h2', 'h3']:
-                break
-            if sibling.string and sibling.string.strip():
-                content.append(sibling.string.strip())
-        return " ".join(content) if content else None
+        elem = header_elem.find_next_sibling()
+        
+        while elem and not elem.name in ['h1', 'h2', 'h3', 'h4']:
+            if elem.name == 'p':
+                content.append(elem.get_text(strip=True))
+            elem = elem.find_next_sibling()
+        
+        return "\n".join(content) if content else None
     
-    def _extract_related_links(self, soup: BeautifulSoup) -> List[dict]:
-        """Extract related links from the page"""
-        related_links = []
-        related_section = soup.find(['div', 'section'], class_='related')
-        if related_section:
-            for link in related_section.find_all('a'):
-                related_links.append({
-                    'title': link.get_text(strip=True),
-                    'url': link.get('href', '')
-                })
-        return related_links
+    def _get_topic_path(self, elem) -> List[str]:
+        """Get hierarchical path to topic"""
+        path = []
+        current = elem
+        
+        while current:
+            if current.name in ['h1', 'h2', 'h3', 'h4']:
+                path.insert(0, current.get_text(strip=True))
+            current = current.find_previous(['h1', 'h2', 'h3', 'h4'])
+        
+        return path

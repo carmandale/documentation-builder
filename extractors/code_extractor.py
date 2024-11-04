@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup, Tag
-from models.base import CodeBlock
-from typing import List, Optional, Set
+from models.base import CodeBlock, CodePattern
+from typing import List, Optional, Set, Dict
 import logging
 import re
 
@@ -119,3 +119,24 @@ class CodeBlockExtractor:
             return 'immersive_space'
         
         return 'other'
+    
+    def extract_patterns(self, code_blocks: List[CodeBlock]) -> Dict[str, CodePattern]:
+        """Convert code blocks to reusable patterns"""
+        patterns = {}
+        
+        for i, block in enumerate(code_blocks):
+            pattern_type = block.type
+            
+            # Create pattern from code block
+            pattern = CodePattern(
+                pattern_type=pattern_type,
+                code=block.code,
+                frameworks=block.frameworks,
+                prerequisites=[],  # Will be populated by relationship extractor
+                related_concepts=[],  # Will be populated by relationship extractor
+                validation_examples=[]  # Will be populated by validation extractor
+            )
+            
+            patterns[f"{pattern_type}_{i}"] = pattern
+            
+        return patterns

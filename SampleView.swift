@@ -1,10 +1,8 @@
 import SwiftUI
 import RealityKit
-import Combine
 
 struct SampleView: View {
-    // Timer publisher for continuous animation
-    @State private var cancellable: AnyCancellable?
+    @State private var cancellables = [EventSubscription]()
     
     var body: some View {
         HStack {
@@ -31,28 +29,26 @@ struct SampleView: View {
                     materials: [SimpleMaterial(color: .blue, isMetallic: true)]
                 )
                 
-                // Set initial transform - first rotate 45° on Z
-                cylinder.transform = Transform(
-                    rotation: simd_quatf(
-                        angle: .pi / 4,
-                        axis: SIMD3<Float>(0, 0, 1)
-                    )
-                )
+                // Initial 45° Z rotation
+                let zRotation = simd_quatf(angle: .pi / 4, axis: SIMD3<Float>(0, 0, 1))
+                cylinder.transform = Transform(rotation: zRotation)
                 
                 // Add cylinder to content
                 content.add(cylinder)
                 
-                // Setup continuous rotation animation
-                let rotationAnimation = cylinder.scene?.subscribe(to: TimelineSchedule(repeating: .seconds(1/30))) { _ in
-                    cylinder.transform.rotation = simd_quatf(
-                        angle: cylinder.transform.rotation.angle + 0.02,
+                // Subscribe to update events for continuous rotation
+                let rotationEvent = content.subscribe(to: SceneEvents.Update.self) { event in
+                    let deltaTime = Float(event.deltaTime)
+                    let yRotation = simd_quatf(
+                        angle: deltaTime,
                         axis: SIMD3<Float>(0, 1, 0)
-                    ).concatenated(with: cylinder.transform.rotation)
+                    )
+                    // Combine rotations using matrix multiplication
+                    cylinder.transform.rotation = yRotation * cylinder.transform.rotation
                 }
                 
-                if let rotationAnimation = rotationAnimation {
-                    cancellable = AnyCancellable(rotationAnimation)
-                }
+                // Store subscription
+                cancellables.append(rotationEvent)
             }
             .frame(width: 400, height: 400)
         }

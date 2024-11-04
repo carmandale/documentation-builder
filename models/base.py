@@ -1,9 +1,16 @@
 from datetime import datetime, UTC
-from typing import List, Optional, Set
+from typing import List, Dict, Optional, Set
 from pydantic import BaseModel, Field, ConfigDict
 
+class Topic(BaseModel):
+    """Represents a section/topic in the documentation"""
+    title: str
+    level: int  # h1, h2, h3 etc.
+    content: Optional[str] = None
+    path: List[str] = Field(default_factory=list)  # Breadcrumb path to this topic
+
 class CodeBlock(BaseModel):
-    """Represents a code example in the documentation"""
+    """Represents a code example from documentation"""
     code: str
     description: Optional[str] = None
     language: str = "swift"  # Default to Swift for visionOS
@@ -14,23 +21,44 @@ class CodeBlock(BaseModel):
         description="Type of code example: ui_component, 3d_content, animation, app_structure, event_handling, immersive_space, other"
     )
 
-class Topic(BaseModel):
-    """Represents a section/topic in the documentation"""
-    title: str
-    level: int  # h1, h2, h3 etc.
-    content: Optional[str] = None
-    path: List[str] = Field(default_factory=list)  # Breadcrumb path to this topic
+class CodePattern(BaseModel):
+    """Represents a reusable code pattern"""
+    pattern_type: str = Field(..., description="Type of pattern (e.g., animation, transform)")
+    code: str
+    source_file: str  # Track where we found it
+    frameworks: List[str]
+    prerequisites: List[str] = Field(default_factory=list)
+    related_concepts: List[str] = Field(default_factory=list)
+    validation_examples: List[str] = Field(default_factory=list)
+    usage_count: int = 0  # Track how often we see this pattern
+    variations: List[str] = Field(default_factory=list)  # Track variations of the pattern
+
+class ConceptRelationship(BaseModel):
+    """Represents a relationship between two concepts"""
+    source: str
+    target: str
+    relationship_type: str
+    strength: float = 1.0
+
+class ValidationTest(BaseModel):
+    """Represents a validation test for a code pattern"""
+    pattern_id: str
+    test_code: str
+    expected_behavior: str
+    frameworks: List[str]
 
 class DocumentationPage(BaseModel):
     """Represents a single documentation page"""
     title: str
     url: str
     introduction: Optional[str] = None
-    code_blocks: List[CodeBlock]
+    code_blocks: List[CodeBlock]  # Keep the original working attribute
+    code_patterns: Dict[str, CodePattern] = Field(default_factory=dict)  # Add new functionality
     topics: List[Topic]
-    related_links: List[dict] = Field(default_factory=list)
-    category: Optional[str] = None  # Main category of the documentation
-    frameworks_used: List[str] = Field(default_factory=list)  # All frameworks referenced
+    relationships: List[ConceptRelationship] = Field(default_factory=list)
+    validation_tests: List[ValidationTest] = Field(default_factory=list)
+    category: Optional[str] = None
+    frameworks_used: List[str] = Field(default_factory=list)
     scraped_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     
     model_config = ConfigDict(
@@ -41,13 +69,18 @@ class DocumentationPage(BaseModel):
     
     def __init__(self, **data):
         super().__init__(**data)
-        # Aggregate frameworks from code blocks
-        self.frameworks_used = list(set(
-            framework
-            for block in self.code_blocks
-            for framework in block.frameworks
-        ))
-        # Try to determine category
+        # Aggregate frameworks from both code_blocks and code_patterns
+        frameworks = set()
+        
+        # From code_blocks
+        for block in data.get('code_blocks', []):
+            frameworks.update(block.frameworks)
+            
+        # From code_patterns
+        for pattern in data.get('code_patterns', {}).values():
+            frameworks.update(pattern.frameworks)
+            
+        self.frameworks_used = list(frameworks)
         self._determine_category()
     
     def _determine_category(self):
