@@ -2,113 +2,133 @@
 
 A specialized tool for scraping, analyzing, and processing Apple's VisionOS documentation to create a structured, searchable, and LLM-ready knowledge base.
 
-## Overview
+## Current Status
 
-This project provides tools to:
-- Scrape VisionOS documentation systematically
-- Extract code examples, parameters, and technical descriptions
-- Analyze relationships between different API concepts
-- Generate LLM-optimized documentation output
-- Provide developer-friendly search and navigation
+We are in the initial phase of rebuilding the project with a focus on:
+1. Reliable documentation scraping
+2. Proper HTML structure analysis
+3. Accurate content extraction
 
-## Features
+### Working Components
+- `core/scraper.py` - Documentation scraper with Playwright integration
+- `models/base.py` - Pydantic data models for documentation structure
+- `extractors/` - Code and documentation extraction modules
+- `analyzers/` - Topic and relationship analysis tools
+- `cli/` - Command-line interface for scraping and analysis
 
-### Documentation Scraping
-- Extracts structured content from Apple's VisionOS documentation
-- Preserves code examples with context
-- Maintains hierarchical relationships between topics
-- Handles parameter definitions and API specifications
+### Current Capabilities
+- Reliable JavaScript-rendered content scraping
+- Code block extraction and classification
+- Framework detection and analysis
+- Topic relationship mapping
+- Documentation structure visualization
 
-### Content Analysis
-- Identifies relationships between different API features
-- Tracks code example patterns and common usage
-- Analyzes documentation coverage and completeness
-- Generates usage statistics and insights
+### Next Steps
+1. Verify proper access to Apple's documentation
+2. Extract and analyze HTML structure
+3. Build content extractors
+4. Implement data validation
+5. Create LLM-optimized output format
 
-### Developer Tools
-- Search through documentation with context
-- View related code examples and parameters
-- Navigate topic relationships
-- Export documentation in various formats
+## Project Goals
+
+1. **Documentation Processing**
+   - Systematic documentation scraping
+   - Structured content extraction
+   - Code example analysis
+   - Relationship mapping
+   - LLM-ready output formatting
+
+2. **Analysis Capabilities**
+   - Code complexity analysis
+   - Topic relationship mapping
+   - Pattern recognition
+   - Usage statistics
+   - LLM optimization suggestions
+
+3. **Developer Tools**
+   - Documentation search
+   - Code example browsing
+   - Relationship exploration
+   - Custom export formats
+
+## Project Structure
+
+```
+documentation_builder/
+├── core/
+│   ├── scraper.py          # Main scraper class
+│   └── browser.py          # Browser management
+├── models/
+│   ├── base.py            # Core data models
+├── utils/
+│   └── logging.py         # Logging configuration
+├── extractors/
+│   └── code_extractor.py  # Code extraction module
+├── analyzers/
+│   └── relationship_analyzer.py  # Relationship analysis module
+├── cli/
+│   └── scraper_cli.py  # Command-line interface
+└── tests/
+    ├── test_url_access.py # URL access testing
+    └── examine_debug.py   # Debug examination
+```
 
 ## Installation
 
 ```bash
-# Clone the repository
-git clone https://github.com/yourusername/visionos-doc-analyzer.git
-
 # Create and activate virtual environment
 python -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
+
+# Install playwright browsers
+playwright install
 ```
 
-## Usage
+## Development
 
-### Scraping Documentation
+### Current Focus
+1. Establishing reliable connection to Apple's documentation
+2. Understanding and mapping the HTML structure
+3. Building robust content extractors
+4. Creating LLM-optimized output
+
+### Running Tests
 ```bash
-python run_scraper.py
+# Test URL access
+python tests/test_url_access.py
+
+# Examine debug output
+python tests/examine_debug.py
 ```
 
-### Viewing Documentation
-```bash
-# View all entries
-python content_viewer.py view
+## For LLMs
 
-# Search documentation
-python content_viewer.py view -s "window"
+### Key Areas for Assistance
+1. HTML structure analysis
+2. Content extraction patterns
+3. Error handling improvements
+4. Test coverage suggestions
+5. Documentation structure optimization
 
-# View specific entry with examples and parameters
-python content_viewer.py view 0 --examples --params
+### Important Files to Review
+- `tests/test_url_access.py` - Current URL access implementation
+- `core/scraper.py` - Core scraping functionality
+- `models/base.py` - Data model definitions
 
-# View documentation statistics
-python content_viewer.py stats
-```
-
-### Analyzing Documentation
-```bash
-python documentation_analyzer.py
-```
-
-## Project Structure
-
-```
-.
-├── documentation_scraper.py  # Core scraping functionality
-├── content_viewer.py         # CLI for viewing documentation
-├── documentation_analyzer.py # Analysis and insights
-├── run_scraper.py           # Scraper entry point
-├── data/                    # Scraped documentation storage
-└── debug/                   # Debug files and raw HTML
-```
-
-## Future Enhancements
-
-- [ ] LLM-optimized output formatting
-- [ ] Enhanced relationship mapping
-- [ ] PDF documentation support
-- [ ] Interactive documentation browser
-- [ ] API integration capabilities
-- [ ] Custom documentation export formats
+### Context
+- Working with Apple's VisionOS documentation
+- Need to handle JavaScript-rendered content
+- Focus on creating LLM-friendly output
+- Building systematic testing approach
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+See CONTRIBUTING.md for guidelines.
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Acknowledgments
-
-- Apple Developer Documentation
-- Beautiful Soup
-- Playwright
-- Rich CLI
-- Typer
-
-## Disclaimer
-
-This tool is not affiliated with, authorized, maintained, sponsored, or endorsed by Apple Inc. or any of its affiliates or subsidiaries. 
+MIT License - see LICENSE for details. 

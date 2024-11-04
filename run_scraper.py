@@ -1,30 +1,58 @@
 import asyncio
-import signal
-from documentation_scraper import VisionOSScraper
+from core.scraper import DocumentationScraper
 import logging
-import sys
+from pathlib import Path
 
+# Configure logging with more detail
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.StreamHandler(),  # Print to console
+        logging.FileHandler('scraper.log')  # Also save to file
+    ]
+)
 logger = logging.getLogger(__name__)
 
 async def main():
-    scraper = VisionOSScraper()
-    
-    def handle_interrupt(signum, frame):
-        logger.info("Interrupt received, stopping scraper...")
-        scraper.stop()
-    
-    # Register signal handlers
-    signal.signal(signal.SIGINT, handle_interrupt)
-    signal.signal(signal.SIGTERM, handle_interrupt)
-    
+    scraper = DocumentationScraper()
     try:
-        await scraper.run()
+        # Use verified working URLs
+        test_urls = [
+            "https://developer.apple.com/documentation/visionos/adding-3d-content-to-your-app",
+            "https://developer.apple.com/documentation/visionos/creating-your-first-visionos-app",
+            "https://developer.apple.com/documentation/visionos/creating-fully-immersive-experiences",
+            "https://developer.apple.com/documentation/visionos/creating-immersive-spaces-in-visionos-with-swiftui",
+            "https://developer.apple.com/documentation/visionos/bot-anist",
+            "https://developer.apple.com/documentation/visionos/swift-splash"
+        ]
+        
+        logger.info("Initializing scraper...")
+        await scraper.init()
+        
+        # Override the CLI default URLs
+        scraper.urls = test_urls
+        
+        pages = []
+        for url in test_urls:
+            logger.info(f"Scraping: {url}")
+            page = await scraper.scrape_url(url)
+            if page:
+                pages.append(page)
+                logger.info(f"Successfully scraped: {page.title}")
+            else:
+                logger.error(f"Failed to scrape: {url}")
+            
+            # Brief pause between requests
+            await asyncio.sleep(2)
+            
     except Exception as e:
         logger.error(f"Error in main: {str(e)}")
     finally:
-        logger.info("Scraping complete")
-        # Force exit to kill any hanging processes
-        sys.exit(0)
+        logger.info("Cleaning up...")
+        await scraper.cleanup()
 
 if __name__ == "__main__":
-    asyncio.run(main()) 
+    logger.info("Starting scraper...")
+    asyncio.run(main())
+    logger.info("Scraper finished")
