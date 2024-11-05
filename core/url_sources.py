@@ -49,7 +49,8 @@ class DocumentationURLCollector:
                 content = await page.content()
                 
                 # Save debug content
-                debug_file = self.debug_dir / f"{url.split('/')[-1] or 'visionos'}.html"
+                filename = url.split('/')[-1] or 'visionos'
+                debug_file = self.debug_dir / f"{filename}.html"
                 debug_file.write_text(content)
                 logger.info(f"Saved HTML to {debug_file}")
                 
@@ -59,21 +60,16 @@ class DocumentationURLCollector:
                 # Find all links
                 for link in soup.find_all('a', href=True):
                     href = link['href']
-                    # Handle both absolute and relative URLs
-                    if href.startswith('http'):
-                        absolute_url = href
-                    else:
-                        absolute_url = self._make_absolute_url(href)
                     
                     # Categorize URLs
-                    if '/documentation/' in href or '/documentation/' in absolute_url:
+                    if '/documentation/' in href:
                         logger.info(f"Found documentation link: {href}")
-                        links['documentation'].add(absolute_url)
+                        links['documentation'].add(self._make_absolute_url(href))
                     elif '/videos/' in href or '/wwdc/' in href:
                         logger.info(f"Found videos link: {href}")
-                        links['videos'].add(absolute_url)
+                        links['videos'].add(self._make_absolute_url(href))
                     else:
-                        links['other'].add(absolute_url)
+                        links['other'].add(self._make_absolute_url(href))
                 
                 await browser.close()
                 
@@ -130,9 +126,14 @@ class DocumentationURLCollector:
             async with async_playwright() as p:
                 browser = await p.chromium.launch()
                 page = await browser.new_page()
+                
+                # Convert relative URLs to absolute
+                if not url.startswith('http'):
+                    url = f"{self.BASE_URL}{url}"
+                    
                 await page.goto(url)
                 
-                # Look for download link with absolute URL
+                # Look for download link
                 download_links = await page.query_selector_all('a[href*=".zip"]')
                 for link in download_links:
                     href = await link.get_attribute('href')
@@ -143,6 +144,7 @@ class DocumentationURLCollector:
                     title_elem = await page.query_selector('h1')
                     title = await title_elem.text_content() if title_elem else url.split('/')[-1]
                     
+                    await browser.close()
                     return ProjectResource(
                         title=title,
                         url=url,

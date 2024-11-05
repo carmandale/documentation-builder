@@ -18196,3 +18196,543 @@ Analyzing AxisVisualizer.swift:
 2024-11-05 17:31:12,925 - INFO - Successfully read Package.swift
 2024-11-05 17:31:12,925 - INFO - Successfully read SunPositionSystem.swift
 2024-11-05 17:31:12,925 - INFO - Successfully read WorldAssets.swift
+2024-11-05 17:33:35,091 - INFO - Saved HTML to data/debug/visionos.html
+2024-11-05 17:33:35,095 - INFO - Found documentation link: /documentation/
+2024-11-05 17:33:35,095 - INFO - Found documentation link: /documentation/
+2024-11-05 17:33:35,095 - INFO - Found videos link: /videos/
+2024-11-05 17:33:35,095 - INFO - Found videos link: /wwdc/
+2024-11-05 17:33:35,114 - INFO - Found 71 other links
+2024-11-05 17:33:35,114 - INFO - Found 1 documentation links
+2024-11-05 17:33:35,115 - INFO - Found 2 videos links
+2024-11-05 17:33:36,124 - INFO - Found 10 sections, 0 topics, and 0 samples
+2024-11-05 17:33:36,919 - INFO - Saved HTML to data/debug/immersive-experiences.html
+2024-11-05 17:33:36,923 - INFO - Found documentation link: /documentation/
+2024-11-05 17:33:36,923 - INFO - Found documentation link: /documentation/
+2024-11-05 17:33:36,923 - INFO - Found videos link: /videos/
+2024-11-05 17:33:36,923 - INFO - Found videos link: /wwdc/
+2024-11-05 17:33:36,941 - INFO - Found 71 other links
+2024-11-05 17:33:36,941 - INFO - Found 1 documentation links
+2024-11-05 17:33:36,941 - INFO - Found 2 videos links
+2024-11-05 17:33:37,911 - INFO - Found 10 sections, 0 topics, and 0 samples
+2024-11-05 17:33:38,838 - INFO - Saved HTML to data/debug/designing-for-visionos.html
+2024-11-05 17:33:38,842 - INFO - Found documentation link: /documentation/
+2024-11-05 17:33:38,842 - INFO - Found documentation link: /documentation/
+2024-11-05 17:33:38,842 - INFO - Found videos link: /videos/
+2024-11-05 17:33:38,842 - INFO - Found videos link: /wwdc/
+2024-11-05 17:33:38,867 - INFO - Found 71 other links
+2024-11-05 17:33:38,867 - INFO - Found 1 documentation links
+2024-11-05 17:33:38,867 - INFO - Found 2 videos links
+2024-11-05 17:33:39,800 - INFO - Found 10 sections, 0 topics, and 0 samples
+2024-11-05 17:33:41,338 - INFO - Found download URL: https://docs-assets.developer.apple.com/published/afe8dfd556ef/HelloWorld.zip
+2024-11-05 17:33:47,489 - INFO - Downloaded project to data/projects/hello-world
+2024-11-05 17:33:48,422 - WARNING - No project found at https://developer.apple.com/documentation/visionos/bot-anist
+2024-11-05 17:33:49,381 - WARNING - No project found at https://developer.apple.com/documentation/visionos/playing-spatial-audio-in-visionos
+2024-11-05 17:33:49,382 - INFO - Successfully read WorldApp.swift
+2024-11-05 17:33:49,382 - INFO - Successfully read SliderGridRow.swift
+2024-11-05 17:33:49,382 - INFO - Successfully read EarthSettings.swift
+2024-11-05 17:33:49,382 - INFO - Successfully read GlobeSettings.swift
+2024-11-05 17:33:49,382 - INFO - Successfully read OrbitSettings.swift
+2024-11-05 17:33:49,382 - INFO - Successfully read SatelliteSettings.swift
+2024-11-05 17:33:49,382 - INFO - Successfully read SettingsButton.swift
+2024-11-05 17:33:49,382 - INFO - Successfully read SolarSystemSettings.swift
+2024-11-05 17:33:49,382 - INFO - Successfully read OrbitModule.swift
+2024-11-05 17:33:49,382 - INFO - Successfully read OrbitToggle.swift
+2024-11-05 17:33:49,382 - INFO - Successfully read Orbit.swift
+2024-11-05 17:33:49,382 - INFO - Successfully read TypeTextModifier.swift
+2024-11-05 17:33:49,383 - INFO - Successfully read PlacementGesturesModifier.swift
+2024-11-05 17:33:49,383 - INFO - Successfully read DragRotationModifier.swift
+2024-11-05 17:33:49,383 - INFO - Successfully read GlobeToggle.swift
+2024-11-05 17:33:49,383 - INFO - Successfully read GlobeControls.swift
+2024-11-05 17:33:49,383 - INFO - Successfully read GlobeModule.swift
+2024-11-05 17:33:49,383 - INFO - Successfully read Globe.swift
+2024-11-05 17:33:49,383 - INFO - Successfully read Earth.swift
+2024-11-05 17:33:49,383 - INFO - Successfully read Starfield.swift
+2024-11-05 17:33:49,383 - INFO - Successfully read Sun.swift
+2024-11-05 17:33:49,383 - INFO - Successfully read ViewModel.swift
+2024-11-05 17:33:49,384 - INFO - Successfully read Module.swift
+2024-11-05 17:33:49,384 - INFO - Successfully read SolarSystemToggle.swift
+2024-11-05 17:33:49,384 - INFO - Successfully read SolarSystemModule.swift
+2024-11-05 17:33:49,384 - INFO - Successfully read SolarSystem.swift
+2024-11-05 17:33:49,384 - INFO - Successfully read SolarSystemControls.swift
+2024-11-05 17:33:49,384 - INFO - Successfully read TraceSystem.swift
+2024-11-05 17:33:49,384 - INFO - Successfully read RotationSystem.swift
+2024-11-05 17:33:49,384 - INFO - Successfully read ModuleDetail.swift
+2024-11-05 17:33:49,384 - INFO - Successfully read Modules.swift
+2024-11-05 17:33:49,384 - INFO - Successfully read TableOfContents.swift
+2024-11-05 17:33:49,384 - INFO - Successfully read ModuleCard.swift
+2024-11-05 17:33:49,384 - INFO - Successfully read Entity+Trace.swift
+2024-11-05 17:33:49,384 - INFO - Successfully read EarthEntity+Configuration.swift
+2024-11-05 17:33:49,384 - INFO - Successfully read SatelliteEntity.swift
+2024-11-05 17:33:49,384 - INFO - Successfully read Entity+Sunlight.swift
+2024-11-05 17:33:49,384 - INFO - Successfully read EarthEntity.swift
+2024-11-05 17:33:49,384 - INFO - Successfully read SatelliteEntity+Configuration.swift
+2024-11-05 17:33:49,384 - INFO - Successfully read Package.swift
+2024-11-05 17:33:49,385 - INFO - Successfully read SunPositionSystem.swift
+2024-11-05 17:33:49,385 - INFO - Successfully read WorldAssets.swift
+2024-11-05 17:35:36,686 - INFO - Saved HTML to data/debug/visionos.html
+2024-11-05 17:35:36,690 - INFO - Found documentation link: /documentation/
+2024-11-05 17:35:36,690 - INFO - Found documentation link: /documentation/
+2024-11-05 17:35:36,690 - INFO - Found videos link: /videos/
+2024-11-05 17:35:36,690 - INFO - Found videos link: /wwdc/
+2024-11-05 17:35:36,709 - INFO - Found 71 other links
+2024-11-05 17:35:36,709 - INFO - Found 1 documentation links
+2024-11-05 17:35:36,709 - INFO - Found 2 videos links
+2024-11-05 17:35:37,658 - INFO - Found 10 sections, 0 topics, and 0 samples
+2024-11-05 17:35:38,531 - INFO - Saved HTML to data/debug/immersive-experiences.html
+2024-11-05 17:35:38,534 - INFO - Found documentation link: /documentation/
+2024-11-05 17:35:38,534 - INFO - Found documentation link: /documentation/
+2024-11-05 17:35:38,535 - INFO - Found videos link: /videos/
+2024-11-05 17:35:38,535 - INFO - Found videos link: /wwdc/
+2024-11-05 17:35:38,555 - INFO - Found 71 other links
+2024-11-05 17:35:38,556 - INFO - Found 1 documentation links
+2024-11-05 17:35:38,556 - INFO - Found 2 videos links
+2024-11-05 17:35:39,467 - INFO - Found 10 sections, 0 topics, and 0 samples
+2024-11-05 17:35:40,440 - INFO - Saved HTML to data/debug/designing-for-visionos.html
+2024-11-05 17:35:40,445 - INFO - Found documentation link: /documentation/
+2024-11-05 17:35:40,445 - INFO - Found documentation link: /documentation/
+2024-11-05 17:35:40,445 - INFO - Found videos link: /videos/
+2024-11-05 17:35:40,445 - INFO - Found videos link: /wwdc/
+2024-11-05 17:35:40,463 - INFO - Found 71 other links
+2024-11-05 17:35:40,463 - INFO - Found 1 documentation links
+2024-11-05 17:35:40,463 - INFO - Found 2 videos links
+2024-11-05 17:35:41,735 - INFO - Found 15 sections, 0 topics, and 0 samples
+2024-11-05 17:35:42,666 - WARNING - No project found at https://developer.apple.com/documentation/visionos/world
+2024-11-05 17:35:43,559 - WARNING - No project found at https://developer.apple.com/documentation/visionos/bot-anist
+2024-11-05 17:35:44,452 - WARNING - No project found at https://developer.apple.com/documentation/visionos/playing-spatial-audio-in-visionos
+2024-11-05 17:37:32,036 - INFO - Saved HTML to data/debug/visionos.html
+2024-11-05 17:37:32,039 - INFO - Found documentation link: /documentation/
+2024-11-05 17:37:32,039 - INFO - Found documentation link: /documentation/
+2024-11-05 17:37:32,039 - INFO - Found videos link: /videos/
+2024-11-05 17:37:32,039 - INFO - Found videos link: /wwdc/
+2024-11-05 17:37:32,059 - INFO - Found 71 other links
+2024-11-05 17:37:32,059 - INFO - Found 1 documentation links
+2024-11-05 17:37:32,059 - INFO - Found 2 videos links
+2024-11-05 17:37:33,488 - INFO - Found 32 sections, 51 topics, and 0 samples
+2024-11-05 17:37:34,330 - INFO - Saved HTML to data/debug/immersive-experiences.html
+2024-11-05 17:37:34,333 - INFO - Found documentation link: /documentation/
+2024-11-05 17:37:34,333 - INFO - Found documentation link: /documentation/
+2024-11-05 17:37:34,333 - INFO - Found videos link: /videos/
+2024-11-05 17:37:34,333 - INFO - Found videos link: /wwdc/
+2024-11-05 17:37:34,356 - INFO - Found 71 other links
+2024-11-05 17:37:34,356 - INFO - Found 1 documentation links
+2024-11-05 17:37:34,356 - INFO - Found 2 videos links
+2024-11-05 17:37:35,245 - INFO - Found 10 sections, 0 topics, and 0 samples
+2024-11-05 17:37:36,440 - INFO - Saved HTML to data/debug/designing-for-visionos.html
+2024-11-05 17:37:36,450 - INFO - Found documentation link: /documentation/
+2024-11-05 17:37:36,450 - INFO - Found videos link: /videos/
+2024-11-05 17:37:36,450 - INFO - Found documentation link: /documentation/visionOS/creating-your-first-visionos-app
+2024-11-05 17:37:36,450 - INFO - Found videos link: https://developer.apple.com/videos/play/wwdc2024/10096
+2024-11-05 17:37:36,450 - INFO - Found videos link: https://developer.apple.com/videos/play/wwdc2024/10086
+2024-11-05 17:37:36,450 - INFO - Found videos link: https://developer.apple.com/videos/play/wwdc2023/10072
+2024-11-05 17:37:36,450 - INFO - Found documentation link: /documentation/
+2024-11-05 17:37:36,450 - INFO - Found documentation link: /documentation/
+2024-11-05 17:37:36,450 - INFO - Found videos link: /videos/
+2024-11-05 17:37:36,450 - INFO - Found videos link: /wwdc/
+2024-11-05 17:37:36,469 - INFO - Found 104 other links
+2024-11-05 17:37:36,469 - INFO - Found 2 documentation links
+2024-11-05 17:37:36,469 - INFO - Found 5 videos links
+2024-11-05 17:37:37,333 - INFO - Found 10 sections, 0 topics, and 0 samples
+2024-11-05 17:37:38,200 - WARNING - No project found at https://developer.apple.com/documentation/visionos/world
+2024-11-05 17:37:39,220 - WARNING - No project found at https://developer.apple.com/documentation/visionos/bot-anist
+2024-11-05 17:37:40,106 - WARNING - No project found at https://developer.apple.com/documentation/visionos/playing-spatial-audio-in-visionos
+2024-11-05 17:39:36,116 - INFO - Saved HTML to data/debug/visionos.html
+2024-11-05 17:39:36,142 - INFO - Found documentation link: /documentation/visionos
+2024-11-05 17:39:36,142 - INFO - Found documentation link: /documentation/visionos/creating-your-first-visionos-app
+2024-11-05 17:39:36,142 - INFO - Found documentation link: /documentation/visionos/understanding-the-realitykit-modular-architecture
+2024-11-05 17:39:36,142 - INFO - Found documentation link: /documentation/visionos/enabling-video-reflections-in-an-immersive-environment
+2024-11-05 17:39:36,142 - INFO - Found documentation link: /documentation/visionos/building-an-immersive-media-viewing-experience
+2024-11-05 17:39:36,142 - INFO - Found documentation link: /documentation/visionos/diorama
+2024-11-05 17:39:36,142 - INFO - Found documentation link: /documentation/visionos/swift-splash
+2024-11-05 17:39:36,142 - INFO - Found documentation link: /documentation/visionos/bot-anist
+2024-11-05 17:39:36,142 - INFO - Found documentation link: /documentation/visionos/positioning-and-sizing-windows
+2024-11-05 17:39:36,142 - INFO - Found documentation link: /documentation/visionos/presenting-windows-and-spaces
+2024-11-05 17:39:36,142 - INFO - Found documentation link: /documentation/visionos/world
+2024-11-05 17:39:36,142 - INFO - Found documentation link: /documentation/visionos/improving-accessibility-support-in-your-app
+2024-11-05 17:39:36,142 - INFO - Found documentation link: /documentation/visionos/adopting-best-practices-for-privacy
+2024-11-05 17:39:36,142 - INFO - Found documentation link: /documentation/visionos/introductory-visionos-samples
+2024-11-05 17:39:36,142 - INFO - Found documentation link: /documentation/visionos/drawing-sharp-layer-based-content
+2024-11-05 17:39:36,142 - INFO - Found documentation link: /documentation/visionos/creating-fully-immersive-experiences
+2024-11-05 17:39:36,142 - INFO - Found documentation link: /documentation/visionos/adding-3d-content-to-your-app
+2024-11-05 17:39:36,142 - INFO - Found documentation link: /documentation/visionos/creating-your-first-visionos-app
+2024-11-05 17:39:36,142 - INFO - Found documentation link: /documentation/visionos/#Overview
+2024-11-05 17:39:36,142 - INFO - Found documentation link: /documentation/visionos/#Expand-your-app-into-immersive-spaces
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/SwiftUI
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/RealityKit
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/RealityKit/RealityView
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/arkit
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/#Explore-new-kinds-of-interaction
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/SwiftUI
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/arkit
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/#Dive-into-featured-sample-apps
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/world
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/bot-anist
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/destination-video
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/happybeam
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/diorama
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/swift-splash
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/#topics
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/#App-construction
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/creating-your-first-visionos-app
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/adding-3d-content-to-your-app
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/creating-fully-immersive-experiences
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/drawing-sharp-layer-based-content
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/introductory-visionos-samples
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/#Design
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/adopting-best-practices-for-privacy
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/improving-accessibility-support-in-your-app
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/#SwiftUI
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/world
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/presenting-windows-and-spaces
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/positioning-and-sizing-windows
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/#RealityKit-and-Reality-Composer-Pro
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/bot-anist
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/swift-splash
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/diorama
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/building-an-immersive-media-viewing-experience
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/enabling-video-reflections-in-an-immersive-environment
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/understanding-the-realitykit-modular-architecture
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/designing-realitykit-content-with-reality-composer-pro
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/capturing-screenshots-and-video-from-your-apple-vision-pro-for-2d-viewing
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/implementing-object-tracking-in-your-visionos-app
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/#ARKit
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/happybeam
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/setting-up-access-to-arkit-data
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/incorporating-real-world-surroundings-in-an-immersive-experience
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/placing-content-on-detected-planes
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/tracking-points-in-world-space
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/tracking-images-in-3d-space
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/exploring_object_tracking_with_arkit
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/building_local_experiences_with_room_tracking
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/#Video-playback
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/destination-video
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/avfoundation/media_playback/configuring_your_app_for_media_playback
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/AVKit/adopting-the-system-player-interface-in-visionos
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/avfoundation/media_playback/controlling_the_transport_behavior_of_a_player
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/avfoundation/media_playback/monitoring_playback_progress_in_your_app
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/AVKit/trimming-and-exporting-media-in-visionos
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/#Xcode-and-Simulator
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/Xcode/configuring-your-app-icon
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/Xcode/diagnosing-and-resolving-bugs-in-your-running-app
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/Xcode/diagnosing-issues-in-the-appearance-of-your-running-app
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/Xcode/running-your-app-in-simulator-or-on-a-device
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/Xcode/interacting-with-your-app-in-the-visionos-simulator
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/#Performance
+2024-11-05 17:39:36,143 - INFO - Found documentation link: /documentation/visionos/creating-a-performance-plan-for-visionos-app
+2024-11-05 17:39:36,144 - INFO - Found documentation link: /documentation/visionos/analyzing-the-performance-of-your-visionos-app
+2024-11-05 17:39:36,144 - INFO - Found documentation link: /documentation/visionos/reducing-the-rendering-cost-of-your-ui-on-visionos
+2024-11-05 17:39:36,144 - INFO - Found documentation link: /documentation/visionos/reducing-the-rendering-cost-of-realitykit-content-on-visionos
+2024-11-05 17:39:36,144 - INFO - Found documentation link: /documentation/visionos/understanding-the-visionos-render-pipeline
+2024-11-05 17:39:36,144 - INFO - Found documentation link: /documentation/visionos/#iOS-migration-and-compatibility
+2024-11-05 17:39:36,144 - INFO - Found documentation link: /documentation/visionos/bringing-your-app-to-visionos
+2024-11-05 17:39:36,144 - INFO - Found documentation link: /documentation/visionos/bringing-your-arkit-app-to-visionos
+2024-11-05 17:39:36,144 - INFO - Found documentation link: /documentation/visionos/checking-whether-your-app-is-compatible-with-visionos
+2024-11-05 17:39:36,144 - INFO - Found documentation link: /documentation/visionos/making-your-app-compatible-with-visionos
+2024-11-05 17:39:36,144 - INFO - Found documentation link: /documentation/visionos/#Enterprise-APIs-for-visionOS
+2024-11-05 17:39:36,144 - INFO - Found documentation link: /documentation/visionos/building-spatial-experiences-for-business-apps-with-enterprise-apis
+2024-11-05 17:39:36,144 - INFO - Found documentation link: /documentation/visionos/accessing-the-main-camera
+2024-11-05 17:39:36,144 - INFO - Found documentation link: /documentation/visionos/locating-and-decoding-barcodes-in-3d-space
+2024-11-05 17:39:36,144 - INFO - Found documentation link: /documentation/visionos/#app-top
+2024-11-05 17:39:36,144 - INFO - Found documentation link: /documentation/visionos/#Overview
+2024-11-05 17:39:36,144 - INFO - Found documentation link: /documentation/visionos/#Expand-your-app-into-immersive-spaces
+2024-11-05 17:39:36,144 - INFO - Found documentation link: /documentation/visionos/#Explore-new-kinds-of-interaction
+2024-11-05 17:39:36,144 - INFO - Found documentation link: /documentation/visionos/#Dive-into-featured-sample-apps
+2024-11-05 17:39:36,144 - INFO - Found documentation link: /documentation/visionos/#topics
+2024-11-05 17:39:36,144 - INFO - Found documentation link: /documentation/
+2024-11-05 17:39:36,144 - INFO - Found documentation link: /documentation/
+2024-11-05 17:39:36,144 - INFO - Found videos link: /videos/
+2024-11-05 17:39:36,144 - INFO - Found videos link: /wwdc/
+2024-11-05 17:39:36,165 - INFO - Found 74 other links
+2024-11-05 17:39:36,165 - INFO - Found 72 documentation links
+2024-11-05 17:39:36,165 - INFO - Found 2 videos links
+2024-11-05 17:39:37,595 - INFO - Found 32 sections, 51 topics, and 0 samples
+2024-11-05 17:39:38,441 - INFO - Saved HTML to data/debug/immersive-experiences.html
+2024-11-05 17:39:38,445 - INFO - Found documentation link: /documentation/
+2024-11-05 17:39:38,445 - INFO - Found documentation link: /documentation/
+2024-11-05 17:39:38,445 - INFO - Found videos link: /videos/
+2024-11-05 17:39:38,445 - INFO - Found videos link: /wwdc/
+2024-11-05 17:39:38,462 - INFO - Found 71 other links
+2024-11-05 17:39:38,462 - INFO - Found 1 documentation links
+2024-11-05 17:39:38,462 - INFO - Found 2 videos links
+2024-11-05 17:39:39,406 - INFO - Found 10 sections, 0 topics, and 0 samples
+2024-11-05 17:39:40,311 - INFO - Saved HTML to data/debug/designing-for-visionos.html
+2024-11-05 17:39:40,314 - INFO - Found documentation link: /documentation/
+2024-11-05 17:39:40,314 - INFO - Found documentation link: /documentation/
+2024-11-05 17:39:40,314 - INFO - Found videos link: /videos/
+2024-11-05 17:39:40,314 - INFO - Found videos link: /wwdc/
+2024-11-05 17:39:40,338 - INFO - Found 71 other links
+2024-11-05 17:39:40,338 - INFO - Found 1 documentation links
+2024-11-05 17:39:40,338 - INFO - Found 2 videos links
+2024-11-05 17:39:41,264 - INFO - Found 10 sections, 0 topics, and 0 samples
+2024-11-05 17:39:42,145 - WARNING - No project found at https://developer.apple.com/documentation/visionos/world
+2024-11-05 17:39:43,160 - WARNING - No project found at https://developer.apple.com/documentation/visionos/bot-anist
+2024-11-05 17:39:44,111 - WARNING - No project found at https://developer.apple.com/documentation/visionos/playing-spatial-audio-in-visionos
+2024-11-05 17:42:40,320 - INFO - Saved HTML to data/debug/visionos.html
+2024-11-05 17:42:40,324 - INFO - Found documentation link: /documentation/
+2024-11-05 17:42:40,324 - INFO - Found videos link: /videos/
+2024-11-05 17:42:40,324 - INFO - Found documentation link: /documentation/
+2024-11-05 17:42:40,324 - INFO - Found documentation link: /documentation/
+2024-11-05 17:42:40,324 - INFO - Found videos link: /videos/
+2024-11-05 17:42:40,324 - INFO - Found videos link: /wwdc/
+2024-11-05 17:42:40,343 - INFO - Found 71 other links
+2024-11-05 17:42:40,344 - INFO - Found 1 documentation links
+2024-11-05 17:42:40,344 - INFO - Found 2 videos links
+2024-11-05 17:42:42,032 - INFO - Found 32 sections, 51 topics, and 0 samples
+2024-11-05 17:42:43,415 - INFO - Saved HTML to data/debug/immersive-experiences.html
+2024-11-05 17:42:43,419 - INFO - Found documentation link: /documentation/
+2024-11-05 17:42:43,419 - INFO - Found videos link: /videos/
+2024-11-05 17:42:43,419 - INFO - Found documentation link: /documentation/
+2024-11-05 17:42:43,419 - INFO - Found documentation link: /documentation/
+2024-11-05 17:42:43,419 - INFO - Found videos link: /videos/
+2024-11-05 17:42:43,419 - INFO - Found videos link: /wwdc/
+2024-11-05 17:42:43,438 - INFO - Found 71 other links
+2024-11-05 17:42:43,439 - INFO - Found 1 documentation links
+2024-11-05 17:42:43,439 - INFO - Found 2 videos links
+2024-11-05 17:42:45,213 - INFO - Found 21 sections, 0 topics, and 0 samples
+2024-11-05 17:42:46,282 - INFO - Saved HTML to data/debug/designing-for-visionos.html
+2024-11-05 17:42:46,285 - INFO - Found documentation link: /documentation/
+2024-11-05 17:42:46,285 - INFO - Found videos link: /videos/
+2024-11-05 17:42:46,285 - INFO - Found documentation link: /documentation/
+2024-11-05 17:42:46,285 - INFO - Found documentation link: /documentation/
+2024-11-05 17:42:46,285 - INFO - Found videos link: /videos/
+2024-11-05 17:42:46,285 - INFO - Found videos link: /wwdc/
+2024-11-05 17:42:46,305 - INFO - Found 71 other links
+2024-11-05 17:42:46,306 - INFO - Found 1 documentation links
+2024-11-05 17:42:46,306 - INFO - Found 2 videos links
+2024-11-05 17:42:47,747 - INFO - Found 15 sections, 0 topics, and 0 samples
+2024-11-05 17:42:48,844 - WARNING - No project found at https://developer.apple.com/documentation/visionos/world
+2024-11-05 17:42:50,243 - WARNING - No project found at https://developer.apple.com/documentation/visionos/bot-anist
+2024-11-05 17:42:51,486 - WARNING - No project found at https://developer.apple.com/documentation/visionos/playing-spatial-audio-in-visionos
+2024-11-05 17:43:51,049 - INFO - Saved HTML to data/debug/visionos.html
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/creating-your-first-visionos-app
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/understanding-the-realitykit-modular-architecture
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/enabling-video-reflections-in-an-immersive-environment
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/building-an-immersive-media-viewing-experience
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/diorama
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/swift-splash
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/bot-anist
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/positioning-and-sizing-windows
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/presenting-windows-and-spaces
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/world
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/improving-accessibility-support-in-your-app
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/adopting-best-practices-for-privacy
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/introductory-visionos-samples
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/drawing-sharp-layer-based-content
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/creating-fully-immersive-experiences
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/adding-3d-content-to-your-app
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/creating-your-first-visionos-app
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/#Overview
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/#Expand-your-app-into-immersive-spaces
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/SwiftUI
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/RealityKit
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/RealityKit/RealityView
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/arkit
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/#Explore-new-kinds-of-interaction
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/SwiftUI
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/arkit
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/#Dive-into-featured-sample-apps
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/world
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/bot-anist
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/destination-video
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/happybeam
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/diorama
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/swift-splash
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/#topics
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/#App-construction
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/creating-your-first-visionos-app
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/adding-3d-content-to-your-app
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/creating-fully-immersive-experiences
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/drawing-sharp-layer-based-content
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/introductory-visionos-samples
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/#Design
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/adopting-best-practices-for-privacy
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/improving-accessibility-support-in-your-app
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/#SwiftUI
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/world
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/presenting-windows-and-spaces
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/positioning-and-sizing-windows
+2024-11-05 17:43:51,077 - INFO - Found documentation link: /documentation/visionos/#RealityKit-and-Reality-Composer-Pro
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/bot-anist
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/swift-splash
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/diorama
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/building-an-immersive-media-viewing-experience
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/enabling-video-reflections-in-an-immersive-environment
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/understanding-the-realitykit-modular-architecture
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/designing-realitykit-content-with-reality-composer-pro
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/capturing-screenshots-and-video-from-your-apple-vision-pro-for-2d-viewing
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/implementing-object-tracking-in-your-visionos-app
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/#ARKit
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/happybeam
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/setting-up-access-to-arkit-data
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/incorporating-real-world-surroundings-in-an-immersive-experience
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/placing-content-on-detected-planes
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/tracking-points-in-world-space
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/tracking-images-in-3d-space
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/exploring_object_tracking_with_arkit
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/building_local_experiences_with_room_tracking
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/#Video-playback
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/destination-video
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/avfoundation/media_playback/configuring_your_app_for_media_playback
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/AVKit/adopting-the-system-player-interface-in-visionos
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/avfoundation/media_playback/controlling_the_transport_behavior_of_a_player
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/avfoundation/media_playback/monitoring_playback_progress_in_your_app
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/AVKit/trimming-and-exporting-media-in-visionos
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/#Xcode-and-Simulator
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/Xcode/configuring-your-app-icon
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/Xcode/diagnosing-and-resolving-bugs-in-your-running-app
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/Xcode/diagnosing-issues-in-the-appearance-of-your-running-app
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/Xcode/running-your-app-in-simulator-or-on-a-device
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/Xcode/interacting-with-your-app-in-the-visionos-simulator
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/#Performance
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/creating-a-performance-plan-for-visionos-app
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/analyzing-the-performance-of-your-visionos-app
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/reducing-the-rendering-cost-of-your-ui-on-visionos
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/reducing-the-rendering-cost-of-realitykit-content-on-visionos
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/understanding-the-visionos-render-pipeline
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/#iOS-migration-and-compatibility
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/bringing-your-app-to-visionos
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/bringing-your-arkit-app-to-visionos
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/checking-whether-your-app-is-compatible-with-visionos
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/making-your-app-compatible-with-visionos
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/#Enterprise-APIs-for-visionOS
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/building-spatial-experiences-for-business-apps-with-enterprise-apis
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/accessing-the-main-camera
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/locating-and-decoding-barcodes-in-3d-space
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/#app-top
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/#Overview
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/#Expand-your-app-into-immersive-spaces
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/#Explore-new-kinds-of-interaction
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/#Dive-into-featured-sample-apps
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/visionos/#topics
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/
+2024-11-05 17:43:51,078 - INFO - Found documentation link: /documentation/
+2024-11-05 17:43:51,078 - INFO - Found videos link: /videos/
+2024-11-05 17:43:51,078 - INFO - Found videos link: /wwdc/
+2024-11-05 17:43:51,110 - INFO - Found 74 other links
+2024-11-05 17:43:51,110 - INFO - Found 72 documentation links
+2024-11-05 17:43:51,110 - INFO - Found 2 videos links
+2024-11-05 17:43:52,495 - INFO - Found 32 sections, 51 topics, and 0 samples
+2024-11-05 17:43:54,136 - INFO - Saved HTML to data/debug/immersive-experiences.html
+2024-11-05 17:43:54,146 - INFO - Found documentation link: /documentation/
+2024-11-05 17:43:54,146 - INFO - Found videos link: /videos/
+2024-11-05 17:43:54,146 - INFO - Found documentation link: /documentation/SwiftUI/SurroundingsEffect
+2024-11-05 17:43:54,146 - INFO - Found documentation link: /documentation/SwiftUI/ImmersionStyle/automatic
+2024-11-05 17:43:54,146 - INFO - Found documentation link: /documentation/SwiftUI/ImmersionStyle/mixed
+2024-11-05 17:43:54,146 - INFO - Found documentation link: /documentation/arkit
+2024-11-05 17:43:54,146 - INFO - Found documentation link: /documentation/SwiftUI/ImmersionStyle/progressive
+2024-11-05 17:43:54,146 - INFO - Found documentation link: /documentation/SwiftUI/ImmersionStyle/full
+2024-11-05 17:43:54,146 - INFO - Found documentation link: /documentation/SwiftUI/SurroundingsEffect
+2024-11-05 17:43:54,146 - INFO - Found documentation link: /documentation/arkit/scenereconstructionprovider
+2024-11-05 17:43:54,146 - INFO - Found documentation link: /documentation/SwiftUI/ImmersionStyle/progressive
+2024-11-05 17:43:54,146 - INFO - Found documentation link: /documentation/visionOS/creating-fully-immersive-experiences
+2024-11-05 17:43:54,146 - INFO - Found documentation link: /documentation/visionOS/incorporating-real-world-surroundings-in-an-immersive-experience
+2024-11-05 17:43:54,146 - INFO - Found documentation link: /documentation/SwiftUI/ImmersionStyle
+2024-11-05 17:43:54,146 - INFO - Found documentation link: /documentation/SwiftUI/Immersive-spaces
+2024-11-05 17:43:54,146 - INFO - Found videos link: https://developer.apple.com/videos/play/wwdc2024/10087
+2024-11-05 17:43:54,146 - INFO - Found videos link: https://developer.apple.com/videos/play/wwdc2023/10072
+2024-11-05 17:43:54,146 - INFO - Found videos link: https://developer.apple.com/videos/play/wwdc2023/10075
+2024-11-05 17:43:54,146 - INFO - Found documentation link: /documentation/
+2024-11-05 17:43:54,146 - INFO - Found documentation link: /documentation/
+2024-11-05 17:43:54,146 - INFO - Found videos link: /videos/
+2024-11-05 17:43:54,146 - INFO - Found videos link: /wwdc/
+2024-11-05 17:43:54,168 - INFO - Found 103 other links
+2024-11-05 17:43:54,169 - INFO - Found 12 documentation links
+2024-11-05 17:43:54,169 - INFO - Found 5 videos links
+2024-11-05 17:43:55,751 - INFO - Found 21 sections, 0 topics, and 0 samples
+2024-11-05 17:43:57,308 - INFO - Saved HTML to data/debug/designing-for-visionos.html
+2024-11-05 17:43:57,316 - INFO - Found documentation link: /documentation/
+2024-11-05 17:43:57,316 - INFO - Found videos link: /videos/
+2024-11-05 17:43:57,316 - INFO - Found documentation link: /documentation/visionOS/creating-your-first-visionos-app
+2024-11-05 17:43:57,316 - INFO - Found videos link: https://developer.apple.com/videos/play/wwdc2024/10096
+2024-11-05 17:43:57,316 - INFO - Found videos link: https://developer.apple.com/videos/play/wwdc2024/10086
+2024-11-05 17:43:57,316 - INFO - Found videos link: https://developer.apple.com/videos/play/wwdc2023/10072
+2024-11-05 17:43:57,316 - INFO - Found documentation link: /documentation/
+2024-11-05 17:43:57,316 - INFO - Found documentation link: /documentation/
+2024-11-05 17:43:57,316 - INFO - Found videos link: /videos/
+2024-11-05 17:43:57,316 - INFO - Found videos link: /wwdc/
+2024-11-05 17:43:57,335 - INFO - Found 104 other links
+2024-11-05 17:43:57,335 - INFO - Found 2 documentation links
+2024-11-05 17:43:57,335 - INFO - Found 5 videos links
+2024-11-05 17:43:58,753 - INFO - Found 15 sections, 0 topics, and 0 samples
+2024-11-05 17:44:00,233 - INFO - Found download URL: https://docs-assets.developer.apple.com/published/afe8dfd556ef/HelloWorld.zip
+2024-11-05 17:44:04,231 - INFO - Downloaded project to data/projects/hello-world
+2024-11-05 17:44:06,235 - INFO - Found download URL: https://docs-assets.developer.apple.com/published/0bc6997cb1f0/BOTAnist.zip
+2024-11-05 17:44:17,268 - INFO - Downloaded project to data/projects/bot-anist
+2024-11-05 17:44:19,364 - INFO - Found download URL: https://docs-assets.developer.apple.com/published/d80280abbf97/PlayingSpatialAudioInVisionOS.zip
+2024-11-05 17:44:19,600 - INFO - Downloaded project to data/projects/playing-spatial-audio
+2024-11-05 17:44:19,601 - INFO - Successfully read WorldApp.swift
+2024-11-05 17:44:19,602 - INFO - Successfully read SliderGridRow.swift
+2024-11-05 17:44:19,602 - INFO - Successfully read EarthSettings.swift
+2024-11-05 17:44:19,602 - INFO - Successfully read GlobeSettings.swift
+2024-11-05 17:44:19,602 - INFO - Successfully read OrbitSettings.swift
+2024-11-05 17:44:19,603 - INFO - Successfully read SatelliteSettings.swift
+2024-11-05 17:44:19,603 - INFO - Successfully read SettingsButton.swift
+2024-11-05 17:44:19,603 - INFO - Successfully read SolarSystemSettings.swift
+2024-11-05 17:44:19,603 - INFO - Successfully read OrbitModule.swift
+2024-11-05 17:44:19,603 - INFO - Successfully read OrbitToggle.swift
+2024-11-05 17:44:19,603 - INFO - Successfully read Orbit.swift
+2024-11-05 17:44:19,603 - INFO - Successfully read TypeTextModifier.swift
+2024-11-05 17:44:19,603 - INFO - Successfully read PlacementGesturesModifier.swift
+2024-11-05 17:44:19,603 - INFO - Successfully read DragRotationModifier.swift
+2024-11-05 17:44:19,603 - INFO - Successfully read GlobeToggle.swift
+2024-11-05 17:44:19,604 - INFO - Successfully read GlobeControls.swift
+2024-11-05 17:44:19,604 - INFO - Successfully read GlobeModule.swift
+2024-11-05 17:44:19,604 - INFO - Successfully read Globe.swift
+2024-11-05 17:44:19,604 - INFO - Successfully read Earth.swift
+2024-11-05 17:44:19,604 - INFO - Successfully read Starfield.swift
+2024-11-05 17:44:19,605 - INFO - Successfully read Sun.swift
+2024-11-05 17:44:19,605 - INFO - Successfully read ViewModel.swift
+2024-11-05 17:44:19,605 - INFO - Successfully read Module.swift
+2024-11-05 17:44:19,605 - INFO - Successfully read SolarSystemToggle.swift
+2024-11-05 17:44:19,605 - INFO - Successfully read SolarSystemModule.swift
+2024-11-05 17:44:19,607 - INFO - Successfully read SolarSystem.swift
+2024-11-05 17:44:19,607 - INFO - Successfully read SolarSystemControls.swift
+2024-11-05 17:44:19,607 - INFO - Successfully read TraceSystem.swift
+2024-11-05 17:44:19,607 - INFO - Successfully read RotationSystem.swift
+2024-11-05 17:44:19,607 - INFO - Successfully read ModuleDetail.swift
+2024-11-05 17:44:19,607 - INFO - Successfully read Modules.swift
+2024-11-05 17:44:19,607 - INFO - Successfully read TableOfContents.swift
+2024-11-05 17:44:19,607 - INFO - Successfully read ModuleCard.swift
+2024-11-05 17:44:19,608 - INFO - Successfully read Entity+Trace.swift
+2024-11-05 17:44:19,608 - INFO - Successfully read EarthEntity+Configuration.swift
+2024-11-05 17:44:19,608 - INFO - Successfully read SatelliteEntity.swift
+2024-11-05 17:44:19,608 - INFO - Successfully read Entity+Sunlight.swift
+2024-11-05 17:44:19,608 - INFO - Successfully read EarthEntity.swift
+2024-11-05 17:44:19,608 - INFO - Successfully read SatelliteEntity+Configuration.swift
+2024-11-05 17:44:19,608 - INFO - Successfully read Package.swift
+2024-11-05 17:44:19,608 - INFO - Successfully read SunPositionSystem.swift
+2024-11-05 17:44:19,608 - INFO - Successfully read WorldAssets.swift
+2024-11-05 17:44:19,613 - INFO - Successfully read Package.swift
+2024-11-05 17:44:19,617 - INFO - Successfully read BOTanistAssets.swift
+2024-11-05 17:44:19,617 - INFO - Successfully read EntityExtensions.swift
+2024-11-05 17:44:19,617 - INFO - Successfully read PlantComponent.swift
+2024-11-05 17:44:19,619 - INFO - Successfully read AppState.swift
+2024-11-05 17:44:19,619 - INFO - Successfully read PlantAnimationProvider.swift
+2024-11-05 17:44:19,619 - INFO - Successfully read AppState+Exploration.swift
+2024-11-05 17:44:19,619 - INFO - Successfully read BOTanistApp.swift
+2024-11-05 17:44:19,620 - INFO - Successfully read RobotCharacter+Movement.swift
+2024-11-05 17:44:19,620 - INFO - Successfully read RobotProvider.swift
+2024-11-05 17:44:19,620 - INFO - Successfully read RobotProvider+Loading.swift
+2024-11-05 17:44:19,620 - INFO - Successfully read RobotCharacter.swift
+2024-11-05 17:44:19,620 - INFO - Successfully read RobotData.swift
+2024-11-05 17:44:19,620 - INFO - Successfully read AnimationStateMachine.swift
+2024-11-05 17:44:19,620 - INFO - Successfully read RealityView+TouchControls.swift
+2024-11-05 17:44:19,620 - INFO - Successfully read EntityExtensions.swift
+2024-11-05 17:44:19,621 - INFO - Successfully read StringExtensions.swift
+2024-11-05 17:44:19,621 - INFO - Successfully read Preview+AppStateEnvironment.swift
+2024-11-05 17:44:19,621 - INFO - Successfully read ColorExtensions.swift
+2024-11-05 17:44:19,621 - INFO - Successfully read RealityView+KeyboardControls.swift
+2024-11-05 17:44:19,624 - INFO - Successfully read CaseIterableExtensions.swift
+2024-11-05 17:44:19,624 - INFO - Successfully read JointPinComponent.swift
+2024-11-05 17:44:19,625 - INFO - Successfully read JointPinSystem.swift
+2024-11-05 17:44:19,625 - INFO - Successfully read StartScreenView.swift
+2024-11-05 17:44:19,625 - INFO - Successfully read OrnamentView.swift
+2024-11-05 17:44:19,625 - INFO - Successfully read SelectorViews.swift
+2024-11-05 17:44:19,625 - INFO - Successfully read RobotView.swift
+2024-11-05 17:44:19,625 - INFO - Successfully read RobotCustomizationView.swift
+2024-11-05 17:44:19,625 - INFO - Successfully read ExplorationView.swift
+2024-11-05 17:44:19,625 - INFO - Successfully read ContentView.swift
+2024-11-05 17:44:19,628 - INFO - Successfully read EntryPoint.swift
+2024-11-05 17:44:19,628 - INFO - Successfully read SpatialAudioView.swift
+2024-11-05 17:44:19,628 - INFO - Successfully read DecibelSlider.swift
+2024-11-05 17:44:19,628 - INFO - Successfully read AxisVisualizer.swift

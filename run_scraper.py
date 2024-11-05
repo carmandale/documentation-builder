@@ -278,6 +278,10 @@ async def main():
         # Process test URLs
         for url in TEST_URLS:
             try:
+                # Convert relative URLs to absolute
+                if not url.startswith('http'):
+                    url = f"https://developer.apple.com{url}"
+                    
                 project = await url_collector.process_documentation_page(url)
                 if project:
                     console.print(f"Found project: {project.title}")
@@ -287,6 +291,8 @@ async def main():
                         processed_projects.append(project)
                     else:
                         logger.error(f"Failed to download project: {project.title}")
+                else:
+                    logger.warning(f"No project found at {url}")
             except Exception as e:
                 logger.error(f"Error processing test URL {url}: {str(e)}")
     else:
