@@ -106,17 +106,15 @@ class ProjectAnalyzer:
     def _analyze_patterns(self, content: str, filename: str, patterns: Dict, usage: Dict, validation: Dict):
         """Analyze code for specific patterns"""
         try:
-            # Look for animation patterns
             if 'RealityKit' in content:
-                self._analyze_animation_pattern(content, filename, patterns, usage)
+                # Look for attachments first since they're most specific
+                if any(x in content for x in ['RealityView { content, attachments', 'Attachment(id:']):
+                    self._analyze_attachment_pattern(content, filename, patterns, usage)
                 
-                # Look for transform patterns
-                if 'transform' in content:
-                    self._analyze_transform_pattern(content, filename, patterns, usage)
-                    
-                # Look for event subscription patterns
-                if 'subscribe' in content:
-                    self._analyze_subscription_pattern(content, filename, patterns, usage)
+                # Rest of patterns...
+                self._analyze_animation_pattern(content, filename, patterns, usage)
+                self._analyze_transform_pattern(content, filename, patterns, usage)
+                self._analyze_subscription_pattern(content, filename, patterns, usage)
                     
         except Exception as e:
             logger.error(f"Error analyzing patterns in {filename}: {str(e)}")
@@ -154,4 +152,145 @@ class ProjectAnalyzer:
                 'type': 'subscription',
                 'content': '\n'.join(subscription_matches),
                 'context': self._extract_code_block(content, subscription_matches[0], 15)
+            })
+    
+    def _analyze_video_pattern(self, content: str, filename: str, patterns: Dict, usage: Dict):
+        """Analyze video playback patterns"""
+        video_matches = [
+            line.strip()
+            for line in content.split('\n')
+            if any(x in line for x in ['VideoPlayer', 'AVPlayer', 'play()', '.rate'])
+            and not line.strip().startswith('//')
+        ]
+        if video_matches:
+            pattern_key = 'video_playback'
+            usage[pattern_key] = usage.get(pattern_key, 0) + 1
+            patterns['media'].append({
+                'file': filename,
+                'type': 'video',
+                'content': '\n'.join(video_matches),
+                'context': self._extract_code_block(content, video_matches[0], 15)
+            })
+    
+    def _analyze_audio_pattern(self, content: str, filename: str, patterns: Dict, usage: Dict):
+        """Analyze spatial audio patterns"""
+        audio_matches = [
+            line.strip()
+            for line in content.split('\n')
+            if any(x in line for x in ['AudioEngine', 'spatialAudio', 'playSound'])
+            and not line.strip().startswith('//')
+        ]
+        if audio_matches:
+            pattern_key = 'spatial_audio'
+            usage[pattern_key] = usage.get(pattern_key, 0) + 1
+            patterns['media'].append({
+                'file': filename,
+                'type': 'audio',
+                'content': '\n'.join(audio_matches),
+                'context': self._extract_code_block(content, audio_matches[0], 15)
+            })
+    
+    def _analyze_surface_detection_pattern(self, content: str, filename: str, patterns: Dict, usage: Dict):
+        """Analyze surface detection patterns"""
+        surface_matches = [
+            line.strip()
+            for line in content.split('\n')
+            if any(x in line for x in [
+                'CollisionEvents',
+                'AnchorEntity',
+                'planeAlignment',
+                'horizontalAlignment',
+                'verticalAlignment',
+                'attachments',
+                'placementGestures',
+                'collisionEnabled',
+                'dragRotationEnabled',
+                'gravityAligned',
+                'PlaneAnchor',
+                'PlacementManager',
+                'PlacementState'
+            ])
+            and not line.strip().startswith('//')
+        ]
+        if surface_matches:
+            pattern_key = 'surface_detection'
+            usage[pattern_key] = usage.get(pattern_key, 0) + 1
+            patterns['3d_content'].append({
+                'file': filename,
+                'type': 'surface_detection',
+                'content': '\n'.join(surface_matches),
+                'context': self._extract_code_block(content, surface_matches[0], 15)
+            })
+    
+    def _analyze_window_pattern(self, content: str, filename: str, patterns: Dict, usage: Dict):
+        """Analyze window management patterns"""
+        window_matches = [
+            line.strip()
+            for line in content.split('\n')
+            if any(x in line for x in ['WindowGroup', 'openWindow', 'dismissWindow'])
+            and not line.strip().startswith('//')
+        ]
+        if window_matches:
+            pattern_key = 'window_management'
+            usage[pattern_key] = usage.get(pattern_key, 0) + 1
+            patterns['ui_components'].append({
+                'file': filename,
+                'type': 'window',
+                'content': '\n'.join(window_matches),
+                'context': self._extract_code_block(content, window_matches[0], 15)
+            })
+    
+    def _analyze_spatial_photo_pattern(self, content: str, filename: str, patterns: Dict, usage: Dict):
+        """Analyze spatial photo patterns"""
+        photo_matches = [
+            line.strip()
+            for line in content.split('\n')
+            if any(x in line for x in ['SpatialPhoto', 'PhotosPicker', 'PhotosUI'])
+            and not line.strip().startswith('//')
+        ]
+        if photo_matches:
+            pattern_key = 'spatial_photo'
+            usage[pattern_key] = usage.get(pattern_key, 0) + 1
+            patterns['media'].append({
+                'file': filename,
+                'type': 'spatial_photo',
+                'content': '\n'.join(photo_matches),
+                'context': self._extract_code_block(content, photo_matches[0], 15)
+            })
+    
+    def _analyze_attachment_pattern(self, content: str, filename: str, patterns: Dict, usage: Dict):
+        """Analyze patterns for SwiftUI view attachments in RealityKit scenes"""
+        attachment_matches = [
+            line.strip()
+            for line in content.split('\n')
+            if any(x in line for x in [
+                'RealityView { content, attachments in',  # RealityView with attachments
+                'update: { content, attachments in',      # Update closure with attachments
+                'attachments.entity(for:',                # Getting attachment entity
+                'Attachment(id:',                         # Creating attachment
+                'addChild(',                             # Adding attachment to entity
+                '.position =',                           # Positioning attachment
+                '.scale =',                              # Scaling attachment
+                'attachments:',                          # Attachments closure
+                'makeContentView',                       # Creating SwiftUI view
+                'viewTarget',                            # Setting view target
+                'contentEntity',                         # Content entity
+                'attachedTo',                            # Attachment relationship
+                'attachmentBounds',                      # Setting attachment bounds
+                'attachmentPolicy',                      # Attachment policy
+                'ViewAttachmentEntity',                  # View attachment entity
+                'view.attach(',                          # Direct view attachment
+                'view.detach(',                          # Detaching views
+                'view.attachments'                       # Managing attachments
+            ])
+            and not line.strip().startswith('//')
+        ]
+        if attachment_matches:
+            pattern_key = 'view_attachment'
+            usage[pattern_key] = usage.get(pattern_key, 0) + 1
+            patterns['ui_components'].append({
+                'file': filename,
+                'type': 'view_attachment',
+                'content': '\n'.join(attachment_matches),
+                'context': self._extract_code_block(content, attachment_matches[0], 15)
             })

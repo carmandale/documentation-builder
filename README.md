@@ -21,95 +21,62 @@ A tool for building an LLM-optimized knowledge base from Apple's VisionOS docume
    - Validation examples for each pattern
    - Context preservation for accurate code generation
 
-## Current Status
+## Features
 
-We have successfully implemented:
-1. Basic documentation scraping (6 pages verified)
-2. Code block extraction and classification
-3. Initial relationship mapping
-4. Basic validation through test implementations
+### Relationship Mapping
+The tool automatically identifies and tracks relationships between VisionOS concepts:
+- **Section Relationships**: Hierarchical relationships in documentation
+- **Framework Dependencies**: Which frameworks are used together
+- **Pattern Dependencies**: How different code patterns relate
+- **Concept Dependencies**: Links between features and implementations
 
-### Working Test Case
-Current validation focuses on a specific test case:
-- Creating a VisionOS view with:
-  - 2D window content (text and image)
-  - 3D content (cylinder with specific transforms)
-  - Animation implementation
-- Verifying the implementation matches Apple's patterns
-
-### Scraped Documentation
-Successfully scraped and analyzed:
-- Adding 3D content to your app (6 code blocks)
-- Creating your first visionOS app (1 code block)
-- Creating fully immersive experiences (3 code blocks)
-- Creating an immersive space (7 code blocks)
-- BOT-anist sample app (19 code blocks)
-- Swift Splash sample app (6 code blocks)
+### Pattern Recognition
+Identifies common VisionOS patterns across:
+- 2D Views and Controls
+- 3D Volumetric Content
+- Immersive Experiences
+- Mixed Reality Features
+- ARKit Integration
+- Reality Composer Usage
+- Spatial Audio
+- RealityKit Components
+- Gesture Handling
+- Windows and Ornaments
 
 ## Data Structure
 
 ```
 data/
-├── extracted/           # JSON files of processed documentation
+├── extracted/
 │   ├── code_blocks/    # Extracted code examples
 │   ├── relationships/  # Concept relationships
-│   └── validation/     # Test cases and results
-├── debug/              # Raw scraped content
-└── visualizations/     # Generated relationship graphs
+│   │   └── relationships.json  # Mapped relationships
+│   └── validation/    # Test cases and results
+├── debug/            # Raw scraped content
+└── visualizations/   # Generated relationship graphs
 ```
 
-## LLM Usage Guide
+## Usage
 
-### Knowledge Access
-1. Examine extracted JSON files in `data/extracted/`
-2. Review relationship maps in `data/visualizations/`
-3. Validate against test cases in `data/validation/`
+### For LLM Training
+1. Access extracted patterns in `data/extracted/code_blocks/`
+2. Use relationship data in `data/extracted/relationships/`
+3. Reference test implementations in `data/validation/`
 
-### Code Generation Process
-1. Search extracted patterns for relevant examples
-2. Verify framework and API usage
-3. Cross-reference with test implementations
-4. Validate against Apple's patterns
-
-### Current Limitations
-- Limited to successfully scraped documentation
-- Must verify patterns against actual examples
-- Need to expand test case coverage
-
-## Development
-
-### Running the Scraper
+### For Development
 ```bash
-python -m cli.scraper_cli clean --force
-python -m cli.scraper_cli scrape
-python -m cli.scraper_cli visualize
+python -m cli.scraper_cli scrape  # Scrape and analyze docs
+python -m cli.scraper_cli analyze # Generate relationship maps
 ```
 
-### Adding Test Cases
-1. Identify specific functionality to test
-2. Scrape relevant documentation
-3. Implement test case
-4. Verify against actual device
+## Current Status
 
-## Next Steps
-
-1. **Immediate Focus**
-   - Expand documentation coverage
-   - Improve pattern recognition
-   - Add more test cases
-   - Enhance LLM accessibility
-
-2. **Validation Improvements**
-   - Add automated testing
-   - Expand test coverage
-   - Improve error detection
-   - Track API changes
-
-3. **Documentation Enhancement**
-   - Better relationship mapping
-   - More detailed pattern analysis
-   - Improved context preservation
-   - Better error handling
+Successfully analyzing:
+- Documentation structure and hierarchy
+- Code pattern relationships
+- Framework dependencies
+- Feature relationships
+- Implementation patterns
 
 ## License
 
