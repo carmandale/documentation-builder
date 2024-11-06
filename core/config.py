@@ -1,5 +1,6 @@
 # Configuration settings
 TESTING_MODE = True  # Set to False for full analysis
+SKIP_DOWNLOADS = True  # Skip project downloads during testing
 
 # Test URLs for initial validation
 TEST_URLS = [

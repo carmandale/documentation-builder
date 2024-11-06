@@ -1,5 +1,4 @@
 from pathlib import Path
-import logging
 from typing import Dict, Set, Optional, List
 from bs4 import BeautifulSoup
 import aiohttp
@@ -10,8 +9,7 @@ from collections import defaultdict
 from playwright.async_api import async_playwright
 import time
 import asyncio
-
-logger = logging.getLogger(__name__)
+from utils.logging import logger
 
 @dataclass
 class ProjectResource:
@@ -126,36 +124,60 @@ class DocumentationURLCollector:
                 await page.goto(url)
                 content = await page.content()
                 
-                # Parse content
+                # Save debug content
+                debug_file = self.debug_dir / f"{url.split('/')[-1]}_structure.html"
+                debug_file.write_text(content)
+                
                 soup = BeautifulSoup(content, 'html.parser')
                 
-                # Find sections
+                # Find sections and topics
                 sections = soup.find_all(['h1', 'h2', 'h3'])
-                
-                # Find topics
                 topics = soup.find_all(class_='topic')
                 
-                # Find sample code
-                samples = soup.find_all(class_='sample-code')
+                # Look for samples using multiple selectors that might indicate a sample
+                samples = []
+                sample_indicators = [
+                    soup.find_all(class_='sample-code'),  # Original check
+                    soup.find_all('a', href=lambda x: x and 'sample' in x.lower()),  # Links containing 'sample'
+                    soup.find_all(class_='sample-card'),  # Sample cards
+                    soup.find_all(class_='sample-download'),  # Download buttons
+                    soup.find_all(string=lambda x: x and 'sample' in x.lower()),  # Text containing 'sample'
+                    soup.find_all('a', href=lambda x: x and x.endswith('.zip'))  # ZIP download links
+                ]
+                
+                # Debug logging
+                for i, indicator in enumerate(sample_indicators):
+                    logger.debug(f"Sample indicator {i}: Found {len(indicator)} matches")
+                    if indicator:
+                        logger.debug(f"First match example: {indicator[0]}")
+                
+                # Combine all unique samples
+                all_samples = set()
+                for indicator_list in sample_indicators:
+                    for item in indicator_list:
+                        if hasattr(item, 'get') and item.get('href'):
+                            all_samples.add(item['href'])
+                        elif hasattr(item, 'parent') and hasattr(item.parent, 'get') and item.parent.get('href'):
+                            all_samples.add(item.parent['href'])
                 
                 structure = {
                     'sections': len(sections),
                     'topics': len(topics),
-                    'samples': len(samples)
+                    'samples': len(all_samples)
                 }
-                
-                await browser.close()
                 
                 logger.info(f"Found {structure['sections']} sections, {structure['topics']} topics, and {structure['samples']} samples")
                 
+                await browser.close()
                 return structure
                 
         except Exception as e:
-            logger.error(f"Error analyzing structure of {url}: {str(e)}")
-            return {}
+            logger.error(f"Error analyzing documentation structure: {str(e)}")
+            logger.debug("Full error details:", exc_info=True)
+            return {'sections': 0, 'topics': 0, 'samples': 0}
 
     async def process_documentation_page(self, url: str) -> Optional[ProjectResource]:
-        """Process a documentation page to find downloadable projects"""
+        """Discover and analyze project without downloading"""
         start_time = time.time()
         logger.debug(f"Starting to process documentation page: {url}")
         
@@ -239,6 +261,13 @@ class DocumentationURLCollector:
             logger.debug("Full error details:", exc_info=True)
         
         return None
+
+    async def process_and_download(self, url: str) -> Optional[ProjectResource]:
+        """Process page and optionally download"""
+        project = await self.process_documentation_page(url)
+        if project:
+            await self.download_project(project)
+        return project
 
     async def download_project(self, project: ProjectResource) -> bool:
         """Download a project to local storage"""

@@ -4,6 +4,7 @@ from core.url_sources import DocumentationURLCollector, URLSources
 from analyzers.project_analyzer import ProjectAnalyzer
 from extractors.relationship_extractor import RelationshipExtractor
 from core.config import TESTING_MODE, TEST_URLS, BASE_URLS  # Import configuration
+from utils.logging import logger  # Add this import
 import logging
 from pathlib import Path
 from rich.console import Console
@@ -26,15 +27,6 @@ import aiohttp
 from core.documentation_analyzer import DocumentationAnalyzer
 
 console = Console()
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.StreamHandler(),
-        logging.FileHandler('scraper.log')
-    ]
-)
-logger = logging.getLogger(__name__)
 
 url_sources = URLSources()
 doc_analyzer = DocumentationAnalyzer(Path('data/knowledge'))
@@ -42,17 +34,20 @@ pattern_evolution = PatternEvolution(Path('data/knowledge'))
 project_analyzer = ProjectAnalyzer()
 relationship_tracker = RelationshipTracker(Path('data/knowledge'))
 
-async def process_url(url: str, url_collector: DocumentationURLCollector):
+async def process_url(url: str, url_collector: DocumentationURLCollector, skip_downloads: bool = True):
     """Process a single URL"""
     try:
         project = await url_collector.process_documentation_page(url)
         if project:
             console.print(f"Found project: {project.title}")
-            await url_collector.download_project(project)
-            if project.local_path:
-                console.print(f"Downloaded to: {project.local_path}")
+            if not skip_downloads:  # Only download if flag is False
+                await url_collector.download_project(project)
+                if project.local_path:
+                    console.print(f"Downloaded to: {project.local_path}")
+            return project
     except Exception as e:
-        logger.error(f"Error processing {url}: {str(e)}")
+        logger.error(f"Error processing URL {url}: {str(e)}")
+    return None
 
 async def discover_urls():
     """Discover all relevant URLs from base documentation"""
@@ -278,21 +273,17 @@ async def main():
         # Process test URLs
         for url in TEST_URLS:
             try:
-                # Convert relative URLs to absolute
                 if not url.startswith('http'):
                     url = f"https://developer.apple.com{url}"
                     
-                project = await url_collector.process_documentation_page(url)
+                if SKIP_DOWNLOADS:
+                    project = await url_collector.process_documentation_page(url)
+                else:
+                    project = await url_collector.process_and_download(url)
+
                 if project:
                     console.print(f"Found project: {project.title}")
-                    success = await url_collector.download_project(project)
-                    if success and project.local_path:
-                        console.print(f"Downloaded to: {project.local_path}")
-                        processed_projects.append(project)
-                    else:
-                        logger.error(f"Failed to download project: {project.title}")
-                else:
-                    logger.warning(f"No project found at {url}")
+                    processed_projects.append(project)
             except Exception as e:
                 logger.error(f"Error processing test URL {url}: {str(e)}")
     else:
