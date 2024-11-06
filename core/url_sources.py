@@ -8,6 +8,8 @@ from dataclasses import dataclass
 import json
 from collections import defaultdict
 from playwright.async_api import async_playwright
+import time
+import asyncio
 
 logger = logging.getLogger(__name__)
 
@@ -40,33 +42,65 @@ class DocumentationURLCollector:
     async def get_documentation_links(self, url: str) -> Dict[str, Set[str]]:
         """Get all documentation links from a page"""
         links = defaultdict(set)
+        start_time = time.time()
         
         try:
             async with async_playwright() as p:
                 browser = await p.chromium.launch()
                 page = await browser.new_page()
-                await page.goto(url)
-                content = await page.content()
                 
-                # Save debug content
-                filename = url.split('/')[-1] or 'visionos'
-                debug_file = self.debug_dir / f"{filename}.html"
-                debug_file.write_text(content)
-                logger.info(f"Saved HTML to {debug_file}")
+                logger.debug(f"[Timing] Browser launch: {time.time() - start_time:.2f}s")
+                
+                page_start = time.time()
+                await page.goto(url)
+                logger.debug(f"[Timing] Initial page load: {time.time() - page_start:.2f}s")
+                
+                wait_start = time.time()
+                await page.wait_for_load_state('networkidle')
+                logger.debug(f"[Timing] Wait for network idle: {time.time() - wait_start:.2f}s")
+                
+                # Get content at different stages
+                initial_content = await page.content()
+                initial_size = len(initial_content)
+                logger.debug(f"[Content] Initial size: {initial_size}")
+                
+                # Wait a bit and check content again
+                await asyncio.sleep(1)
+                after_wait_content = await page.content()
+                after_size = len(after_wait_content)
+                logger.debug(f"[Content] After wait size: {after_size}")
+                
+                if initial_size != after_size:
+                    logger.debug(f"[Content] Size changed by: {after_size - initial_size}")
+                    # Save both versions for comparison
+                    debug_file = self.debug_dir / f"{url.split('/')[-1]}_initial.html"
+                    debug_file.write_text(initial_content)
+                    debug_file = self.debug_dir / f"{url.split('/')[-1]}_after.html"
+                    debug_file.write_text(after_wait_content)
+                
+                # Save raw content for debugging
+                debug_file = self.debug_dir / f"{url.split('/')[-1]}_initial.html"
+                debug_file.write_text(initial_content)
+                logger.debug(f"Saved initial content to {debug_file}")
                 
                 # Parse content
-                soup = BeautifulSoup(content, 'html.parser')
+                soup = BeautifulSoup(initial_content, 'html.parser')
+                
+                # Log all links before categorization
+                all_links = soup.find_all('a', href=True)
+                logger.debug(f"Found {len(all_links)} total links before categorization")
                 
                 # Find all links
-                for link in soup.find_all('a', href=True):
+                for link in all_links:
                     href = link['href']
+                    logger.debug(f"Processing link: {href}")
                     
                     # Categorize URLs
                     if '/documentation/' in href:
-                        logger.info(f"Found documentation link: {href}")
+                        logger.debug(f"Found documentation link: {href}")
                         links['documentation'].add(self._make_absolute_url(href))
                     elif '/videos/' in href or '/wwdc/' in href:
-                        logger.info(f"Found videos link: {href}")
+                        logger.debug(f"Found videos link: {href}")
                         links['videos'].add(self._make_absolute_url(href))
                     else:
                         links['other'].add(self._make_absolute_url(href))
@@ -122,27 +156,73 @@ class DocumentationURLCollector:
 
     async def process_documentation_page(self, url: str) -> Optional[ProjectResource]:
         """Process a documentation page to find downloadable projects"""
+        start_time = time.time()
+        logger.debug(f"Starting to process documentation page: {url}")
+        
         try:
             async with async_playwright() as p:
                 browser = await p.chromium.launch()
                 page = await browser.new_page()
                 
-                # Convert relative URLs to absolute
+                # Ensure absolute URL before first load
                 if not url.startswith('http'):
                     url = f"{self.BASE_URL}{url}"
-                    
-                await page.goto(url)
                 
-                # Look for download link
+                # Single page load with timing
+                load_start = time.time()
+                logger.debug(f"Loading URL: {url}")
+                await page.goto(url)
+                logger.debug(f"Initial page load took: {time.time() - load_start:.2f}s")
+                
+                # Wait for network idle with timeout
+                wait_start = time.time()
+                try:
+                    await page.wait_for_load_state('networkidle', timeout=5000)
+                    logger.debug(f"Network idle wait took: {time.time() - wait_start:.2f}s")
+                except Exception as e:
+                    logger.debug(f"Network idle timeout: {str(e)}")
+                
+                # Get and validate content
+                content = await page.content()
+                content_hash = hash(content)
+                logger.debug(f"Initial content length: {len(content)}, hash: {content_hash}")
+                
+                # Save initial state
+                debug_file = self.debug_dir / f"{url.split('/')[-1]}_initial.html"
+                debug_file.write_text(content)
+                
+                # Wait and check for dynamic content
+                await asyncio.sleep(2)
+                after_content = await page.content()
+                after_hash = hash(after_content)
+                
+                if content_hash != after_hash:
+                    logger.debug(f"Content changed after wait!")
+                    logger.debug(f"Initial size: {len(content)}, After size: {len(after_content)}")
+                    debug_file = self.debug_dir / f"{url.split('/')[-1]}_after_wait.html"
+                    debug_file.write_text(after_content)
+                
+                # Look for download links with explicit wait
+                logger.debug("Searching for download links")
                 download_links = await page.query_selector_all('a[href*=".zip"]')
+                logger.debug(f"Found {len(download_links)} download links")
+                
                 for link in download_links:
                     href = await link.get_attribute('href')
+                    logger.debug(f"Download link found: {href}")
                     absolute_href = self._make_absolute_url(href)
-                    logger.info(f"Found download URL: {absolute_href}")
                     
-                    # Get project title
+                    # Get project title with validation
                     title_elem = await page.query_selector('h1')
-                    title = await title_elem.text_content() if title_elem else url.split('/')[-1]
+                    if title_elem:
+                        title = await title_elem.text_content()
+                        logger.debug(f"Found title: {title}")
+                    else:
+                        title = url.split('/')[-1]
+                        logger.debug(f"Using fallback title: {title}")
+                    
+                    total_time = time.time() - start_time
+                    logger.debug(f"Total processing time: {total_time:.2f}s")
                     
                     await browser.close()
                     return ProjectResource(
@@ -151,10 +231,12 @@ class DocumentationURLCollector:
                         download_url=absolute_href
                     )
                 
+                logger.debug(f"No download links found after {time.time() - start_time:.2f}s")
                 await browser.close()
                 
         except Exception as e:
             logger.error(f"Error processing {url}: {str(e)}")
+            logger.debug("Full error details:", exc_info=True)
         
         return None
 

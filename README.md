@@ -62,7 +62,7 @@ Identifies common VisionOS patterns across:
 - Tracks relationship strengths
 - Identifies common implementations
 
-## Data Structure
+## Project Structure
 
 ```
 data/
