@@ -208,22 +208,18 @@ class DocumentationURLCollector:
                 
                 await page.goto(url)
                 await page.wait_for_load_state('networkidle')
-                content = await page.content()
                 
-                # Look for download links and sample info
-                soup = BeautifulSoup(content, 'html.parser')
-                
-                # Get title - simple, working version
-                title_elem = soup.find('h1')
-                title = title_elem.get_text(strip=True) if title_elem else url.split('/')[-1]
+                # Use Playwright selectors for dynamic content
+                title_elem = await page.query_selector('h1')
+                title = await title_elem.text_content() if title_elem else url.split('/')[-1]
                 
                 # Look for download links
-                download_links = soup.find_all('a', class_='sample-download')
+                download_links = await page.query_selector_all('a.sample-download')
                 if not download_links:
-                    download_links = soup.find_all('a', href=lambda x: x and x.endswith('.zip'))
+                    download_links = await page.query_selector_all('a[href*=".zip"]')
                 
                 if download_links:
-                    href = download_links[0].get('href')
+                    href = await download_links[0].get_attribute('href')
                     absolute_href = self._make_absolute_url(href)
                     
                     logger.info(f"Found sample: {title}")
