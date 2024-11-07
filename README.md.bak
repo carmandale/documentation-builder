@@ -43,15 +43,17 @@ The tool automatically identifies and tracks relationships between VisionOS conc
 - **Implementation Patterns**: Common code patterns and their usage
 
 ### Pattern Recognition
-Currently implemented patterns:
-- UI Components
-- Animation
-- Gestures
-- 3D Content
-- Spatial Audio
-- Immersive Spaces
+Identifies common VisionOS patterns across:
+- 2D Views and Controls
+- 3D Volumetric Content
+- Immersive Experiences
+- Mixed Reality Features
 - ARKit Integration
+- Reality Composer Usage
+- Spatial Audio
 - RealityKit Components
+- Gesture Handling
+- Windows and Ornaments
 
 ### Knowledge Base Evolution
 - Learns from discovered content
@@ -61,35 +63,21 @@ Currently implemented patterns:
 - Identifies common implementations
 
 ## Project Structure
-Current implementation:
 
 ```
-.
-├── analyzers/               # Analysis modules
-│   ├── documentation_analyzer.py
-│   ├── pattern_evolution.py
-│   ├── project_analyzer.py
-│   └── relationship_tracker.py
-├── core/                   # Core functionality
-│   ├── config.py          # Configuration settings
-│   ├── scraper.py         # Main scraping logic
-│   └── url_sources.py     # URL management
-├── data/                  # Data storage
-│   ├── debug/            # Debug output
-│   ├── docs/            # Documentation cache
-│   ├── extracted/       # Extracted patterns
-│   ├── knowledge/      # Knowledge base
-│   ├── logs/          # Application logs
-│   ├── projects/      # Downloaded projects
-│   └── urls/         # URL management
-├── extractors/      # Content extraction
-│   ├── code_extractor.py
-│   ├── doc_extractor.py
-│   └── relationship_extractor.py
-├── models/        # Data models
-├── tests/        # Test suite
-└── utils/       # Utility functions
-    └── logging.py
+data/
+├── urls/
+│   ├── discovered_urls.json    # Discovered URLs database
+│   └── metadata.json          # URL metadata
+├── knowledge/
+│   ├── patterns.json         # Discovered patterns
+│   ├── concepts.json        # Concept relationships
+│   └── frameworks.json     # Framework relationships
+├── extracted/
+│   ├── code_blocks/       # Extracted code examples
+│   └── relationships/    # Mapped relationships
+├── projects/           # Downloaded sample projects
+└── debug/            # Debug information and raw content
 ```
 
 ## Usage

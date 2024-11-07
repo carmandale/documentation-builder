@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Dict, Set, Optional, List
+from typing import Dict, Set, Optional, List, Any
 from bs4 import BeautifulSoup
 import aiohttp
 import re
@@ -10,6 +10,7 @@ from playwright.async_api import async_playwright
 import time
 import asyncio
 from utils.logging import logger
+from core.config import TEST_URLS
 
 @dataclass
 class ProjectResource:
@@ -26,10 +27,21 @@ class DocumentationURLCollector:
         self.base_dir = base_dir
         self.projects_dir = base_dir / 'projects'
         self.debug_dir = base_dir / 'debug'
+        self.cache_dir = base_dir / 'cache'
+        self.cache_dir.mkdir(parents=True, exist_ok=True)
+        self.url_cache = self.cache_dir / 'url_cache.json'
+        self.samples_cache = self.cache_dir / 'discovered_samples.json'
         
-        # Ensure directories exist
+        # Ensure all directories exist
         self.projects_dir.mkdir(parents=True, exist_ok=True)
         self.debug_dir.mkdir(parents=True, exist_ok=True)
+        self.cache_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Initialize cache files if they don't exist
+        if not self.url_cache.exists():
+            self.url_cache.write_text('[]')
+        if not self.samples_cache.exists():
+            self.samples_cache.write_text('[]')
 
     def _make_absolute_url(self, url: str) -> str:
         """Convert relative URLs to absolute URLs"""
@@ -134,36 +146,43 @@ class DocumentationURLCollector:
                 sections = soup.find_all(['h1', 'h2', 'h3'])
                 topics = soup.find_all(class_='topic')
                 
-                # Look for samples using multiple selectors that might indicate a sample
-                samples = []
-                sample_indicators = [
-                    soup.find_all(class_='sample-code'),  # Original check
-                    soup.find_all('a', href=lambda x: x and 'sample' in x.lower()),  # Links containing 'sample'
-                    soup.find_all(class_='sample-card'),  # Sample cards
-                    soup.find_all(class_='sample-download'),  # Download buttons
-                    soup.find_all(string=lambda x: x and 'sample' in x.lower()),  # Text containing 'sample'
-                    soup.find_all('a', href=lambda x: x and x.endswith('.zip'))  # ZIP download links
-                ]
+                # Look for samples more aggressively
+                samples = set()
                 
-                # Debug logging
-                for i, indicator in enumerate(sample_indicators):
-                    logger.debug(f"Sample indicator {i}: Found {len(indicator)} matches")
-                    if indicator:
-                        logger.debug(f"First match example: {indicator[0]}")
+                # 1. Look for direct sample links
+                sample_links = soup.find_all('a', href=lambda x: x and (
+                    'sample' in x.lower() or 
+                    x.endswith('.zip') or 
+                    '/documentation/visionos/' in x
+                ))
+                for link in sample_links:
+                    href = link.get('href', '')
+                    if href:
+                        logger.debug(f"Found potential sample link: {href}")
+                        samples.add(href)
                 
-                # Combine all unique samples
-                all_samples = set()
-                for indicator_list in sample_indicators:
-                    for item in indicator_list:
-                        if hasattr(item, 'get') and item.get('href'):
-                            all_samples.add(item['href'])
-                        elif hasattr(item, 'parent') and hasattr(item.parent, 'get') and item.parent.get('href'):
-                            all_samples.add(item.parent['href'])
+                # 2. Look for sample cards/sections
+                sample_sections = soup.find_all(['div', 'section'], class_=lambda x: x and 'sample' in x.lower())
+                for section in sample_sections:
+                    links = section.find_all('a', href=True)
+                    for link in links:
+                        href = link.get('href', '')
+                        if href:
+                            logger.debug(f"Found sample in section: {href}")
+                            samples.add(href)
+                
+                # 3. Look for download buttons
+                download_buttons = soup.find_all(class_='sample-download')
+                for button in download_buttons:
+                    parent_link = button.find_parent('a', href=True)
+                    if parent_link and parent_link.get('href'):
+                        logger.debug(f"Found sample download button: {parent_link['href']}")
+                        samples.add(parent_link['href'])
                 
                 structure = {
                     'sections': len(sections),
                     'topics': len(topics),
-                    'samples': len(all_samples)
+                    'samples': len(samples)
                 }
                 
                 logger.info(f"Found {structure['sections']} sections, {structure['topics']} topics, and {structure['samples']} samples")
@@ -178,89 +197,48 @@ class DocumentationURLCollector:
 
     async def process_documentation_page(self, url: str) -> Optional[ProjectResource]:
         """Discover and analyze project without downloading"""
-        start_time = time.time()
-        logger.debug(f"Starting to process documentation page: {url}")
-        
         try:
             async with async_playwright() as p:
                 browser = await p.chromium.launch()
                 page = await browser.new_page()
                 
-                # Ensure absolute URL before first load
+                # Ensure absolute URL
                 if not url.startswith('http'):
                     url = f"{self.BASE_URL}{url}"
                 
-                # Single page load with timing
-                load_start = time.time()
-                logger.debug(f"Loading URL: {url}")
                 await page.goto(url)
-                logger.debug(f"Initial page load took: {time.time() - load_start:.2f}s")
-                
-                # Wait for network idle with timeout
-                wait_start = time.time()
-                try:
-                    await page.wait_for_load_state('networkidle', timeout=5000)
-                    logger.debug(f"Network idle wait took: {time.time() - wait_start:.2f}s")
-                except Exception as e:
-                    logger.debug(f"Network idle timeout: {str(e)}")
-                
-                # Get and validate content
+                await page.wait_for_load_state('networkidle')
                 content = await page.content()
-                content_hash = hash(content)
-                logger.debug(f"Initial content length: {len(content)}, hash: {content_hash}")
                 
-                # Save initial state
-                debug_file = self.debug_dir / f"{url.split('/')[-1]}_initial.html"
-                debug_file.write_text(content)
+                # Look for download links and sample info
+                soup = BeautifulSoup(content, 'html.parser')
                 
-                # Wait and check for dynamic content
-                await asyncio.sleep(2)
-                after_content = await page.content()
-                after_hash = hash(after_content)
+                # Get title - simple, working version
+                title_elem = soup.find('h1')
+                title = title_elem.get_text(strip=True) if title_elem else url.split('/')[-1]
                 
-                if content_hash != after_hash:
-                    logger.debug(f"Content changed after wait!")
-                    logger.debug(f"Initial size: {len(content)}, After size: {len(after_content)}")
-                    debug_file = self.debug_dir / f"{url.split('/')[-1]}_after_wait.html"
-                    debug_file.write_text(after_content)
+                # Look for download links
+                download_links = soup.find_all('a', class_='sample-download')
+                if not download_links:
+                    download_links = soup.find_all('a', href=lambda x: x and x.endswith('.zip'))
                 
-                # Look for download links with explicit wait
-                logger.debug("Searching for download links")
-                download_links = await page.query_selector_all('a[href*=".zip"]')
-                logger.debug(f"Found {len(download_links)} download links")
-                
-                for link in download_links:
-                    href = await link.get_attribute('href')
-                    logger.debug(f"Download link found: {href}")
+                if download_links:
+                    href = download_links[0].get('href')
                     absolute_href = self._make_absolute_url(href)
                     
-                    # Get project title with validation
-                    title_elem = await page.query_selector('h1')
-                    if title_elem:
-                        title = await title_elem.text_content()
-                        logger.debug(f"Found title: {title}")
-                    else:
-                        title = url.split('/')[-1]
-                        logger.debug(f"Using fallback title: {title}")
-                    
-                    total_time = time.time() - start_time
-                    logger.debug(f"Total processing time: {total_time:.2f}s")
-                    
-                    await browser.close()
+                    logger.info(f"Found sample: {title}")
                     return ProjectResource(
                         title=title,
                         url=url,
                         download_url=absolute_href
                     )
-                
-                logger.debug(f"No download links found after {time.time() - start_time:.2f}s")
+                    
                 await browser.close()
                 
         except Exception as e:
             logger.error(f"Error processing {url}: {str(e)}")
-            logger.debug("Full error details:", exc_info=True)
-        
-        return None
+            
+            return None
 
     async def process_and_download(self, url: str) -> Optional[ProjectResource]:
         """Process page and optionally download"""
@@ -307,6 +285,99 @@ class DocumentationURLCollector:
             logger.error(f"Error downloading project {project.title}: {str(e)}")
             
         return False
+
+    async def discover_all_samples(self) -> List[ProjectResource]:
+        """Discover and cache all sample projects"""
+        # Check cache with validation
+        if self.samples_cache.exists():
+            try:
+                cached = json.loads(self.samples_cache.read_text())
+                logger.info(f"Found {len(cached)} samples in cache")
+                if cached:  # Only use cache if it has data
+                    return [ProjectResource(**p) for p in cached]
+            except json.JSONDecodeError:
+                logger.warning("Invalid cache file, rediscovering samples")
+        
+        # Discover new samples
+        samples = []
+        links = await self.get_documentation_links(self.BASE_URL)
+        doc_links = links.get('documentation', set())
+        
+        logger.info(f"Processing {len(doc_links)} documentation links")
+        for url in doc_links:
+            # Process each URL for samples
+            structure = await self.analyze_documentation_structure(url)
+            if structure['samples'] > 0:
+                logger.debug(f"Found {structure['samples']} potential samples in {url}")
+                # Get the actual sample URLs from the structure
+                soup = BeautifulSoup(await self._get_page_content(url), 'html.parser')
+                sample_links = soup.find_all('a', class_='sample-download')
+                
+                for link in sample_links:
+                    href = link.get('href')
+                    if href:
+                        title = link.find_parent(['div', 'section']).find('h1', 'h2', 'h3').get_text(strip=True)
+                        project = ProjectResource(
+                            title=title,
+                            url=url,
+                            download_url=self._make_absolute_url(href)
+                        )
+                        samples.append(project)
+                        logger.info(f"Found sample: {title}")
+        
+        # Cache results with validation and debug logging
+        if samples:
+            try:
+                cache_data = [
+                    {
+                        'title': p.title,
+                        'url': p.url,
+                        'download_url': p.download_url,
+                        'local_path': str(p.local_path) if p.local_path else None
+                    } 
+                    for p in samples
+                ]
+                logger.debug(f"Caching {len(samples)} samples")
+                logger.debug(f"Cache data: {json.dumps(cache_data, indent=2)}")
+                self.samples_cache.write_text(json.dumps(cache_data, indent=2))
+                logger.info(f"Successfully cached {len(samples)} samples")
+            except Exception as e:
+                logger.error(f"Error caching samples: {str(e)}", exc_info=True)
+        else:
+            logger.warning("No samples found to cache")
+        
+        return samples
+
+    async def download_samples(self, samples: List[ProjectResource], 
+                             mode: str = 'test') -> List[ProjectResource]:
+        """Download samples based on mode
+        mode: 'test' (3 samples), 'full' (all), 'skip' (none)
+        """
+        if mode == 'skip':
+            return []
+            
+        to_download = samples
+        if mode == 'test':
+            # Use specific test samples
+            test_urls = set(TEST_URLS)
+            to_download = [s for s in samples if s.url in test_urls]
+            
+        return [s for s in to_download if await self.download_project(s)]
+
+    async def _get_page_content(self, url: str) -> str:
+        """Get page content using playwright"""
+        try:
+            async with async_playwright() as p:
+                browser = await p.chromium.launch()
+                page = await browser.new_page()
+                await page.goto(url)
+                await page.wait_for_load_state('networkidle')
+                content = await page.content()
+                await browser.close()
+                return content
+        except Exception as e:
+            logger.error(f"Error getting page content: {str(e)}")
+            return ""
 
 class URLSources:
     """Simple URL management class"""

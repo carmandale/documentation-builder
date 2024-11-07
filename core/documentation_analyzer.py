@@ -6,6 +6,7 @@ from typing import Dict, Set, List, Any, Optional
 import aiohttp
 from bs4 import BeautifulSoup
 import re
+from datetime import datetime, UTC
 
 logger = logging.getLogger(__name__)
 
@@ -73,21 +74,85 @@ class DocumentationAnalyzer:
         
         file_path.write_text(json.dumps(serializable, indent=2))
     
-    def _get_code_context(self, code_block) -> str:
-        """Get the context around a code block"""
-        context = []
+    def _get_code_context(self, code_block) -> dict:
+        """Get the context around a code block with improved structure and error handling
         
-        # Get previous paragraph or header
-        prev_elem = code_block.find_previous(['p', 'h1', 'h2', 'h3', 'h4'])
-        if prev_elem:
-            context.append(prev_elem.get_text())
+        Args:
+            code_block: Either a BeautifulSoup element or a string of code
             
-        # Get next paragraph
-        next_elem = code_block.find_next('p')
-        if next_elem:
-            context.append(next_elem.get_text())
+        Returns:
+            dict: Structured context information containing:
+                - section: The section title/header
+                - description: Text describing the code
+                - related_concepts: Any related concepts mentioned
+                - framework_references: Framework references in context
+                - implementation_notes: Any implementation details
+        """
+        try:
+            context = {
+                'section': '',
+                'description': '',
+                'related_concepts': [],
+                'framework_references': [],
+                'implementation_notes': ''
+            }
             
-        return ' '.join(context)
+            # Handle string input
+            if isinstance(code_block, str):
+                logger.debug("Received string code block, no context available")
+                return context
+                
+            # Get section context (search up through parents)
+            current = code_block
+            while current:
+                # Look for section header
+                header = current.find_previous(['h1', 'h2', 'h3', 'h4'])
+                if header:
+                    context['section'] = header.get_text(strip=True)
+                    break
+                current = current.parent
+                
+            # Get immediate description (previous paragraph or list)
+            desc_elem = code_block.find_previous(['p', 'ul', 'ol'])
+            if desc_elem:
+                context['description'] = desc_elem.get_text(strip=True)
+                
+            # Find related concepts (links in surrounding context)
+            related_links = code_block.find_parent('section').find_all('a') if code_block.find_parent('section') else []
+            context['related_concepts'] = [
+                link.get_text(strip=True) 
+                for link in related_links 
+                if link.get('href') and 'documentation' in link.get('href')
+            ]
+            
+            # Look for framework references
+            framework_patterns = ['Kit', 'Framework', 'API']
+            text_context = ' '.join(
+                elem.get_text() 
+                for elem in code_block.find_parent('section').find_all(['p', 'li']) 
+                if elem
+            )
+            context['framework_references'] = [
+                word for word in text_context.split() 
+                if any(pattern in word for pattern in framework_patterns)
+            ]
+            
+            # Get implementation notes (following paragraph)
+            notes_elem = code_block.find_next(['p', 'ul', 'ol'])
+            if notes_elem:
+                context['implementation_notes'] = notes_elem.get_text(strip=True)
+                
+            return context
+            
+        except Exception as e:
+            logger.error(f"Error getting code context: {str(e)}")
+            return {
+                'section': '',
+                'description': '',
+                'related_concepts': [],
+                'framework_references': [],
+                'implementation_notes': ''
+            }
     
     def _extract_implementation_details(self, code_block) -> Dict:
         """Extract implementation details from code"""

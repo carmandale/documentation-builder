@@ -19,15 +19,13 @@ class ProjectAnalyzer:
             logger.info(f"Found {len(swift_files)} Swift files")
             
             patterns = {
-                '3d_content': [],
-                'animation': [],
-                'transforms': [],
-                'ui_components': []
+                '3d_content': {'count': 0, 'files': []},
+                'animation': {'count': 0, 'files': []},
+                'ui_components': {'count': 0, 'files': []},
+                'gestures': {'count': 0, 'files': []},
+                'spatial_audio': {'count': 0, 'files': []},
+                'immersive_spaces': {'count': 0, 'files': []}
             }
-            
-            # Track pattern frequency and validation
-            pattern_usage = {}
-            pattern_validation = {}
             
             for file in swift_files:
                 content = file.read_text()
@@ -35,12 +33,28 @@ class ProjectAnalyzer:
                 
                 # Look for specific patterns
                 if 'RealityKit' in content:
-                    self._analyze_patterns(content, file.name, patterns, pattern_usage, pattern_validation)
+                    patterns['3d_content']['count'] += 1
+                    patterns['3d_content']['files'].append(file.name)
+                if 'animation' in content.lower() or 'animate' in content.lower():
+                    patterns['animation']['count'] += 1
+                    patterns['animation']['files'].append(file.name)
+                if 'View' in content or 'Button' in content:
+                    patterns['ui_components']['count'] += 1
+                    patterns['ui_components']['files'].append(file.name)
+                if 'gesture' in content.lower() or 'tap' in content.lower():
+                    patterns['gestures']['count'] += 1
+                    patterns['gestures']['files'].append(file.name)
+                if 'AudioEngine' in content or 'spatialAudio' in content:
+                    patterns['spatial_audio']['count'] += 1
+                    patterns['spatial_audio']['files'].append(file.name)
+                if 'ImmersiveSpace' in content:
+                    patterns['immersive_spaces']['count'] += 1
+                    patterns['immersive_spaces']['files'].append(file.name)
             
             return {
                 'patterns': patterns,
-                'usage': pattern_usage,
-                'validation': pattern_validation
+                'usage': {},  # Deprecated
+                'validation': {}  # Deprecated
             }
             
         except Exception as e:

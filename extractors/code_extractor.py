@@ -3,6 +3,8 @@ from models.base import CodeBlock, CodePattern
 from typing import List, Optional, Set, Dict
 import logging
 import re
+from pathlib import Path
+from core.documentation_analyzer import DocumentationAnalyzer
 
 logger = logging.getLogger(__name__)
 
@@ -44,9 +46,9 @@ class CodeBlockExtractor:
         # Get the full code text
         code_text = code_content.get_text(strip=True)
         
-        # Look for description in previous siblings
-        desc = block.find_previous(['p', 'div'], class_='description')
-        description = desc.get_text(strip=True) if desc else None
+        # Use DocumentationAnalyzer for context
+        doc_analyzer = DocumentationAnalyzer(Path('data/knowledge'))
+        context = doc_analyzer._get_code_context(block)
         
         # Get language (defaulting to swift)
         language = block.get('data-syntax', 'swift')
@@ -59,7 +61,7 @@ class CodeBlockExtractor:
         
         return CodeBlock(
             code=code_text,
-            description=description,
+            description=context.get('description', ''),
             language=language,
             preview=code_text[:200],
             frameworks=list(frameworks),

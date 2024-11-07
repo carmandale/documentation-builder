@@ -3,7 +3,7 @@ from core.scraper import DocumentationScraper
 from core.url_sources import DocumentationURLCollector, URLSources
 from analyzers.project_analyzer import ProjectAnalyzer
 from extractors.relationship_extractor import RelationshipExtractor
-from core.config import TESTING_MODE, TEST_URLS, BASE_URLS  # Import configuration
+from core.config import TESTING_MODE, TEST_URLS, BASE_URLS, SKIP_DOWNLOADS  # Import configuration
 from utils.logging import logger  # Add this import
 import logging
 from pathlib import Path
@@ -108,11 +108,25 @@ async def analyze_patterns_from_docs(discovered_urls: Dict[str, Set[str]], url_c
                     # Analyze code to identify patterns
                     for pattern_type, data in pattern_data.items():
                         if pattern_matches(code, pattern_type):
-                            data['examples'].append({
-                                'code': code,
-                                'source_url': url,
-                                'context': get_code_context(block)
-                            })
+                            try:
+                                # Wrap code in HTML for BeautifulSoup
+                                html = f"<div><code>{code}</code></div>"
+                                soup = BeautifulSoup(html, 'html.parser')
+                                code_elem = soup.find('code')
+                                
+                                if code_elem:
+                                    context = doc_analyzer._get_code_context(code_elem)
+                                    data['examples'].append({
+                                        'code': code,
+                                        'source_url': url,
+                                        'context': context
+                                    })
+                                else:
+                                    logger.warning(f"Could not create code element for context extraction")
+                                    
+                            except Exception as e:
+                                logger.error(f"Error extracting context: {str(e)}")
+                                continue
                 
                 # Extract keywords and concepts
                 for pattern_type, data in pattern_data.items():
@@ -255,174 +269,97 @@ async def fetch_content(url: str) -> Optional[str]:
         return None
 
 async def main():
-    # First discover all URLs
-    console.print("[bold cyan]Discovering Documentation URLs...")
-    discovered_urls = await discover_urls()
-    
-    # Print URL summary
-    console.print("\n[bold cyan]Found URLs by Category:")
-    for category, urls in discovered_urls.items():
-        if urls:
-            console.print(f"[yellow]{category}: [green]{len(urls)} URLs")
-    
     url_collector = DocumentationURLCollector()
-    processed_projects = []
     
-    if TESTING_MODE:
-        console.print("[bold yellow]Running in TEST MODE with subset of URLs")
-        # Process test URLs
-        for url in TEST_URLS:
-            try:
-                if not url.startswith('http'):
-                    url = f"https://developer.apple.com{url}"
-                    
-                if SKIP_DOWNLOADS:
-                    project = await url_collector.process_documentation_page(url)
-                else:
-                    project = await url_collector.process_and_download(url)
-
-                if project:
-                    console.print(f"Found project: {project.title}")
-                    processed_projects.append(project)
-            except Exception as e:
-                logger.error(f"Error processing test URL {url}: {str(e)}")
-    else:
-        console.print("[bold green]Running FULL ANALYSIS")
-        # Download and analyze all sample projects
-        projects = await url_collector.download_all_samples()
-        processed_projects.extend(projects)
-
-    # Print analysis summary
-    console.print("\n[bold cyan]Analysis Summary:")
+    # First check cache
+    console.print("[bold cyan]Checking sample cache...")
+    all_samples = await url_collector.discover_all_samples()
     
-    # Create results table
-    results_table = Table(title="Pattern Analysis Results")
-    results_table.add_column("Project", style="cyan")
-    results_table.add_column("Pattern Type", style="green")
-    results_table.add_column("Count", justify="right", style="yellow")
-    results_table.add_column("Files", style="blue")
-    
-    # Analyze each project
-    for project in processed_projects:
-        console.print(f"\n[yellow]Analyzing {project.title}:")
+    if not all_samples:
+        console.print("[yellow]Cache miss - discovering samples...")
+        # Discover URLs
+        discovered_urls = await discover_urls()
         
-        # Get project files
-        swift_files = []
-        for root, dirs, files in os.walk(project.local_path):
-            for file in files:
-                if file.endswith('.swift'):
-                    file_path = Path(root) / file
+        # Process discovered URLs
+        console.print("\n[bold cyan]Found URLs by Category:")
+        for category, urls in discovered_urls.items():
+            console.print(f"[yellow]{category}: [green]{len(urls)} URLs")
+        
+        # Process URLs based on mode
+        if TESTING_MODE:
+            console.print("\n[yellow]Running in TEST MODE with subset of URLs")
+            test_urls = TEST_URLS
+        else:
+            test_urls = discovered_urls.get('documentation', set())
+            
+        # Process URLs without downloading if SKIP_DOWNLOADS is True
+        processed_projects = []
+        for url in test_urls:
+            project = await process_url(url, url_collector, skip_downloads=SKIP_DOWNLOADS)
+            if project:
+                processed_projects.append(project)
+                
+        console.print(f"\nSuccessfully processed: {len(processed_projects)} projects")
+        
+        # Cache the results
+        all_samples = processed_projects
+    
+    # Analyze results
+    console.print("\nAnalysis Summary:")
+    pattern_data = defaultdict(lambda: {'count': 0, 'examples': [], 'files': []})
+    
+    for project in all_samples:
+        if project.local_path:
+            console.print(f"\nAnalyzing {project.title}:")
+            analysis = project_analyzer.analyze_project(project.local_path)
+            
+            # Track patterns with context
+            for pattern_type, data in analysis['patterns'].items():
+                pattern_data[pattern_type]['count'] += len(data)
+                pattern_data[pattern_type]['files'].extend(data)
+                
+                # Create BeautifulSoup object for context extraction
+                for code_block in data:
                     try:
-                        content = file_path.read_text()
-                        swift_files.append((file, content))
-                        logger.info(f"Successfully read {file}")
+                        # Wrap code in a basic HTML structure
+                        html = f"<div><code>{code_block}</code></div>"
+                        soup = BeautifulSoup(html, 'html.parser')
+                        code_elem = soup.find('code')
+                        
+                        if code_elem:
+                            context = doc_analyzer._get_code_context(code_elem)
+                            pattern_data[pattern_type]['examples'].append({
+                                'code': code_block,
+                                'context': context,
+                                'file': data.get('file', 'unknown'),
+                                'project': project.title
+                            })
+                        else:
+                            logger.warning(f"Could not create code element for context extraction")
+                            
                     except Exception as e:
-                        logger.error(f"Error reading file {file}: {str(e)}")
-        
-        # Analyze patterns
-        patterns = defaultdict(list)
-        for filename, content in swift_files:
-            # Look for UI component patterns
-            if re.search(r'View\s*{|struct\s+\w+\s*:\s*View', content):
-                patterns['ui_components'].append(filename)
-            
-            # Look for animation patterns
-            if re.search(r'\.animation|Animation\.|withAnimation|AnimationPhase', content):
-                patterns['animation'].append(filename)
-            
-            # Look for gesture patterns
-            if re.search(r'\.gesture|Gesture\.|DragGesture|TapGesture', content):
-                patterns['gestures'].append(filename)
-            
-            # Look for 3D content patterns
-            if re.search(r'RealityView|Entity\.|ModelEntity|AnchorEntity', content):
-                patterns['3d_content'].append(filename)
-            
-            # Look for spatial audio patterns
-            if re.search(r'AudioEngine|SpatialAudio|AVAudioNode', content):
-                patterns['spatial_audio'].append(filename)
-            
-            # Look for immersive space patterns
-            if re.search(r'ImmersiveSpace|WindowGroup|immersiveSpace', content):
-                patterns['immersive_spaces'].append(filename)
-            
-            # Look for ARKit integration patterns
-            if re.search(r'ARKit|ARSession|ARConfiguration', content):
-                patterns['arkit_integration'].append(filename)
-            
-            # Look for RealityKit patterns
-            if re.search(r'RealityKit|RealityView|ModelComponent', content):
-                patterns['realitykit'].append(filename)
-        
-        # Add to results table
-        for pattern_type, files in patterns.items():
-            if files:  # Only add if we found files with this pattern
-                results_table.add_row(
+                        logger.error(f"Error extracting context: {str(e)}")
+                        continue
+    
+    # Show pattern analysis results
+    table = Table(title="Pattern Analysis Results")
+    table.add_column("Project")
+    table.add_column("Pattern Type")
+    table.add_column("Count")
+    table.add_column("Files")
+    
+    for pattern_type, data in pattern_data.items():
+        if data['count'] > 0:  # Only show patterns that were found
+            for file in data['files']:
+                table.add_row(
                     project.title,
                     pattern_type,
-                    str(len(files)),
-                    ", ".join(files)
+                    str(data['count']),
+                    file
                 )
     
-    # Print final summary
-    console.print("\n[bold green]Analysis Complete!")
-    console.print(f"[green]Successfully processed: {len(processed_projects)} projects")
-    console.print("\n[bold cyan]Results:")
-    console.print(results_table)
-    
-    if TESTING_MODE:
-        console.print("\n[yellow]Note: Running in test mode - only processed subset of projects")
-        console.print(f"[yellow]Test projects analyzed: {', '.join(p.title for p in processed_projects)}")
-    else:
-        console.print(f"\n[green]Full analysis complete - processed all {len(processed_projects)} available projects")
-
-    # Initialize analyzers
-    pattern_evolution = PatternEvolution(Path('data/knowledge'))
-    relationship_tracker = RelationshipTracker(Path('data/knowledge'))
-    
-    # Process discovered URLs
-    for url in discovered_urls.get('documentation', []):
-        # Get content
-        content = await fetch_content(url)
-        if not content:
-            continue
-            
-        # Analyze patterns
-        patterns = doc_analyzer.analyze_code_patterns(content, url)
-        
-        # Record relationships
-        for pattern in patterns:
-            # Record pattern relationships
-            for related in pattern['related_patterns']:
-                relationship_tracker.record_relationship(
-                    pattern['type'],
-                    related,
-                    'pattern_dependency',
-                    {'url': url, 'code': pattern['code']}
-                )
-            
-            # Record framework relationships
-            for framework in pattern['frameworks_used']:
-                relationship_tracker.record_relationship(
-                    pattern['type'],
-                    framework,
-                    'framework_usage',
-                    {'url': url, 'code': pattern['code']}
-                )
-    
-    # Get insights
-    pattern_updates = pattern_evolution.suggest_pattern_updates()
-    
-    # Print insights
-    console.print("\n[bold cyan]Pattern Evolution Insights:")
-    console.print(Panel(
-        "\n".join([
-            f"[yellow]New Patterns Found:[/] {len(pattern_updates['new_patterns'])}",
-            f"[yellow]Pattern Refinements:[/] {len(pattern_updates['pattern_refinements'])}",
-            f"[yellow]Relationship Updates:[/] {len(pattern_updates['relationship_updates'])}",
-            f"[yellow]Category Changes:[/] {len(pattern_updates['category_changes'])}"
-        ])
-    ))
+    console.print(table)
+    console.print("\nAnalysis Complete!")
 
 if __name__ == "__main__":
     asyncio.run(main())

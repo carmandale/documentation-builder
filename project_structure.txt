@@ -1,0 +1,2069 @@
+.
+├── .cursorrules
+├── .gitignore
+├── .pytest_cache
+│   ├── .gitignore
+│   ├── CACHEDIR.TAG
+│   ├── README.md
+│   └── v
+│       └── cache
+│           ├── lastfailed
+│           ├── nodeids
+│           └── stepwise
+├── GOALS.md
+├── README.md
+├── SampleView.swift
+├── analyzers
+│   ├── __init__.py
+│   ├── documentation_analyzer.py
+│   ├── llm_interface.py
+│   ├── pattern_evolution.py
+│   ├── project_analyzer.py
+│   ├── relationship_tracker.py
+│   └── topic_analyzer.py
+├── cli
+│   ├── __init__.py
+│   └── scraper_cli.py
+├── core
+│   ├── __init__.py
+│   ├── config.py
+│   ├── documentation_analyzer.py
+│   ├── feature_tracking.py
+│   ├── scraper.py
+│   └── url_sources.py
+├── data
+│   ├── analysis_results.json
+│   ├── debug
+│   │   ├── .html
+│   │   ├── _initial.html
+│   │   ├── _structure.html
+│   │   ├── bot-anist.html
+│   │   ├── bot-anist_after_wait.html
+│   │   ├── bot-anist_initial.html
+│   │   ├── bot-anist_raw.html
+│   │   ├── designing-for-visionos.html
+│   │   ├── designing-for-visionos_initial.html
+│   │   ├── designing-for-visionos_structure.html
+│   │   ├── destination-video.html
+│   │   ├── diorama.html
+│   │   ├── immersive-experiences.html
+│   │   ├── immersive-experiences_initial.html
+│   │   ├── immersive-experiences_structure.html
+│   │   ├── playing-spatial-audio-in-visionos.html
+│   │   ├── playing-spatial-audio-in-visionos_after_wait.html
+│   │   ├── playing-spatial-audio-in-visionos_initial.html
+│   │   ├── playing-spatial-audio-in-visionos_raw.html
+│   │   ├── raw_adding-3d-content-to-your-app.html
+│   │   ├── raw_bot-anist.html
+│   │   ├── raw_creating-fully-immersive-experiences.html
+│   │   ├── raw_creating-immersive-spaces-in-visionos-with-swiftui.html
+│   │   ├── raw_creating-your-first-visionos-app.html
+│   │   ├── raw_swift-splash.html
+│   │   ├── swift-splash.html
+│   │   ├── visionos.html
+│   │   ├── world.html
+│   │   ├── world_after_wait.html
+│   │   ├── world_initial.html
+│   │   └── world_raw.html
+│   ├── doc_structure.json
+│   ├── docs
+│   │   └── debug_creating-3d-shapes-in-visionos-with-realitykit.html
+│   ├── extracted
+│   │   ├── extracted_adding-3d-content-to-your-app.json
+│   │   ├── extracted_bot-anist.json
+│   │   ├── extracted_creating-fully-immersive-experiences.json
+│   │   ├── extracted_creating-immersive-spaces-in-visionos-with-swiftui.json
+│   │   ├── extracted_creating-your-first-visionos-app.json
+│   │   ├── extracted_swift-splash.json
+│   │   └── relationships
+│   │       └── relationships.json
+│   ├── knowledge
+│   ├── logs
+│   │   └── scraper.log
+│   ├── projects
+│   │   ├── bot-anist
+│   │   │   ├── .gitignore
+│   │   │   ├── BOT-anist
+│   │   │   │   ├── AppState+Exploration.swift
+│   │   │   │   ├── AppState.swift
+│   │   │   │   ├── Assets.xcassets
+│   │   │   │   │   ├── AccentColor.colorset
+│   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   ├── Contents.json
+│   │   │   │   │   ├── HeroRobot.imageset
+│   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   └── HeroRobot@2x.png
+│   │   │   │   │   ├── VisionOSAppIcon.solidimagestack
+│   │   │   │   │   │   ├── Back.solidimagestacklayer
+│   │   │   │   │   │   │   ├── Content.imageset
+│   │   │   │   │   │   │   │   ├── Back.png
+│   │   │   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   ├── Front.solidimagestacklayer
+│   │   │   │   │   │   │   ├── Content.imageset
+│   │   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   │   └── Front.png
+│   │   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   │   └── Middle.solidimagestacklayer
+│   │   │   │   │   │       ├── Content.imageset
+│   │   │   │   │   │       │   └── Contents.json
+│   │   │   │   │   │       └── Contents.json
+│   │   │   │   │   ├── backpack1.imageset
+│   │   │   │   │   │   ├── BP1 (2) 1.png
+│   │   │   │   │   │   ├── BP1 (2).png
+│   │   │   │   │   │   ├── BP1_dark (2).png
+│   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   ├── backpack2.imageset
+│   │   │   │   │   │   ├── BP2 (2) 1.png
+│   │   │   │   │   │   ├── BP2 (2).png
+│   │   │   │   │   │   ├── BP2_dark (2).png
+│   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   ├── backpack3.imageset
+│   │   │   │   │   │   ├── BP3 (2) 1.png
+│   │   │   │   │   │   ├── BP3 (2).png
+│   │   │   │   │   │   ├── BP3_dark (2).png
+│   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   ├── body1.imageset
+│   │   │   │   │   │   ├── B1 1.png
+│   │   │   │   │   │   ├── B1.png
+│   │   │   │   │   │   ├── B1_dark.png
+│   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   ├── body2.imageset
+│   │   │   │   │   │   ├── B2 1.png
+│   │   │   │   │   │   ├── B2.png
+│   │   │   │   │   │   ├── B2_dark.png
+│   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   ├── body3.imageset
+│   │   │   │   │   │   ├── B3 1.png
+│   │   │   │   │   │   ├── B3.png
+│   │   │   │   │   │   ├── B3_dark.png
+│   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   ├── circle.imageset
+│   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   ├── oval 1.png
+│   │   │   │   │   │   ├── oval.png
+│   │   │   │   │   │   └── oval_dark.png
+│   │   │   │   │   ├── head1.imageset
+│   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   ├── H1 (1) 1.png
+│   │   │   │   │   │   ├── H1 (1).png
+│   │   │   │   │   │   └── H1_dark (1).png
+│   │   │   │   │   ├── head2.imageset
+│   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   ├── H2 (1) 1.png
+│   │   │   │   │   │   ├── H2 (1).png
+│   │   │   │   │   │   └── H2_dark (1).png
+│   │   │   │   │   ├── head3.imageset
+│   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   ├── H3 (1) 1.png
+│   │   │   │   │   │   ├── H3 (1).png
+│   │   │   │   │   │   └── H3_dark (1).png
+│   │   │   │   │   ├── heart.imageset
+│   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   ├── hearts 1.png
+│   │   │   │   │   │   ├── hearts.png
+│   │   │   │   │   │   └── hearts_dark.png
+│   │   │   │   │   ├── iOSAppIcon.appiconset
+│   │   │   │   │   │   ├── AppIcon.png
+│   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   ├── DarkAppIcon.png
+│   │   │   │   │   │   └── TintableAppIcon.png
+│   │   │   │   │   ├── macOSAppIcon.appiconset
+│   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   ├── icon_128x128.png
+│   │   │   │   │   │   ├── icon_128x128@2x.png
+│   │   │   │   │   │   ├── icon_16x16.png
+│   │   │   │   │   │   ├── icon_16x16@2x.png
+│   │   │   │   │   │   ├── icon_256x256.png
+│   │   │   │   │   │   ├── icon_256x256@2x.png
+│   │   │   │   │   │   ├── icon_32x32.png
+│   │   │   │   │   │   ├── icon_32x32@2x.png
+│   │   │   │   │   │   ├── icon_512x512.png
+│   │   │   │   │   │   └── icon_512x512@2x.png
+│   │   │   │   │   ├── mesh.imageset
+│   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   └── mesh.png
+│   │   │   │   │   ├── metal.imageset
+│   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   └── metal.png
+│   │   │   │   │   ├── plastic.imageset
+│   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   └── plastic.png
+│   │   │   │   │   ├── rainbow.imageset
+│   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   └── rainbow.png
+│   │   │   │   │   └── square.imageset
+│   │   │   │   │       ├── Contents.json
+│   │   │   │   │       ├── digitalSquares (1) 1.png
+│   │   │   │   │       ├── digitalSquares (1).png
+│   │   │   │   │       └── digitalSquares.png
+│   │   │   │   ├── BOT-anist-InfoPlist.xcstrings
+│   │   │   │   ├── BOT-anist.entitlements
+│   │   │   │   ├── BOTanistApp.swift
+│   │   │   │   ├── Components
+│   │   │   │   │   └── JointPinComponent.swift
+│   │   │   │   ├── Extensions
+│   │   │   │   │   ├── CaseIterableExtensions.swift
+│   │   │   │   │   ├── ColorExtensions.swift
+│   │   │   │   │   ├── EntityExtensions.swift
+│   │   │   │   │   ├── Preview+AppStateEnvironment.swift
+│   │   │   │   │   ├── RealityView+KeyboardControls.swift
+│   │   │   │   │   ├── RealityView+TouchControls.swift
+│   │   │   │   │   └── StringExtensions.swift
+│   │   │   │   ├── Localizable.xcstrings
+│   │   │   │   ├── PlantAnimationProvider.swift
+│   │   │   │   ├── Preview Content
+│   │   │   │   │   └── Preview Assets.xcassets
+│   │   │   │   │       └── Contents.json
+│   │   │   │   ├── Robot
+│   │   │   │   │   ├── AnimationStateMachine.swift
+│   │   │   │   │   ├── RobotCharacter+Movement.swift
+│   │   │   │   │   ├── RobotCharacter.swift
+│   │   │   │   │   ├── RobotData.swift
+│   │   │   │   │   ├── RobotProvider+Loading.swift
+│   │   │   │   │   └── RobotProvider.swift
+│   │   │   │   ├── Skybox
+│   │   │   │   │   └── autumn_field_puresky_1k.png
+│   │   │   │   ├── Systems
+│   │   │   │   │   └── JointPinSystem.swift
+│   │   │   │   └── Views
+│   │   │   │       ├── ContentView.swift
+│   │   │   │       ├── ExplorationView.swift
+│   │   │   │       ├── OrnamentView.swift
+│   │   │   │       ├── RobotCustomizationView.swift
+│   │   │   │       ├── RobotView.swift
+│   │   │   │       ├── SelectorViews.swift
+│   │   │   │       └── StartScreenView.swift
+│   │   │   ├── BOT-anist.xcodeproj
+│   │   │   │   ├── .xcodesamplecode.plist
+│   │   │   │   ├── project.pbxproj
+│   │   │   │   ├── project.xcworkspace
+│   │   │   │   │   └── xcshareddata
+│   │   │   │   │       └── WorkspaceSettings.xcsettings
+│   │   │   │   └── xcshareddata
+│   │   │   │       └── xcschemes
+│   │   │   │           └── BOTanist.xcscheme
+│   │   │   ├── Configuration
+│   │   │   │   └── SampleCode.xcconfig
+│   │   │   ├── LICENSE.txt
+│   │   │   ├── Packages
+│   │   │   │   └── BOTanistAssets
+│   │   │   │       ├── .swiftpm
+│   │   │   │       │   └── xcode
+│   │   │   │       │       └── package.xcworkspace
+│   │   │   │       │           ├── .xcodesamplecode.plist
+│   │   │   │       │           ├── contents.xcworkspacedata
+│   │   │   │       │           └── xcshareddata
+│   │   │   │       │               └── WorkspaceSettings.xcsettings
+│   │   │   │       ├── Package.realitycomposerpro
+│   │   │   │       │   ├── ProjectData
+│   │   │   │       │   │   └── main.json
+│   │   │   │       │   └── WorkspaceData
+│   │   │   │       │       └── Settings.rcprojectdata
+│   │   │   │       ├── Package.swift
+│   │   │   │       └── Sources
+│   │   │   │           └── BOTanistAssets
+│   │   │   │               ├── BOTanistAssets.rkassets
+│   │   │   │               │   ├── Assets
+│   │   │   │               │   │   ├── Robot
+│   │   │   │               │   │   │   ├── animations
+│   │   │   │               │   │   │   │   ├── body1
+│   │   │   │               │   │   │   │   │   ├── body1_celebrate_anim.usd
+│   │   │   │               │   │   │   │   │   ├── body1_idle_anim.usd
+│   │   │   │               │   │   │   │   │   ├── body1_walkEnd_anim.usd
+│   │   │   │               │   │   │   │   │   ├── body1_walkLoop_anim.usd
+│   │   │   │               │   │   │   │   │   └── body1_wave_anim.usd
+│   │   │   │               │   │   │   │   ├── body2
+│   │   │   │               │   │   │   │   │   ├── body2_celebrate_anim.usd
+│   │   │   │               │   │   │   │   │   ├── body2_idle_anim.usd
+│   │   │   │               │   │   │   │   │   ├── body2_walkEnd_anim.usd
+│   │   │   │               │   │   │   │   │   ├── body2_walkLoop_anim.usd
+│   │   │   │               │   │   │   │   │   └── body2_wave_anim.usd
+│   │   │   │               │   │   │   │   └── body3
+│   │   │   │               │   │   │   │       ├── body3_celebrate_anim.usd
+│   │   │   │               │   │   │   │       ├── body3_idle_anim.usd
+│   │   │   │               │   │   │   │       ├── body3_walkEnd_anim.usd
+│   │   │   │               │   │   │   │       ├── body3_walkLoop_anim.usd
+│   │   │   │               │   │   │   │       └── body3_wave_anim.usd
+│   │   │   │               │   │   │   ├── mesh
+│   │   │   │               │   │   │   │   ├── backpack1.usdz
+│   │   │   │               │   │   │   │   ├── backpack2.usdz
+│   │   │   │               │   │   │   │   ├── backpack3.usdz
+│   │   │   │               │   │   │   │   ├── body1.usdz
+│   │   │   │               │   │   │   │   ├── body2.usdz
+│   │   │   │               │   │   │   │   ├── body3.usdz
+│   │   │   │               │   │   │   │   ├── head1.usdz
+│   │   │   │               │   │   │   │   ├── head2.usdz
+│   │   │   │               │   │   │   │   └── head3.usdz
+│   │   │   │               │   │   │   ├── sounds
+│   │   │   │               │   │   │   │   └── scratch
+│   │   │   │               │   │   │   │       ├── body1_walk_step1.mp3
+│   │   │   │               │   │   │   │       └── body1_walk_step2.mp3
+│   │   │   │               │   │   │   └── textures
+│   │   │   │               │   │   │       ├── eyes
+│   │   │   │               │   │   │       │   ├── eyes1_blink_anim.jpg
+│   │   │   │               │   │   │       │   ├── eyes2_blink_anim.jpg
+│   │   │   │               │   │   │       │   └── eyes3_blink_anim.jpg
+│   │   │   │               │   │   │       ├── lights
+│   │   │   │               │   │   │       │   ├── PB.jpg
+│   │   │   │               │   │   │       │   ├── PB_2.jpg
+│   │   │   │               │   │   │       │   ├── PB_3.jpg
+│   │   │   │               │   │   │       │   ├── RB.jpg
+│   │   │   │               │   │   │       │   ├── RB_2.jpg
+│   │   │   │               │   │   │       │   ├── RB_3.jpg
+│   │   │   │               │   │   │       │   └── stripes_Mask.jpg
+│   │   │   │               │   │   │       ├── mesh
+│   │   │   │               │   │   │       │   ├── backpack1
+│   │   │   │               │   │   │       │   │   ├── T_backpack1_BaseColor_mesh_black.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack1_BaseColor_mesh_grey.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack1_BaseColor_mesh_orange.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack1_BaseColor_mesh_yellow.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack1_Metalness_mesh_.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack1_Normal_mesh_.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack1_Opacity_mesh_.jpg
+│   │   │   │               │   │   │       │   │   └── T_backpack1_Roughness_mesh_.jpg
+│   │   │   │               │   │   │       │   ├── backpack2
+│   │   │   │               │   │   │       │   │   ├── T_backpack2_BaseColor_mesh_black.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack2_BaseColor_mesh_grey.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack2_BaseColor_mesh_orange.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack2_BaseColor_mesh_yellow.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack2_Metalness_mesh_.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack2_Normal_mesh_.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack2_Opacity_mesh_.jpg
+│   │   │   │               │   │   │       │   │   └── T_backpack2_Roughness_mesh_.jpg
+│   │   │   │               │   │   │       │   ├── backpack3
+│   │   │   │               │   │   │       │   │   ├── T_backpack3_BaseColor_mesh_black.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack3_BaseColor_mesh_grey.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack3_BaseColor_mesh_orange.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack3_BaseColor_mesh_yellow.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack3_Metalness_mesh_.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack3_Normal_mesh_.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack3_Opacity_mesh_.jpg
+│   │   │   │               │   │   │       │   │   └── T_backpack3_Roughness_mesh_.jpg
+│   │   │   │               │   │   │       │   ├── body1
+│   │   │   │               │   │   │       │   │   ├── T_body1_BaseColor_mesh_black.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body1_BaseColor_mesh_grey.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body1_BaseColor_mesh_orange.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body1_BaseColor_mesh_yellow.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body1_Normal_mesh_.jpg
+│   │   │   │               │   │   │       │   │   └── T_body1_Roughness_mesh_.jpg
+│   │   │   │               │   │   │       │   ├── body2
+│   │   │   │               │   │   │       │   │   ├── T_body2_BaseColor_mesh_black.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body2_BaseColor_mesh_grey.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body2_BaseColor_mesh_orange.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body2_BaseColor_mesh_yellow.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body2_Normal_mesh_.jpg
+│   │   │   │               │   │   │       │   │   └── T_body2_Roughness_mesh_.jpg
+│   │   │   │               │   │   │       │   ├── body3
+│   │   │   │               │   │   │       │   │   ├── T_body3_BaseColor_mesh_black.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body3_BaseColor_mesh_grey.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body3_BaseColor_mesh_orange.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body3_BaseColor_mesh_yellow.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body3_Normal_mesh_.jpg
+│   │   │   │               │   │   │       │   │   └── T_body3_Roughness_mesh_.jpg
+│   │   │   │               │   │   │       │   ├── head1
+│   │   │   │               │   │   │       │   │   ├── T_head1_BaseColor_mesh_black.jpg
+│   │   │   │               │   │   │       │   │   ├── T_head1_BaseColor_mesh_grey.jpg
+│   │   │   │               │   │   │       │   │   ├── T_head1_BaseColor_mesh_orange.jpg
+│   │   │   │               │   │   │       │   │   ├── T_head1_BaseColor_mesh_yellow.jpg
+│   │   │   │               │   │   │       │   │   ├── T_head1_Normal_mesh_.jpg
+│   │   │   │               │   │   │       │   │   └── T_head1_Roughness_mesh_.jpg
+│   │   │   │               │   │   │       │   ├── head2
+│   │   │   │               │   │   │       │   │   ├── T_head2_BaseColor_mesh_black.jpg
+│   │   │   │               │   │   │       │   │   ├── T_head2_BaseColor_mesh_grey.jpg
+│   │   │   │               │   │   │       │   │   ├── T_head2_BaseColor_mesh_orange.jpg
+│   │   │   │               │   │   │       │   │   ├── T_head2_BaseColor_mesh_yellow.jpg
+│   │   │   │               │   │   │       │   │   ├── T_head2_Normal_mesh_.jpg
+│   │   │   │               │   │   │       │   │   └── T_head2_Roughness_mesh_.jpg
+│   │   │   │               │   │   │       │   └── head3
+│   │   │   │               │   │   │       │       ├── T_head3_BaseColor_mesh_black.jpg
+│   │   │   │               │   │   │       │       ├── T_head3_BaseColor_mesh_grey.jpg
+│   │   │   │               │   │   │       │       ├── T_head3_BaseColor_mesh_orange.jpg
+│   │   │   │               │   │   │       │       ├── T_head3_BaseColor_mesh_yellow.jpg
+│   │   │   │               │   │   │       │       ├── T_head3_Normal_mesh_.jpg
+│   │   │   │               │   │   │       │       └── T_head3_Roughness_mesh_.jpg
+│   │   │   │               │   │   │       ├── metal
+│   │   │   │               │   │   │       │   ├── backpack1
+│   │   │   │               │   │   │       │   │   ├── T_backpack1_AmbientOcclusion_metal_.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack1_BaseColor_metal_blue.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack1_BaseColor_metal_green.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack1_BaseColor_metal_orange.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack1_BaseColor_metal_pink.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack1_Metalness_metal_.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack1_Normal_metal_.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack1_Opacity_metal_.jpg
+│   │   │   │               │   │   │       │   │   └── T_backpack1_Roughness_metal_.jpg
+│   │   │   │               │   │   │       │   ├── backpack2
+│   │   │   │               │   │   │       │   │   ├── T_backpack2_BaseColor_metal_blue.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack2_BaseColor_metal_green.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack2_BaseColor_metal_orange.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack2_BaseColor_metal_pink.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack2_Metalness_metal_.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack2_Normal_metal_.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack2_Opacity_metal_.jpg
+│   │   │   │               │   │   │       │   │   └── T_backpack2_Roughness_metal_.jpg
+│   │   │   │               │   │   │       │   ├── backpack3
+│   │   │   │               │   │   │       │   │   ├── T_backpack3_BaseColor_metal_blue.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack3_BaseColor_metal_green.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack3_BaseColor_metal_orange.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack3_BaseColor_metal_pink.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack3_Metalness_metal_.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack3_Normal_metal_.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack3_Opacity_metal_.jpg
+│   │   │   │               │   │   │       │   │   └── T_backpack3_Roughness_metal_.jpg
+│   │   │   │               │   │   │       │   ├── body1
+│   │   │   │               │   │   │       │   │   ├── T_body1_BaseColor_metal_blue.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body1_BaseColor_metal_green.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body1_BaseColor_metal_orange.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body1_BaseColor_metal_pink.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body1_Metalness_metal_.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body1_Normal_metal_.jpg
+│   │   │   │               │   │   │       │   │   └── T_body1_Roughness_metal_.jpg
+│   │   │   │               │   │   │       │   ├── body2
+│   │   │   │               │   │   │       │   │   ├── T_body2_BaseColor_metal_blue.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body2_BaseColor_metal_green.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body2_BaseColor_metal_orange.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body2_BaseColor_metal_pink.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body2_Metalness_metal_.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body2_Normal_metal_.jpg
+│   │   │   │               │   │   │       │   │   └── T_body2_Roughness_metal_.jpg
+│   │   │   │               │   │   │       │   ├── body3
+│   │   │   │               │   │   │       │   │   ├── T_body3_BaseColor_metal_blue.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body3_BaseColor_metal_green.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body3_BaseColor_metal_orange.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body3_BaseColor_metal_pink.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body3_Metalness_metal_.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body3_Normal_metal_.jpg
+│   │   │   │               │   │   │       │   │   └── T_body3_Roughness_metal_.jpg
+│   │   │   │               │   │   │       │   ├── head1
+│   │   │   │               │   │   │       │   │   ├── T_head1_BaseColor_metal_blue.jpg
+│   │   │   │               │   │   │       │   │   ├── T_head1_BaseColor_metal_green.jpg
+│   │   │   │               │   │   │       │   │   ├── T_head1_BaseColor_metal_orange.jpg
+│   │   │   │               │   │   │       │   │   ├── T_head1_BaseColor_metal_pink.jpg
+│   │   │   │               │   │   │       │   │   ├── T_head1_Normal_metal_.jpg
+│   │   │   │               │   │   │       │   │   └── T_head1_Roughness_metal_.jpg
+│   │   │   │               │   │   │       │   ├── head2
+│   │   │   │               │   │   │       │   │   ├── T_head2_BaseColor_metal_blue.jpg
+│   │   │   │               │   │   │       │   │   ├── T_head2_BaseColor_metal_green.jpg
+│   │   │   │               │   │   │       │   │   ├── T_head2_BaseColor_metal_orange.jpg
+│   │   │   │               │   │   │       │   │   ├── T_head2_BaseColor_metal_pink.jpg
+│   │   │   │               │   │   │       │   │   ├── T_head2_Normal_metal_.jpg
+│   │   │   │               │   │   │       │   │   └── T_head2_Roughness_metal_.jpg
+│   │   │   │               │   │   │       │   └── head3
+│   │   │   │               │   │   │       │       ├── T_head3_BaseColor_metal_blue.jpg
+│   │   │   │               │   │   │       │       ├── T_head3_BaseColor_metal_green.jpg
+│   │   │   │               │   │   │       │       ├── T_head3_BaseColor_metal_orange.jpg
+│   │   │   │               │   │   │       │       ├── T_head3_BaseColor_metal_pink.jpg
+│   │   │   │               │   │   │       │       ├── T_head3_Normal_metal_.jpg
+│   │   │   │               │   │   │       │       └── T_head3_Roughness_metal_.jpg
+│   │   │   │               │   │   │       ├── plastic
+│   │   │   │               │   │   │       │   ├── backpack1
+│   │   │   │               │   │   │       │   │   ├── T_backpack1_BaseColor_plastic_green.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack1_BaseColor_plastic_lightBlue.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack1_BaseColor_plastic_orange.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack1_BaseColor_plastic_pink.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack1_Metalness_plastic_.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack1_Normal_plastic_.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack1_Opacity_plastic_.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack1_Roughness_plastic_.jpg
+│   │   │   │               │   │   │       │   │   └── T_backpack1_clearCoatMask_plastic_.jpg
+│   │   │   │               │   │   │       │   ├── backpack2
+│   │   │   │               │   │   │       │   │   ├── T_backpack2_BaseColor_plastic_green.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack2_BaseColor_plastic_lightBlue.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack2_BaseColor_plastic_orange.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack2_BaseColor_plastic_pink.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack2_Metalness_plastic_.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack2_Normal_plastic_.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack2_Opacity_plastic_.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack2_Roughness_plastic_.jpg
+│   │   │   │               │   │   │       │   │   └── T_backpack2_clearCoatMask_plastic_.jpg
+│   │   │   │               │   │   │       │   ├── backpack3
+│   │   │   │               │   │   │       │   │   ├── T_backpack3_BaseColor_plastic_green.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack3_BaseColor_plastic_lightBlue.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack3_BaseColor_plastic_orange.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack3_BaseColor_plastic_pink.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack3_Metalness_plastic_.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack3_Normal_plastic_.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack3_Opacity_plastic_.jpg
+│   │   │   │               │   │   │       │   │   ├── T_backpack3_Roughness_plastic_.jpg
+│   │   │   │               │   │   │       │   │   └── T_backpack3_clearCoatMask_plastic_.jpg
+│   │   │   │               │   │   │       │   ├── body1
+│   │   │   │               │   │   │       │   │   ├── T_body1_BaseColor_plastic_green.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body1_BaseColor_plastic_lightBlue.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body1_BaseColor_plastic_orange.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body1_BaseColor_plastic_pink.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body1_Normal_plastic_.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body1_Roughness_plastic_.jpg
+│   │   │   │               │   │   │       │   │   └── T_body1_clearCoatMask_plastic_.jpg
+│   │   │   │               │   │   │       │   ├── body2
+│   │   │   │               │   │   │       │   │   ├── T_body2_BaseColor_plastic_green.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body2_BaseColor_plastic_lightBlue.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body2_BaseColor_plastic_orange.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body2_BaseColor_plastic_pink.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body2_Normal_plastic_.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body2_Roughness_plastic_.jpg
+│   │   │   │               │   │   │       │   │   └── T_body2_clearCoatMask_plastic_.jpg
+│   │   │   │               │   │   │       │   ├── body3
+│   │   │   │               │   │   │       │   │   ├── T_body3_BaseColor_plastic_green.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body3_BaseColor_plastic_lightBlue.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body3_BaseColor_plastic_orange.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body3_BaseColor_plastic_pink.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body3_Normal_plastic_.jpg
+│   │   │   │               │   │   │       │   │   ├── T_body3_Roughness_plastic_.jpg
+│   │   │   │               │   │   │       │   │   └── T_body3_clearCoatMask_plastic_.jpg
+│   │   │   │               │   │   │       │   ├── head1
+│   │   │   │               │   │   │       │   │   ├── T_head1_BaseColor_plastic_green.jpg
+│   │   │   │               │   │   │       │   │   ├── T_head1_BaseColor_plastic_lightBlue.jpg
+│   │   │   │               │   │   │       │   │   ├── T_head1_BaseColor_plastic_orange.jpg
+│   │   │   │               │   │   │       │   │   ├── T_head1_BaseColor_plastic_pink.jpg
+│   │   │   │               │   │   │       │   │   ├── T_head1_Normal_plastic_.jpg
+│   │   │   │               │   │   │       │   │   ├── T_head1_Roughness_plastic_.jpg
+│   │   │   │               │   │   │       │   │   └── T_head1_clearcoatMask_plastic_.jpg
+│   │   │   │               │   │   │       │   ├── head2
+│   │   │   │               │   │   │       │   │   ├── T_head2_BaseColor_plastic_green.jpg
+│   │   │   │               │   │   │       │   │   ├── T_head2_BaseColor_plastic_lightBlue.jpg
+│   │   │   │               │   │   │       │   │   ├── T_head2_BaseColor_plastic_orange.jpg
+│   │   │   │               │   │   │       │   │   ├── T_head2_BaseColor_plastic_pink.jpg
+│   │   │   │               │   │   │       │   │   ├── T_head2_Normal_plastic_.jpg
+│   │   │   │               │   │   │       │   │   ├── T_head2_Roughness_plastic_.jpg
+│   │   │   │               │   │   │       │   │   └── T_head2_clearCoatMask_plastic_.jpg
+│   │   │   │               │   │   │       │   └── head3
+│   │   │   │               │   │   │       │       ├── T_head3_BaseColor_plastic_green.jpg
+│   │   │   │               │   │   │       │       ├── T_head3_BaseColor_plastic_lightBlue.jpg
+│   │   │   │               │   │   │       │       ├── T_head3_BaseColor_plastic_orange.jpg
+│   │   │   │               │   │   │       │       ├── T_head3_BaseColor_plastic_pink.jpg
+│   │   │   │               │   │   │       │       ├── T_head3_Normal_plastic_.jpg
+│   │   │   │               │   │   │       │       ├── T_head3_Roughness_plastic_.jpg
+│   │   │   │               │   │   │       │       └── T_head3_clearCoatMask_plastic_.jpg
+│   │   │   │               │   │   │       └── rainbow
+│   │   │   │               │   │   │           ├── backpack1
+│   │   │   │               │   │   │           │   ├── T_backpack1_BaseColor_rainbow_beige.jpg
+│   │   │   │               │   │   │           │   ├── T_backpack1_BaseColor_rainbow_black.jpg
+│   │   │   │               │   │   │           │   ├── T_backpack1_BaseColor_rainbow_red.jpg
+│   │   │   │               │   │   │           │   ├── T_backpack1_BaseColor_rainbow_rose.jpg
+│   │   │   │               │   │   │           │   ├── T_backpack1_Metalness_rainbow_.jpg
+│   │   │   │               │   │   │           │   ├── T_backpack1_Normal_rainbow_.jpg
+│   │   │   │               │   │   │           │   ├── T_backpack1_Opacity_rainbow_.jpg
+│   │   │   │               │   │   │           │   └── T_backpack1_Roughness_rainbow_.jpg
+│   │   │   │               │   │   │           ├── backpack2
+│   │   │   │               │   │   │           │   ├── T_backpack2_BaseColor_rainbow_beige.jpg
+│   │   │   │               │   │   │           │   ├── T_backpack2_BaseColor_rainbow_black.jpg
+│   │   │   │               │   │   │           │   ├── T_backpack2_BaseColor_rainbow_red.jpg
+│   │   │   │               │   │   │           │   ├── T_backpack2_BaseColor_rainbow_rose.jpg
+│   │   │   │               │   │   │           │   ├── T_backpack2_Metalness_rainbow_.jpg
+│   │   │   │               │   │   │           │   ├── T_backpack2_Normal_rainbow_.jpg
+│   │   │   │               │   │   │           │   ├── T_backpack2_Opacity_rainbow_.jpg
+│   │   │   │               │   │   │           │   └── T_backpack2_Roughness_rainbow_.jpg
+│   │   │   │               │   │   │           ├── backpack3
+│   │   │   │               │   │   │           │   ├── T_backpack3_BaseColor_rainbow_beige.jpg
+│   │   │   │               │   │   │           │   ├── T_backpack3_BaseColor_rainbow_black.jpg
+│   │   │   │               │   │   │           │   ├── T_backpack3_BaseColor_rainbow_red.jpg
+│   │   │   │               │   │   │           │   ├── T_backpack3_BaseColor_rainbow_rose.jpg
+│   │   │   │               │   │   │           │   ├── T_backpack3_Metalness_rainbow_.jpg
+│   │   │   │               │   │   │           │   ├── T_backpack3_Normal_rainbow_.jpg
+│   │   │   │               │   │   │           │   ├── T_backpack3_Opacity_rainbow_.jpg
+│   │   │   │               │   │   │           │   └── T_backpack3_Roughness_rainbow_.jpg
+│   │   │   │               │   │   │           ├── body1
+│   │   │   │               │   │   │           │   ├── T_body1_BaseColor_rainbow_beige.jpg
+│   │   │   │               │   │   │           │   ├── T_body1_BaseColor_rainbow_black.jpg
+│   │   │   │               │   │   │           │   ├── T_body1_BaseColor_rainbow_red.jpg
+│   │   │   │               │   │   │           │   ├── T_body1_BaseColor_rainbow_rose.jpg
+│   │   │   │               │   │   │           │   ├── T_body1_Normal_rainbow_.jpg
+│   │   │   │               │   │   │           │   └── T_body1_Roughness_rainbow_.jpg
+│   │   │   │               │   │   │           ├── body2
+│   │   │   │               │   │   │           │   ├── T_body2_BaseColor_rainbow_beige.jpg
+│   │   │   │               │   │   │           │   ├── T_body2_BaseColor_rainbow_black.jpg
+│   │   │   │               │   │   │           │   ├── T_body2_BaseColor_rainbow_red.jpg
+│   │   │   │               │   │   │           │   ├── T_body2_BaseColor_rainbow_rose.jpg
+│   │   │   │               │   │   │           │   ├── T_body2_Normal_rainbow_.jpg
+│   │   │   │               │   │   │           │   └── T_body2_Roughness_rainbow_.jpg
+│   │   │   │               │   │   │           ├── body3
+│   │   │   │               │   │   │           │   ├── T_body3_BaseColor_rainbow_beige.jpg
+│   │   │   │               │   │   │           │   ├── T_body3_BaseColor_rainbow_black.jpg
+│   │   │   │               │   │   │           │   ├── T_body3_BaseColor_rainbow_red.jpg
+│   │   │   │               │   │   │           │   ├── T_body3_BaseColor_rainbow_rose.jpg
+│   │   │   │               │   │   │           │   ├── T_body3_Normal_rainbow_.jpg
+│   │   │   │               │   │   │           │   └── T_body3_Roughness_rainbow_.jpg
+│   │   │   │               │   │   │           ├── head1
+│   │   │   │               │   │   │           │   ├── T_head1_BaseColor_rainbow_beige.jpg
+│   │   │   │               │   │   │           │   ├── T_head1_BaseColor_rainbow_black.jpg
+│   │   │   │               │   │   │           │   ├── T_head1_BaseColor_rainbow_red.jpg
+│   │   │   │               │   │   │           │   ├── T_head1_BaseColor_rainbow_rose.jpg
+│   │   │   │               │   │   │           │   ├── T_head1_Normal_rainbow_.jpg
+│   │   │   │               │   │   │           │   └── T_head1_Roughness_rainbow_.jpg
+│   │   │   │               │   │   │           ├── head2
+│   │   │   │               │   │   │           │   ├── T_head2_BaseColor_rainbow_beige.jpg
+│   │   │   │               │   │   │           │   ├── T_head2_BaseColor_rainbow_black.jpg
+│   │   │   │               │   │   │           │   ├── T_head2_BaseColor_rainbow_red.jpg
+│   │   │   │               │   │   │           │   ├── T_head2_BaseColor_rainbow_rose.jpg
+│   │   │   │               │   │   │           │   ├── T_head2_Normal_rainbow_.jpg
+│   │   │   │               │   │   │           │   └── T_head2_Roughness_rainbow_.jpg
+│   │   │   │               │   │   │           └── head3
+│   │   │   │               │   │   │               ├── T_head3_BaseColor_rainbow_beige.jpg
+│   │   │   │               │   │   │               ├── T_head3_BaseColor_rainbow_black.jpg
+│   │   │   │               │   │   │               ├── T_head3_BaseColor_rainbow_red.jpg
+│   │   │   │               │   │   │               ├── T_head3_BaseColor_rainbow_rose.jpg
+│   │   │   │               │   │   │               ├── T_head3_Normal_rainbow_.jpg
+│   │   │   │               │   │   │               └── T_head3_Roughness_rainbow_.jpg
+│   │   │   │               │   │   ├── environment
+│   │   │   │               │   │   │   ├── mesh
+│   │   │   │               │   │   │   │   └── volume.usd
+│   │   │   │               │   │   │   └── textures
+│   │   │   │               │   │   │       ├── T_dirt_AmbientOcclusion.jpg
+│   │   │   │               │   │   │       ├── T_dirt_BaseColor.jpg
+│   │   │   │               │   │   │       ├── T_dirt_Height.jpg
+│   │   │   │               │   │   │       ├── T_dirt_Normal.jpg
+│   │   │   │               │   │   │       ├── T_dirt_Roughness.jpg
+│   │   │   │               │   │   │       ├── T_islandBase_BaseColor.jpg
+│   │   │   │               │   │   │       ├── T_islandBase_Normal.jpg
+│   │   │   │               │   │   │       ├── T_islandBase_Roughness.jpg
+│   │   │   │               │   │   │       ├── T_islandEdge_BaseColor.jpg
+│   │   │   │               │   │   │       ├── T_islandEdge_Metalness.jpg
+│   │   │   │               │   │   │       ├── T_islandEdge_Normal.jpg
+│   │   │   │               │   │   │       ├── T_islandEdge_Roughness.jpg
+│   │   │   │               │   │   │       ├── T_islandTop_BaseColor.jpg
+│   │   │   │               │   │   │       ├── T_islandTop_Normal.jpg
+│   │   │   │               │   │   │       ├── T_islandTop_Roughness.jpg
+│   │   │   │               │   │   │       ├── T_planters_BaseColor.jpg
+│   │   │   │               │   │   │       ├── T_planters_Metalness.jpg
+│   │   │   │               │   │   │       ├── T_planters_Normal.jpg
+│   │   │   │               │   │   │       ├── T_planters_Roughness.jpg
+│   │   │   │               │   │   │       └── T_planters_circle_mask.jpg
+│   │   │   │               │   │   └── plants
+│   │   │   │               │   │       ├── animations
+│   │   │   │               │   │       │   ├── coffeeBerry_celebrate_anim.usdz
+│   │   │   │               │   │       │   ├── coffeeBerry_grow_anim.usdz
+│   │   │   │               │   │       │   ├── poppy_celebrate_anim.usdz
+│   │   │   │               │   │       │   ├── poppy_grow_anim.usdz
+│   │   │   │               │   │       │   ├── yucca_celebrate_anim.usdz
+│   │   │   │               │   │       │   └── yucca_grow_anim.usdz
+│   │   │   │               │   │       ├── mesh
+│   │   │   │               │   │       │   ├── hero
+│   │   │   │               │   │       │   │   ├── coffeeBerry.usdz
+│   │   │   │               │   │       │   │   ├── poppy.usdz
+│   │   │   │               │   │       │   │   └── yucca.usdz
+│   │   │   │               │   │       │   └── setDressing
+│   │   │   │               │   │       │       ├── bottomSetDressing.usd
+│   │   │   │               │   │       │       └── foliageSetDressing.usd
+│   │   │   │               │   │       └── textures
+│   │   │   │               │   │           ├── T_bigPlant_BaseColor.jpg
+│   │   │   │               │   │           ├── T_bigPlant_Emissive.jpg
+│   │   │   │               │   │           ├── T_bigPlant_Normal.jpg
+│   │   │   │               │   │           ├── T_bigPlant_Roughness.jpg
+│   │   │   │               │   │           ├── T_bigPlant_bulb_mask.jpg
+│   │   │   │               │   │           ├── T_bigPlant_emissive2_mask.jpg
+│   │   │   │               │   │           ├── T_bigPlant_emissive_mask.jpg
+│   │   │   │               │   │           ├── T_coffeeBerry_BaseColor.jpg
+│   │   │   │               │   │           ├── T_coffeeBerry_Emissive.jpg
+│   │   │   │               │   │           ├── T_coffeeBerry_Normal.jpg
+│   │   │   │               │   │           ├── T_coffeeBerry_Roughness.jpg
+│   │   │   │               │   │           ├── T_coffeeBerry_berry_mask.jpg
+│   │   │   │               │   │           ├── T_coffeeberry_upLight_mask.jpg
+│   │   │   │               │   │           ├── T_poppy_BaseColor.jpg
+│   │   │   │               │   │           ├── T_poppy_Emissive.jpg
+│   │   │   │               │   │           ├── T_poppy_Mask.jpg
+│   │   │   │               │   │           ├── T_poppy_Normal.jpg
+│   │   │   │               │   │           ├── T_poppy_Roughness.jpg
+│   │   │   │               │   │           ├── T_poppy_emissiveMask.jpg
+│   │   │   │               │   │           ├── T_poppy_upLight_mask.jpg
+│   │   │   │               │   │           ├── T_sidePlant_BaseColor.jpg
+│   │   │   │               │   │           ├── T_sidePlant_Normal.jpg
+│   │   │   │               │   │           ├── T_sidePlant_Roughness.jpg
+│   │   │   │               │   │           ├── T_sidePlant_curvature_mask.jpg
+│   │   │   │               │   │           ├── T_sidePlant_emissive_mask.jpg
+│   │   │   │               │   │           ├── T_yucca_BaseColor.jpg
+│   │   │   │               │   │           ├── T_yucca_Emissive.jpg
+│   │   │   │               │   │           ├── T_yucca_Normal.jpg
+│   │   │   │               │   │           ├── T_yucca_Roughness.jpg
+│   │   │   │               │   │           ├── T_yucca_emissive_mask.jpg
+│   │   │   │               │   │           ├── T_yucca_upLight_mask.jpg
+│   │   │   │               │   │           ├── poppyThickness_mask.jpg
+│   │   │   │               │   │           └── sideplant_EmmissiveMask.jpg
+│   │   │   │               │   ├── Materials
+│   │   │   │               │   │   ├── M_environment.usda
+│   │   │   │               │   │   ├── M_face.usda
+│   │   │   │               │   │   ├── M_lights.usda
+│   │   │   │               │   │   ├── M_mesh.usda
+│   │   │   │               │   │   ├── M_metal.usda
+│   │   │   │               │   │   ├── M_plants.usda
+│   │   │   │               │   │   ├── M_plastic.usda
+│   │   │   │               │   │   └── M_rainbow.usda
+│   │   │   │               │   └── scenes
+│   │   │   │               │       ├── backpack1.usda
+│   │   │   │               │       ├── backpack2.usda
+│   │   │   │               │       ├── backpack3.usda
+│   │   │   │               │       ├── body1.usda
+│   │   │   │               │       ├── body2.usda
+│   │   │   │               │       ├── body3.usda
+│   │   │   │               │       ├── head1.usda
+│   │   │   │               │       ├── head2.usda
+│   │   │   │               │       ├── head3.usda
+│   │   │   │               │       ├── lighting.usda
+│   │   │   │               │       ├── planter_Hero.usda
+│   │   │   │               │       ├── setDressing.usda
+│   │   │   │               │       └── volume.usda
+│   │   │   │               ├── BOTanistAssets.swift
+│   │   │   │               ├── Components
+│   │   │   │               │   └── PlantComponent.swift
+│   │   │   │               └── Extensions
+│   │   │   │                   └── EntityExtensions.swift
+│   │   │   ├── README.md
+│   │   │   └── metadata.json
+│   │   ├── combining-2d-and-3d-views-in-an-immersive-app
+│   │   │   ├── .gitignore
+│   │   │   ├── Configuration
+│   │   │   │   └── SampleCode.xcconfig
+│   │   │   ├── LICENSE.txt
+│   │   │   ├── MultiDimensionalImmersiveContent
+│   │   │   │   ├── Assets.xcassets
+│   │   │   │   │   ├── AppIcon.appiconset
+│   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   └── Contents.json
+│   │   │   │   ├── CALayerArch
+│   │   │   │   │   ├── CALayerArcRepresentable.swift
+│   │   │   │   │   └── CALayerArcView.swift
+│   │   │   │   ├── Extensions.swift
+│   │   │   │   ├── Info.plist
+│   │   │   │   ├── MultiDimensionalImmersiveContentApp.swift
+│   │   │   │   ├── Preview Content
+│   │   │   │   │   └── Preview Assets.xcassets
+│   │   │   │   │       └── Contents.json
+│   │   │   │   ├── RainbowModel.swift
+│   │   │   │   ├── RainbowView.swift
+│   │   │   │   ├── SwiftUIArch
+│   │   │   │   │   └── SwiftUIArcView.swift
+│   │   │   │   └── UIViewArch
+│   │   │   │       ├── UIViewArcRepresentable.swift
+│   │   │   │       └── UIViewArcView.swift
+│   │   │   ├── MultiDimensionalImmersiveContent.xcodeproj
+│   │   │   │   ├── .xcodesamplecode.plist
+│   │   │   │   ├── project.pbxproj
+│   │   │   │   ├── project.xcworkspace
+│   │   │   │   │   └── xcshareddata
+│   │   │   │   │       ├── WorkspaceSettings.xcsettings
+│   │   │   │   │       └── xcschemes
+│   │   │   │   └── xcshareddata
+│   │   │   │       └── xcschemes
+│   │   │   │           └── MultiDimensionalImmersiveContent.xcscheme
+│   │   │   ├── Packages
+│   │   │   │   └── RealityKitContent
+│   │   │   │       ├── .swiftpm
+│   │   │   │       │   └── xcode
+│   │   │   │       ├── Package.realitycomposerpro
+│   │   │   │       │   ├── ProjectData
+│   │   │   │       │   │   └── main.json
+│   │   │   │       │   └── WorkspaceData
+│   │   │   │       │       ├── SceneMetadataList.json
+│   │   │   │       │       └── Settings.rcprojectdata
+│   │   │   │       ├── Package.swift
+│   │   │   │       ├── README.md
+│   │   │   │       └── Sources
+│   │   │   │           └── RealityKitContent
+│   │   │   │               ├── RealityKitContent.rkassets
+│   │   │   │               │   ├── Materials
+│   │   │   │               │   │   └── GreenMaterial.usda
+│   │   │   │               │   ├── green.usdc
+│   │   │   │               │   ├── plane.usdc
+│   │   │   │               │   └── yellow.usdc
+│   │   │   │               └── RealityKitContent.swift
+│   │   │   ├── README.md
+│   │   │   └── metadata.json
+│   │   ├── creating-3d-entities-with-realitykit
+│   │   │   ├── .gitignore
+│   │   │   ├── Configuration
+│   │   │   │   └── SampleCode.xcconfig
+│   │   │   ├── Creating 3D Shapes
+│   │   │   │   ├── App
+│   │   │   │   │   ├── Assets.xcassets
+│   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   ├── EntryPoint.swift
+│   │   │   │   │   ├── Info.plist
+│   │   │   │   │   └── Preview Assets.xcassets
+│   │   │   │   │       └── Contents.json
+│   │   │   │   ├── Entities
+│   │   │   │   │   └── ShapesView+Entities.swift
+│   │   │   │   └── Views
+│   │   │   │       └── ShapesView.swift
+│   │   │   ├── Creating 3D Shapes.xcodeproj
+│   │   │   │   ├── .xcodesamplecode.plist
+│   │   │   │   ├── project.pbxproj
+│   │   │   │   ├── project.xcworkspace
+│   │   │   │   │   └── xcshareddata
+│   │   │   │   │       └── WorkspaceSettings.xcsettings
+│   │   │   │   └── xcshareddata
+│   │   │   │       └── xcschemes
+│   │   │   │           └── 3D Shapes.xcscheme
+│   │   │   ├── LICENSE.txt
+│   │   │   ├── README.md
+│   │   │   └── metadata.json
+│   │   ├── creating-an-interactive-3d-model-in-visionos
+│   │   │   ├── .gitignore
+│   │   │   ├── CarExample
+│   │   │   │   ├── App
+│   │   │   │   │   ├── Assets.xcassets
+│   │   │   │   │   │   ├── AppIcon.solidimagestack
+│   │   │   │   │   │   │   ├── Back.solidimagestacklayer
+│   │   │   │   │   │   │   │   ├── Content.imageset
+│   │   │   │   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   ├── Front.solidimagestacklayer
+│   │   │   │   │   │   │   │   ├── Content.imageset
+│   │   │   │   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   │   │   └── Middle.solidimagestacklayer
+│   │   │   │   │   │   │       ├── Content.imageset
+│   │   │   │   │   │   │       │   └── Contents.json
+│   │   │   │   │   │   │       └── Contents.json
+│   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   ├── EntryPoint.swift
+│   │   │   │   │   ├── Info.plist
+│   │   │   │   │   └── Preview Assets.xcassets
+│   │   │   │   │       └── Contents.json
+│   │   │   │   ├── Extensions
+│   │   │   │   │   └── SIMD3.swift
+│   │   │   │   ├── Resources
+│   │   │   │   │   └── Huracan-EVO-RWD-Spyder-opt-22.usdz
+│   │   │   │   └── Views
+│   │   │   │       ├── CarView.swift
+│   │   │   │       └── MainView.swift
+│   │   │   ├── CarExample.xcodeproj
+│   │   │   │   ├── .xcodesamplecode.plist
+│   │   │   │   ├── project.pbxproj
+│   │   │   │   └── project.xcworkspace
+│   │   │   │       └── xcshareddata
+│   │   │   │           └── WorkspaceSettings.xcsettings
+│   │   │   ├── Configuration
+│   │   │   │   └── SampleCode.xcconfig
+│   │   │   ├── LICENSE.txt
+│   │   │   ├── README.md
+│   │   │   └── metadata.json
+│   │   ├── destination-video
+│   │   │   ├── .gitignore
+│   │   │   ├── Configuration
+│   │   │   │   └── SampleCode.xcconfig
+│   │   │   ├── DestinationVideo
+│   │   │   │   ├── ContentView.swift
+│   │   │   │   ├── DestinationTabs.swift
+│   │   │   │   ├── DestinationVideo.entitlements
+│   │   │   │   ├── DestinationVideo.swift
+│   │   │   │   ├── Extensions
+│   │   │   │   │   ├── AVExtensions.swift
+│   │   │   │   │   ├── DestinationVideoExtensions.swift
+│   │   │   │   │   └── MultiplatformExtensions.swift
+│   │   │   │   ├── Info.plist
+│   │   │   │   ├── Model
+│   │   │   │   │   ├── Category.swift
+│   │   │   │   │   ├── Constants.swift
+│   │   │   │   │   ├── Data
+│   │   │   │   │   │   ├── Genre.swift
+│   │   │   │   │   │   ├── Importer.swift
+│   │   │   │   │   │   ├── Person.swift
+│   │   │   │   │   │   ├── PreviewData.swift
+│   │   │   │   │   │   ├── RelationshipMapping.swift
+│   │   │   │   │   │   ├── SampleData.swift
+│   │   │   │   │   │   ├── UpNextItem.swift
+│   │   │   │   │   │   └── Video.swift
+│   │   │   │   │   ├── NavigationNode.swift
+│   │   │   │   │   ├── Tabs.swift
+│   │   │   │   │   └── visionOS
+│   │   │   │   │       ├── EnvironmentStateHandler.swift
+│   │   │   │   │       └── ImmersiveEnvironment.swift
+│   │   │   │   ├── Player
+│   │   │   │   │   ├── InlinePlayerView.swift
+│   │   │   │   │   ├── PlayerModel.swift
+│   │   │   │   │   ├── PlayerView.swift
+│   │   │   │   │   ├── SystemPlayerView.swift
+│   │   │   │   │   └── UpNextView.swift
+│   │   │   │   ├── PlayerWindow.swift
+│   │   │   │   ├── Preview Content
+│   │   │   │   │   └── Preview Assets.xcassets
+│   │   │   │   │       └── Contents.json
+│   │   │   │   ├── Resources
+│   │   │   │   │   ├── Assets.xcassets
+│   │   │   │   │   │   ├── AccentColor.colorset
+│   │   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   │   ├── AppIcon.appiconset
+│   │   │   │   │   │   │   ├── AppIcon.png
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   ├── DarkAppIcon.png
+│   │   │   │   │   │   │   ├── TintableAppIcon.png
+│   │   │   │   │   │   │   ├── icon_128x128.png
+│   │   │   │   │   │   │   ├── icon_128x128@2x.png
+│   │   │   │   │   │   │   ├── icon_16x16.png
+│   │   │   │   │   │   │   ├── icon_16x16@2x.png
+│   │   │   │   │   │   │   ├── icon_256x256.png
+│   │   │   │   │   │   │   ├── icon_256x256@2x.png
+│   │   │   │   │   │   │   ├── icon_32x32.png
+│   │   │   │   │   │   │   ├── icon_32x32@2x.png
+│   │   │   │   │   │   │   ├── icon_512x512.png
+│   │   │   │   │   │   │   └── icon_512x512@2x.png
+│   │   │   │   │   │   ├── AppIcon.brandassets
+│   │   │   │   │   │   │   ├── App Icon - App Store.imagestack
+│   │   │   │   │   │   │   │   ├── Back.imagestacklayer
+│   │   │   │   │   │   │   │   │   ├── Content.imageset
+│   │   │   │   │   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   │   ├── Front.imagestacklayer
+│   │   │   │   │   │   │   │   │   ├── Content.imageset
+│   │   │   │   │   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   │   │   │   └── Middle.imagestacklayer
+│   │   │   │   │   │   │   │       ├── Content.imageset
+│   │   │   │   │   │   │   │       │   └── Contents.json
+│   │   │   │   │   │   │   │       └── Contents.json
+│   │   │   │   │   │   │   ├── App Icon.imagestack
+│   │   │   │   │   │   │   │   ├── Back.imagestacklayer
+│   │   │   │   │   │   │   │   │   ├── Content.imageset
+│   │   │   │   │   │   │   │   │   │   ├── Back.png
+│   │   │   │   │   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   │   ├── Front.imagestacklayer
+│   │   │   │   │   │   │   │   │   ├── Content.imageset
+│   │   │   │   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   │   │   │   └── Front.png
+│   │   │   │   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   │   │   │   └── Middle.imagestacklayer
+│   │   │   │   │   │   │   │       ├── Content.imageset
+│   │   │   │   │   │   │   │       │   └── Contents.json
+│   │   │   │   │   │   │   │       └── Contents.json
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   ├── Top Shelf Image Wide.imageset
+│   │   │   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   │   │   └── Top Shelf Image.imageset
+│   │   │   │   │   │   │       └── Contents.json
+│   │   │   │   │   │   ├── AppIcon.solidimagestack
+│   │   │   │   │   │   │   ├── Back.solidimagestacklayer
+│   │   │   │   │   │   │   │   ├── Content.imageset
+│   │   │   │   │   │   │   │   │   ├── Back.png
+│   │   │   │   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   ├── Front.solidimagestacklayer
+│   │   │   │   │   │   │   │   ├── Content.imageset
+│   │   │   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   │   │   └── Front.png
+│   │   │   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   │   │   └── Middle.solidimagestacklayer
+│   │   │   │   │   │   │       ├── Content.imageset
+│   │   │   │   │   │   │       │   └── Contents.json
+│   │   │   │   │   │   │       └── Contents.json
+│   │   │   │   │   │   ├── BOT-anist_landscape.imageset
+│   │   │   │   │   │   │   ├── BOT-anist_landscape.png
+│   │   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   │   ├── BOT-anist_portrait.imageset
+│   │   │   │   │   │   │   ├── BOT-anist_portrait.png
+│   │   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   ├── amazing_poster.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── amazing-animation-poster.png
+│   │   │   │   │   │   ├── animals_poster.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── cute-animals-poster.png
+│   │   │   │   │   │   ├── beach_landscape.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── beach_landscape.png
+│   │   │   │   │   │   ├── beach_portrait.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── beach_portrait.png
+│   │   │   │   │   │   ├── camping_landscape.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── camping_landscape.png
+│   │   │   │   │   │   ├── camping_portrait.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── camping_portrait.png
+│   │   │   │   │   │   ├── cinematic_poster.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── cinematic_poster.png
+│   │   │   │   │   │   ├── creek_landscape.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── creek_landscape.png
+│   │   │   │   │   │   ├── creek_portrait.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── creek_portrait.png
+│   │   │   │   │   │   ├── dance_landscape.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── dance_landscape.png
+│   │   │   │   │   │   ├── dance_portrait.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── dance_portrait.png
+│   │   │   │   │   │   ├── discovery_landscape.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── discovery_landscape.png
+│   │   │   │   │   │   ├── discovery_portrait.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── discovery_portrait.png
+│   │   │   │   │   │   ├── dv_logo.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── dv_logo@2x.png
+│   │   │   │   │   │   ├── extraordinary_poster.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── extraordinary-poster.png
+│   │   │   │   │   │   ├── forest_poster.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── forest_poster.png
+│   │   │   │   │   │   ├── hillside_landscape.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── hillside_landscape.png
+│   │   │   │   │   │   ├── hillside_portrait.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── hillside_portrait.png
+│   │   │   │   │   │   ├── lab_landscape.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── lab_landscape.png
+│   │   │   │   │   │   ├── lab_portrait.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── lab_portrait.png
+│   │   │   │   │   │   ├── lake_landscape.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── lake_landscape.png
+│   │   │   │   │   │   ├── lake_portrait.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── lake_portrait.png
+│   │   │   │   │   │   ├── landing_landscape.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── landing_landscape.png
+│   │   │   │   │   │   ├── landing_portrait.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── landing_portriat.png
+│   │   │   │   │   │   ├── ocean_landscape.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── ocean_landscape.png
+│   │   │   │   │   │   ├── ocean_portrait.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── ocean_portrait.png
+│   │   │   │   │   │   ├── park_landscape.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── park_landscape.png
+│   │   │   │   │   │   ├── park_portrait.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── park_portrait.png
+│   │   │   │   │   │   ├── samples_landscape.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── samples_landscape.png
+│   │   │   │   │   │   ├── samples_portrait.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── samples_portriat.png
+│   │   │   │   │   │   ├── sea_poster.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── by-the-sea-poster.png
+│   │   │   │   │   │   ├── studio_thumbnail_dark.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── studio_thumbnail_dark.png
+│   │   │   │   │   │   ├── studio_thumbnail_light.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── studio_thumbnail_light.png
+│   │   │   │   │   │   └── tvBackground.colorset
+│   │   │   │   │   │       └── Contents.json
+│   │   │   │   │   ├── Localizable.xcstrings
+│   │   │   │   │   ├── Videos
+│   │   │   │   │   │   ├── BOT-anist_video.mov
+│   │   │   │   │   │   └── dance_video.mov
+│   │   │   │   │   ├── de.lproj
+│   │   │   │   │   │   └── InfoPlist.strings
+│   │   │   │   │   ├── fr.lproj
+│   │   │   │   │   │   └── InfoPlist.strings
+│   │   │   │   │   ├── hi.lproj
+│   │   │   │   │   │   └── InfoPlist.strings
+│   │   │   │   │   ├── ja.lproj
+│   │   │   │   │   │   └── InfoPlist.strings
+│   │   │   │   │   ├── ko.lproj
+│   │   │   │   │   │   └── InfoPlist.strings
+│   │   │   │   │   └── zh_CN.lproj
+│   │   │   │   │       └── InfoPlist.strings
+│   │   │   │   ├── SharePlay
+│   │   │   │   │   ├── WatchingActivity.swift
+│   │   │   │   │   └── WatchingCoordinator.swift
+│   │   │   │   └── Views
+│   │   │   │       ├── ButtonStyle.swift
+│   │   │   │       ├── CategoryListView.swift
+│   │   │   │       ├── CategoryView.swift
+│   │   │   │       ├── DetailView.swift
+│   │   │   │       ├── GradientView.swift
+│   │   │   │       ├── HeroView.swift
+│   │   │   │       ├── LibraryView.swift
+│   │   │   │       ├── VideoCardView.swift
+│   │   │   │       ├── VideoInfoView.swift
+│   │   │   │       ├── VideoListView.swift
+│   │   │   │       ├── ViewModifiers.swift
+│   │   │   │       ├── WatchNowView.swift
+│   │   │   │       └── visionOS
+│   │   │   │           ├── ImmersiveEnvironmentPickerView.swift
+│   │   │   │           ├── ImmersiveEnvironmentView.swift
+│   │   │   │           ├── ProfileButton.swift
+│   │   │   │           └── TrailerView.swift
+│   │   │   ├── DestinationVideo.xcodeproj
+│   │   │   │   ├── .xcodesamplecode.plist
+│   │   │   │   ├── project.pbxproj
+│   │   │   │   └── project.xcworkspace
+│   │   │   │       └── xcshareddata
+│   │   │   │           └── WorkspaceSettings.xcsettings
+│   │   │   ├── LICENSE.txt
+│   │   │   ├── Packages
+│   │   │   │   └── Studio
+│   │   │   │       ├── .swiftpm
+│   │   │   │       │   └── xcode
+│   │   │   │       │       └── package.xcworkspace
+│   │   │   │       │           ├── .xcodesamplecode.plist
+│   │   │   │       │           ├── contents.xcworkspacedata
+│   │   │   │       │           └── xcshareddata
+│   │   │   │       │               └── WorkspaceSettings.xcsettings
+│   │   │   │       ├── Package.realitycomposerpro
+│   │   │   │       │   ├── ProjectData
+│   │   │   │       │   │   └── main.json
+│   │   │   │       │   └── WorkspaceData
+│   │   │   │       │       ├── SceneMetadataList.json
+│   │   │   │       │       └── Settings.rcprojectdata
+│   │   │   │       ├── Package.swift
+│   │   │   │       └── Sources
+│   │   │   │           └── Studio
+│   │   │   │               ├── Studio.rkassets
+│   │   │   │               │   ├── AAA_MainScene.usda
+│   │   │   │               │   ├── ibl
+│   │   │   │               │   │   ├── Studio_IBL_LatLong_Dark.exr
+│   │   │   │               │   │   └── Studio_IBL_LatLong_Light.exr
+│   │   │   │               │   ├── meshes
+│   │   │   │               │   │   ├── Studio.usdc
+│   │   │   │               │   │   ├── Studio_floor_2_2_Lightspill.usdc
+│   │   │   │               │   │   ├── Studio_floor_2_Lightspill.usdc
+│   │   │   │               │   │   └── dome.usdc
+│   │   │   │               │   ├── scenes
+│   │   │   │               │   │   ├── Common.usda
+│   │   │   │               │   │   ├── Floor.usda
+│   │   │   │               │   │   ├── StudioDark.usda
+│   │   │   │               │   │   └── StudioLight.usda
+│   │   │   │               │   └── textures
+│   │   │   │               │       ├── common
+│   │   │   │               │       │   └── DefaultAttenuationMap.exr
+│   │   │   │               │       ├── dark
+│   │   │   │               │       │   ├── BakingGroup1_1_d.png
+│   │   │   │               │       │   ├── BakingGroup1_d.png
+│   │   │   │               │       │   ├── BakingGroup2_2_d.png
+│   │   │   │               │       │   ├── BakingGroup2_d.png
+│   │   │   │               │       │   ├── BakingGroup3_d.png
+│   │   │   │               │       │   ├── BakingGroup4_d.png
+│   │   │   │               │       │   ├── BakingGroup5_d.png
+│   │   │   │               │       │   ├── BakingGroup6_d.png
+│   │   │   │               │       │   └── BakingGroup7_d.png
+│   │   │   │               │       ├── light
+│   │   │   │               │       │   ├── BakingGroup1.png
+│   │   │   │               │       │   ├── BakingGroup1_1.png
+│   │   │   │               │       │   ├── BakingGroup2.png
+│   │   │   │               │       │   ├── BakingGroup2_2.png
+│   │   │   │               │       │   ├── BakingGroup3.png
+│   │   │   │               │       │   ├── BakingGroup4.png
+│   │   │   │               │       │   ├── BakingGroup5.png
+│   │   │   │               │       │   ├── BakingGroup6.png
+│   │   │   │               │       │   └── BakingGroup7.png
+│   │   │   │               │       └── skies
+│   │   │   │               │           ├── Studio_sky_LatLong_Dark.exr
+│   │   │   │               │           └── Studio_sky_LatLong_Light.exr
+│   │   │   │               └── Studio.swift
+│   │   │   └── README.md
+│   │   ├── diorama
+│   │   │   ├── .gitignore
+│   │   │   ├── Configuration
+│   │   │   │   └── SampleCode.xcconfig
+│   │   │   ├── Diorama
+│   │   │   │   ├── Assets.xcassets
+│   │   │   │   │   ├── AccentColor.colorset
+│   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   ├── AppIcon.solidimagestack
+│   │   │   │   │   │   ├── Back.solidimagestacklayer
+│   │   │   │   │   │   │   ├── Content.imageset
+│   │   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   │   └── diorama-icon-bottom.png
+│   │   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   ├── Front.solidimagestacklayer
+│   │   │   │   │   │   │   ├── Content.imageset
+│   │   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   │   └── diorama-export-top.png
+│   │   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   │   └── Middle.solidimagestacklayer
+│   │   │   │   │   │       ├── Content.imageset
+│   │   │   │   │   │       │   ├── Contents.json
+│   │   │   │   │   │       │   └── diorama-icon-middle.png
+│   │   │   │   │   │       └── Contents.json
+│   │   │   │   │   ├── Contents.json
+│   │   │   │   │   ├── Flowers_14_Yellow.imageset
+│   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   └── Flowers_14_Yellow.jpeg
+│   │   │   │   │   ├── Landscape_22_Sailboats.imageset
+│   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   └── Landscape_22_Sailboats.jpeg
+│   │   │   │   │   ├── Landscape_25_Tropical_Sunset_Palms.imageset
+│   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   └── Landscape_25_Tropical_Sunset_Palms.jpeg
+│   │   │   │   │   ├── Landscape_28_Purple_Sky.imageset
+│   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   └── Landscape_28_Purple_Sky.jpeg
+│   │   │   │   │   ├── Landscape_29_Tropical_Sunset_Boat.imageset
+│   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   └── Landscape_29_Tropical_Sunset_Boat.jpeg
+│   │   │   │   │   ├── Landscape_2_Sunset.imageset
+│   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   └── Landscape_2_Sunset.jpeg
+│   │   │   │   │   └── Landscape_33_Trees_Rocks.imageset
+│   │   │   │   │       ├── Contents.json
+│   │   │   │   │       └── Landscape_33_Trees_Rocks.jpeg
+│   │   │   │   ├── AttachmentsProvider.swift
+│   │   │   │   ├── Components.swift
+│   │   │   │   ├── ContentView.swift
+│   │   │   │   ├── DioramaApp.swift
+│   │   │   │   ├── DioramaView.swift
+│   │   │   │   ├── FlockingComponent.swift
+│   │   │   │   ├── FlockingSystem.swift
+│   │   │   │   ├── Info.plist
+│   │   │   │   ├── InfoPlist.xcstrings
+│   │   │   │   ├── LearnMoreView.swift
+│   │   │   │   ├── Localizable.xcstrings
+│   │   │   │   ├── Preview Content
+│   │   │   │   │   └── Preview Assets.xcassets
+│   │   │   │   │       └── Contents.json
+│   │   │   │   └── ViewModel.swift
+│   │   │   ├── Diorama.xcodeproj
+│   │   │   │   ├── .xcodesamplecode.plist
+│   │   │   │   ├── project.pbxproj
+│   │   │   │   ├── project.xcworkspace
+│   │   │   │   │   └── xcshareddata
+│   │   │   │   │       └── WorkspaceSettings.xcsettings
+│   │   │   │   └── xcshareddata
+│   │   │   │       └── xcschemes
+│   │   │   │           └── Dioramas.xcscheme
+│   │   │   ├── LICENSE.txt
+│   │   │   ├── Packages
+│   │   │   │   └── RealityKitContent
+│   │   │   │       ├── .swiftpm
+│   │   │   │       │   └── xcode
+│   │   │   │       │       └── package.xcworkspace
+│   │   │   │       │           ├── .xcodesamplecode.plist
+│   │   │   │       │           ├── contents.xcworkspacedata
+│   │   │   │       │           └── xcshareddata
+│   │   │   │       │               └── WorkspaceSettings.xcsettings
+│   │   │   │       ├── Package.realitycomposerpro
+│   │   │   │       │   ├── Library
+│   │   │   │       │   ├── PluginData
+│   │   │   │       │   ├── ProjectData
+│   │   │   │       │   │   └── main.json
+│   │   │   │       │   └── WorkspaceData
+│   │   │   │       │       ├── SceneMetadataList.json
+│   │   │   │       │       └── Settings.rcprojectdata
+│   │   │   │       ├── Package.swift
+│   │   │   │       ├── README.md
+│   │   │   │       └── Sources
+│   │   │   │           └── RealityKitContent
+│   │   │   │               ├── BillboardComponent.swift
+│   │   │   │               ├── BillboardSystem.swift
+│   │   │   │               ├── PointOfInterestComponent.swift
+│   │   │   │               ├── RealityKitContent.rkassets
+│   │   │   │               │   ├── Bird.usdz
+│   │   │   │               │   ├── Bird_Call_1.wav
+│   │   │   │               │   ├── Bird_Call_2.wav
+│   │   │   │               │   ├── Bird_With_Audio.usda
+│   │   │   │               │   ├── Catalina.usdz
+│   │   │   │               │   ├── CatalinaData
+│   │   │   │               │   │   ├── DioramaCatalina_ao.png
+│   │   │   │               │   │   ├── DioramaCatalina_bc.png
+│   │   │   │               │   │   ├── DioramaCatalina_n.png
+│   │   │   │               │   │   ├── DioramaCatalina_r.png
+│   │   │   │               │   │   └── DioramaCatalina_refit_h.exr
+│   │   │   │               │   ├── Cloud_A.usda
+│   │   │   │               │   ├── Cloud_B.usda
+│   │   │   │               │   ├── Cloud_C.usda
+│   │   │   │               │   ├── Cloud_Chunk.usda
+│   │   │   │               │   ├── DioramaAssembled.usda
+│   │   │   │               │   ├── Diorama_Base.usdz
+│   │   │   │               │   ├── FlatTerrain.usdz
+│   │   │   │               │   ├── Forest_Sounds.wav
+│   │   │   │               │   ├── Location_Pin.usdz
+│   │   │   │               │   ├── Materials.usda
+│   │   │   │               │   ├── Ocean_Sounds.wav
+│   │   │   │               │   ├── ParticleEmitterPresetTextures
+│   │   │   │               │   │   └── dustsheet.exr
+│   │   │   │               │   ├── SmoothConcrete.usdz
+│   │   │   │               │   ├── TrailPath_Export
+│   │   │   │               │   │   ├── 0
+│   │   │   │               │   │   │   ├── Catalina_TrailA.usdz
+│   │   │   │               │   │   │   ├── Catalina_TrailB.usdz
+│   │   │   │               │   │   │   ├── Yosemite_TrailA.usdz
+│   │   │   │               │   │   │   ├── Yosemite_TrailB.usdz
+│   │   │   │               │   │   │   └── hilight_gradient.png
+│   │   │   │               │   │   └── TrailPath_Export.usdc
+│   │   │   │               │   ├── Yosemite.usdz
+│   │   │   │               │   └── YosemiteData
+│   │   │   │               │       ├── DioramaYosemite_ao.png
+│   │   │   │               │       ├── DioramaYosemite_bc.png
+│   │   │   │               │       ├── DioramaYosemite_n.png
+│   │   │   │               │       ├── DioramaYosemite_r.png
+│   │   │   │               │       └── DioramaYosemite_refit_h.exr
+│   │   │   │               ├── RealityKitContent.swift
+│   │   │   │               ├── RegionSpecificComponent.swift
+│   │   │   │               ├── ShaderGraphMaterials.swift
+│   │   │   │               ├── Style.swift
+│   │   │   │               ├── TrailAnimationSystem.swift
+│   │   │   │               └── TrailComponent.swift
+│   │   │   ├── README.md
+│   │   │   └── metadata.json
+│   │   ├── hello-world
+│   │   │   ├── .gitignore
+│   │   │   ├── Configuration
+│   │   │   │   └── SampleCode.xcconfig
+│   │   │   ├── LICENSE.txt
+│   │   │   ├── Packages
+│   │   │   │   └── WorldAssets
+│   │   │   │       ├── .swiftpm
+│   │   │   │       │   └── xcode
+│   │   │   │       ├── Package.realitycomposerpro
+│   │   │   │       │   └── ProjectData
+│   │   │   │       │       └── main.json
+│   │   │   │       ├── Package.swift
+│   │   │   │       ├── README.md
+│   │   │   │       └── Sources
+│   │   │   │           └── WorldAssets
+│   │   │   │               ├── SunPositionSystem.swift
+│   │   │   │               ├── WorldAssets.rkassets
+│   │   │   │               │   ├── Earth.usda
+│   │   │   │               │   ├── Globe.usda
+│   │   │   │               │   ├── Globe.usdz
+│   │   │   │               │   ├── M_earth_baseColor.png
+│   │   │   │               │   ├── M_earth_clouds_normal.png
+│   │   │   │               │   ├── M_earth_emissive.jpg
+│   │   │   │               │   ├── M_earth_normal.png
+│   │   │   │               │   ├── M_earth_roughness.jpg
+│   │   │   │               │   ├── Moon
+│   │   │   │               │   │   ├── 0
+│   │   │   │               │   │   │   ├── M_moon_baseColor_1.jpg
+│   │   │   │               │   │   │   ├── M_moon_emissive_1.jpg
+│   │   │   │               │   │   │   ├── M_moon_metallic_1.jpg
+│   │   │   │               │   │   │   ├── M_moon_normal_1.jpg
+│   │   │   │               │   │   │   ├── M_moon_occlusion_1.jpg
+│   │   │   │               │   │   │   └── M_moon_roughness_2.jpg
+│   │   │   │               │   │   ├── M_earth_baseColor_combined.jpg
+│   │   │   │               │   │   └── Moon.exported_compressed.usdc
+│   │   │   │               │   ├── Moon.usda
+│   │   │   │               │   ├── Pole
+│   │   │   │               │   │   ├── 0
+│   │   │   │               │   │   │   ├── M_arrow_baseColor_1.png
+│   │   │   │               │   │   │   ├── M_arrow_emissive_1.jpg
+│   │   │   │               │   │   │   ├── M_arrow_metallic_1.jpg
+│   │   │   │               │   │   │   ├── M_arrow_normal_1.jpg
+│   │   │   │               │   │   │   ├── M_arrow_roughness_1.jpg
+│   │   │   │               │   │   │   └── arrow_opacity_1.png
+│   │   │   │               │   │   └── Pole.exported_compressed.usdc
+│   │   │   │               │   ├── Pole.usda
+│   │   │   │               │   ├── Pole.usdc
+│   │   │   │               │   ├── Satellite
+│   │   │   │               │   │   ├── 0
+│   │   │   │               │   │   │   ├── M_satellite_baseColor_1.jpg
+│   │   │   │               │   │   │   ├── M_satellite_metallic_1.jpg
+│   │   │   │               │   │   │   ├── M_satellite_normal_1.jpg
+│   │   │   │               │   │   │   ├── M_satellite_occlusion_1.jpg
+│   │   │   │               │   │   │   └── M_satellite_roughness_1.jpg
+│   │   │   │               │   │   └── Satellite.exported_compressed.usdc
+│   │   │   │               │   ├── Satellite.usda
+│   │   │   │               │   ├── Sun
+│   │   │   │               │   │   ├── 0
+│   │   │   │               │   │   │   ├── M_sun_baseColor_1.jpg
+│   │   │   │               │   │   │   ├── M_sun_emissive_2.jpg
+│   │   │   │               │   │   │   ├── M_sun_metallic_1.jpg
+│   │   │   │               │   │   │   ├── M_sun_normal_1.jpg
+│   │   │   │               │   │   │   ├── M_sun_occlusion_1.jpg
+│   │   │   │               │   │   │   └── M_sun_roughness_1.jpg
+│   │   │   │               │   │   └── Sun.exported_compressed.usdc
+│   │   │   │               │   ├── Sun.usda
+│   │   │   │               │   ├── Telescope
+│   │   │   │               │   │   ├── 0
+│   │   │   │               │   │   │   ├── M_telescopeBase_baseColor_1.jpg
+│   │   │   │               │   │   │   ├── M_telescopeBase_emissive_1.jpg
+│   │   │   │               │   │   │   ├── M_telescopeBase_metallic_1.jpg
+│   │   │   │               │   │   │   ├── M_telescopeBase_normal_1.jpg
+│   │   │   │               │   │   │   ├── M_telescopeBase_occlusion_1.jpg
+│   │   │   │               │   │   │   ├── M_telescopeBase_roughness_1.jpg
+│   │   │   │               │   │   │   ├── M_telescopeReflectors_baseColor_1.png
+│   │   │   │               │   │   │   ├── M_telescopeReflectors_emissive_1.jpg
+│   │   │   │               │   │   │   ├── M_telescopeReflectors_metallic_1.jpg
+│   │   │   │               │   │   │   ├── M_telescopeReflectors_normal_1.jpg
+│   │   │   │               │   │   │   ├── M_telescopeReflectors_occlusion_1.jpg
+│   │   │   │               │   │   │   └── M_telescopeReflectors_roughness_1.jpg
+│   │   │   │               │   │   └── Telescope.exported_compressed.usdc
+│   │   │   │               │   ├── Telescope.usda
+│   │   │   │               │   ├── earthClouds_opacity.png
+│   │   │   │               │   ├── earth_004_clouds_resized.usdc
+│   │   │   │               │   └── earth_sphere_equirectangular.usdc
+│   │   │   │               └── WorldAssets.swift
+│   │   │   ├── README.md
+│   │   │   ├── World
+│   │   │   │   ├── Entities
+│   │   │   │   │   ├── EarthEntity+Configuration.swift
+│   │   │   │   │   ├── EarthEntity.swift
+│   │   │   │   │   ├── Entity+Sunlight.swift
+│   │   │   │   │   ├── Entity+Trace.swift
+│   │   │   │   │   ├── SatelliteEntity+Configuration.swift
+│   │   │   │   │   └── SatelliteEntity.swift
+│   │   │   │   ├── Globe
+│   │   │   │   │   ├── Globe.swift
+│   │   │   │   │   ├── GlobeControls.swift
+│   │   │   │   │   ├── GlobeModule.swift
+│   │   │   │   │   └── GlobeToggle.swift
+│   │   │   │   ├── Info.plist
+│   │   │   │   ├── InfoPlist.xcstrings
+│   │   │   │   ├── Localizable.xcstrings
+│   │   │   │   ├── Model
+│   │   │   │   │   ├── Module.swift
+│   │   │   │   │   └── ViewModel.swift
+│   │   │   │   ├── Modifiers
+│   │   │   │   │   ├── DragRotationModifier.swift
+│   │   │   │   │   ├── PlacementGesturesModifier.swift
+│   │   │   │   │   └── TypeTextModifier.swift
+│   │   │   │   ├── Modules
+│   │   │   │   │   ├── ModuleCard.swift
+│   │   │   │   │   ├── ModuleDetail.swift
+│   │   │   │   │   ├── Modules.swift
+│   │   │   │   │   └── TableOfContents.swift
+│   │   │   │   ├── Orbit
+│   │   │   │   │   ├── Orbit.swift
+│   │   │   │   │   ├── OrbitModule.swift
+│   │   │   │   │   └── OrbitToggle.swift
+│   │   │   │   ├── Packages
+│   │   │   │   │   └── WorldAssets
+│   │   │   │   │       └── .swiftpm
+│   │   │   │   │           └── xcode
+│   │   │   │   ├── Preview Content
+│   │   │   │   │   └── Preview Assets.xcassets
+│   │   │   │   │       └── Contents.json
+│   │   │   │   ├── RealityViews
+│   │   │   │   │   ├── Earth.swift
+│   │   │   │   │   ├── Starfield.swift
+│   │   │   │   │   └── Sun.swift
+│   │   │   │   ├── Resources
+│   │   │   │   │   ├── Assets.xcassets
+│   │   │   │   │   │   ├── AccentColor.colorset
+│   │   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   │   ├── AppIcon.solidimagestack
+│   │   │   │   │   │   │   ├── Back.solidimagestacklayer
+│   │   │   │   │   │   │   │   ├── Content.imageset
+│   │   │   │   │   │   │   │   │   ├── Back.png
+│   │   │   │   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   ├── Front.solidimagestacklayer
+│   │   │   │   │   │   │   │   ├── Content.imageset
+│   │   │   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   │   │   └── Front.png
+│   │   │   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   │   │   └── Middle.solidimagestacklayer
+│   │   │   │   │   │   │       ├── Content.imageset
+│   │   │   │   │   │   │       │   └── Contents.json
+│   │   │   │   │   │   │       └── Contents.json
+│   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   ├── EarthHalf.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── EarthHalf@2x.png
+│   │   │   │   │   │   ├── GlobeHero.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── GlobeHero@2x.png
+│   │   │   │   │   │   ├── SolarBackground.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── SolarBackground@2x.png
+│   │   │   │   │   │   ├── SolarHero.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── SolarHero@2x.png
+│   │   │   │   │   │   ├── Starfield.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── Starfield.jpg
+│   │   │   │   │   │   ├── SunSliver.imageset
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   └── SunSliver@2x.png
+│   │   │   │   │   │   └── TrailGradient.imageset
+│   │   │   │   │   │       ├── Contents.json
+│   │   │   │   │   │       └── TrailGradient.jpg
+│   │   │   │   │   └── Sunlight.skybox
+│   │   │   │   │       └── Sunlight.png
+│   │   │   │   ├── Settings
+│   │   │   │   │   ├── EarthSettings.swift
+│   │   │   │   │   ├── GlobeSettings.swift
+│   │   │   │   │   ├── OrbitSettings.swift
+│   │   │   │   │   ├── SatelliteSettings.swift
+│   │   │   │   │   ├── SettingsButton.swift
+│   │   │   │   │   ├── SliderGridRow.swift
+│   │   │   │   │   └── SolarSystemSettings.swift
+│   │   │   │   ├── Solar System
+│   │   │   │   │   ├── SolarSystem.swift
+│   │   │   │   │   ├── SolarSystemControls.swift
+│   │   │   │   │   ├── SolarSystemModule.swift
+│   │   │   │   │   └── SolarSystemToggle.swift
+│   │   │   │   ├── Systems
+│   │   │   │   │   ├── RotationSystem.swift
+│   │   │   │   │   └── TraceSystem.swift
+│   │   │   │   └── WorldApp.swift
+│   │   │   ├── World.xcodeproj
+│   │   │   │   ├── .xcodesamplecode.plist
+│   │   │   │   ├── project.pbxproj
+│   │   │   │   ├── project.xcworkspace
+│   │   │   │   │   └── xcshareddata
+│   │   │   │   │       └── WorkspaceSettings.xcsettings
+│   │   │   │   └── xcshareddata
+│   │   │   │       └── xcschemes
+│   │   │   │           └── World.xcscheme
+│   │   │   └── metadata.json
+│   │   ├── placing-content-on-detected-planes
+│   │   │   ├── .gitignore
+│   │   │   ├── Configuration
+│   │   │   │   └── SampleCode.xcconfig
+│   │   │   ├── LICENSE.txt
+│   │   │   ├── ObjectPlacement
+│   │   │   │   ├── 3D Models
+│   │   │   │   │   ├── Box.usdz
+│   │   │   │   │   ├── Cone.usdz
+│   │   │   │   │   ├── Cube.usdz
+│   │   │   │   │   └── Cylinder.usdz
+│   │   │   │   ├── App
+│   │   │   │   │   ├── AppState.swift
+│   │   │   │   │   ├── DragState.swift
+│   │   │   │   │   ├── PlaceableObject.swift
+│   │   │   │   │   ├── PlacementManager.swift
+│   │   │   │   │   └── PlacementState.swift
+│   │   │   │   ├── Info.plist
+│   │   │   │   ├── ObjectPlacementApp.swift
+│   │   │   │   ├── Utilities
+│   │   │   │   │   ├── GeometryUtilities.swift
+│   │   │   │   │   ├── ModelLoader.swift
+│   │   │   │   │   ├── PersistenceManager.swift
+│   │   │   │   │   ├── PlaneAnchorHandler.swift
+│   │   │   │   │   └── PlaneProjector.swift
+│   │   │   │   └── Views
+│   │   │   │       ├── DeleteButton.swift
+│   │   │   │       ├── HomeView.swift
+│   │   │   │       ├── InfoLabel.swift
+│   │   │   │       ├── ObjectPlacementMenuView.swift
+│   │   │   │       ├── ObjectPlacementRealityView.swift
+│   │   │   │       ├── ObjectSelectionView.swift
+│   │   │   │       ├── PlacementTooltip.swift
+│   │   │   │       └── TooltipView.swift
+│   │   │   ├── ObjectPlacement.xcodeproj
+│   │   │   │   ├── .xcodesamplecode.plist
+│   │   │   │   ├── project.pbxproj
+│   │   │   │   ├── project.xcworkspace
+│   │   │   │   │   └── xcshareddata
+│   │   │   │   │       ├── WorkspaceSettings.xcsettings
+│   │   │   │   │       └── xcschemes
+│   │   │   │   └── xcshareddata
+│   │   │   │       └── xcschemes
+│   │   │   │           └── ObjectPlacement.xcscheme
+│   │   │   ├── README.md
+│   │   │   └── metadata.json
+│   │   ├── playing-spatial-audio
+│   │   │   ├── .gitignore
+│   │   │   ├── Configuration
+│   │   │   │   └── SampleCode.xcconfig
+│   │   │   ├── LICENSE.txt
+│   │   │   ├── README.md
+│   │   │   ├── SpatialAudio
+│   │   │   │   ├── App
+│   │   │   │   │   ├── Assets.xcassets
+│   │   │   │   │   │   ├── AppIcon.solidimagestack
+│   │   │   │   │   │   │   ├── Back.solidimagestacklayer
+│   │   │   │   │   │   │   │   ├── Content.imageset
+│   │   │   │   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   │   │   ├── Contents.json
+│   │   │   │   │   │   │   ├── Front.solidimagestacklayer
+│   │   │   │   │   │   │   │   ├── Content.imageset
+│   │   │   │   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   │   │   └── Middle.solidimagestacklayer
+│   │   │   │   │   │   │       ├── Content.imageset
+│   │   │   │   │   │   │       │   └── Contents.json
+│   │   │   │   │   │   │       └── Contents.json
+│   │   │   │   │   │   └── Contents.json
+│   │   │   │   │   ├── EntryPoint.swift
+│   │   │   │   │   ├── Info.plist
+│   │   │   │   │   └── Preview Assets.xcassets
+│   │   │   │   │       └── Contents.json
+│   │   │   │   ├── Resources
+│   │   │   │   │   └── FunkySynth.m4a
+│   │   │   │   ├── Views
+│   │   │   │   │   ├── DecibelSlider.swift
+│   │   │   │   │   └── SpatialAudioView.swift
+│   │   │   │   └── Visualizer
+│   │   │   │       └── AxisVisualizer.swift
+│   │   │   ├── SpatialAudio.xcodeproj
+│   │   │   │   ├── .xcodesamplecode.plist
+│   │   │   │   ├── project.pbxproj
+│   │   │   │   └── project.xcworkspace
+│   │   │   │       └── xcshareddata
+│   │   │   │           └── WorkspaceSettings.xcsettings
+│   │   │   └── metadata.json
+│   │   └── swift-splash
+│   │       ├── .gitignore
+│   │       ├── Configuration
+│   │       │   └── SampleCode.xcconfig
+│   │       ├── LICENSE.txt
+│   │       ├── Packages
+│   │       │   └── SwiftSplashTrackPieces
+│   │       │       ├── .swiftpm
+│   │       │       │   └── xcode
+│   │       │       ├── Package.realitycomposerpro
+│   │       │       │   ├── ProjectData
+│   │       │       │   │   └── main.json
+│   │       │       │   └── WorkspaceData
+│   │       │       │       ├── SceneMetadataList.json
+│   │       │       │       ├── Settings.rcprojectdata
+│   │       │       │       └── amandaestrada.rcuserdata
+│   │       │       ├── Package.swift
+│   │       │       ├── README.md
+│   │       │       ├── Sources
+│   │       │       │   └── SwiftSplashTrackPieces
+│   │       │       │       ├── Components
+│   │       │       │       │   ├── Connectable.swift
+│   │       │       │       │   ├── ConnectableStateComponent.swift
+│   │       │       │       │   └── MarkerComponents.swift
+│   │       │       │       ├── Extensions
+│   │       │       │       │   ├── Entity+Utilities.swift
+│   │       │       │       │   ├── Float+Utilities.swift
+│   │       │       │       │   └── SIMD+Utilities.swift
+│   │       │       │       ├── SwiftSplashTrackPieces.rkassets
+│   │       │       │       │   ├── EndParticles.usda
+│   │       │       │       │   ├── EndPiece.usda
+│   │       │       │       │   ├── Fish
+│   │       │       │       │   │   ├── Textures
+│   │       │       │       │   │   │   ├── mat_fishAccessories_BaseColor.png
+│   │       │       │       │   │   │   ├── mat_fishAccessories_Normal.png
+│   │       │       │       │   │   │   ├── mat_fishAccessories_OcclusionRoughnessMetallic.png
+│   │       │       │       │   │   │   ├── mat_fishAccessories_Roughness.png
+│   │       │       │       │   │   │   ├── mat_fishBody_BaseColor.png
+│   │       │       │       │   │   │   ├── mat_fishBody_Normal.png
+│   │       │       │       │   │   │   ├── mat_fishBody_OcclusionRoughnessMetallic.png
+│   │       │       │       │   │   │   ├── mat_fishBody_Roughness.png
+│   │       │       │       │   │   │   ├── mat_fishEyes_BaseColor.png
+│   │       │       │       │   │   │   ├── mat_fishEyes_Normal.png
+│   │       │       │       │   │   │   ├── mat_fishEyes_OcclusionRoughnessMetallic.png
+│   │       │       │       │   │   │   ├── mat_fishGlass_BaseColor.png
+│   │       │       │       │   │   │   ├── mat_fishGlass_Normal.png
+│   │       │       │       │   │   │   └── mat_fishGlass_OcclusionRoughnessMetallic.png
+│   │       │       │       │   │   ├── adventureFish_idle_001_anim.usdz
+│   │       │       │       │   │   ├── adventureFish_swim_001_anim.usdz
+│   │       │       │       │   │   └── animations
+│   │       │       │       │   │       └── adventureFish_swim_slide01_anim.usdz
+│   │       │       │       │   ├── FishMaterials.usda
+│   │       │       │       │   ├── Goal
+│   │       │       │       │   │   ├── Fish
+│   │       │       │       │   │   │   ├── adventureFish_end_glass_idle_animation.usdz
+│   │       │       │       │   │   │   ├── adventureFish_end_glass_ride_animation.usdz
+│   │       │       │       │   │   │   ├── adventureFish_end_noGlass_idle_animation.usdz
+│   │       │       │       │   │   │   └── adventureFish_end_noGlass_ride_animation.usdz
+│   │       │       │       │   │   ├── end.usdz
+│   │       │       │       │   │   ├── end_flag_glow.usd
+│   │       │       │       │   │   ├── end_glow.usd
+│   │       │       │       │   │   ├── end_water.usd
+│   │       │       │       │   │   ├── flag_idle_animation.usdz
+│   │       │       │       │   │   ├── flag_still_geo.usdz
+│   │       │       │       │   │   ├── slideEnd_bottom.usdz
+│   │       │       │       │   │   ├── slideEnd_top.usd
+│   │       │       │       │   │   ├── slideEnd_top_glow.usd
+│   │       │       │       │   │   ├── slide_end_water.usdz
+│   │       │       │       │   │   └── waterFallSplash.usdz
+│   │       │       │       │   ├── M_Glow.usda
+│   │       │       │       │   ├── M_LightsRim.usda
+│   │       │       │       │   ├── M_MovingWater.usda
+│   │       │       │       │   ├── M_RainbowLights.usda
+│   │       │       │       │   ├── M_SlideBottom.usda
+│   │       │       │       │   ├── M_SlideLights.usda
+│   │       │       │       │   ├── M_SlideTop.usda
+│   │       │       │       │   ├── M_SolidSpheres.usda
+│   │       │       │       │   ├── M_StagnantWater.usda
+│   │       │       │       │   ├── M_WaterFall.usda
+│   │       │       │       │   ├── M_endWater
+│   │       │       │       │   ├── M_endWater.usda
+│   │       │       │       │   ├── M_solidSpheres_emmissive.png
+│   │       │       │       │   ├── ParticleEmitterPresetTextures
+│   │       │       │       │   │   ├── dustsheet.exr
+│   │       │       │       │   │   ├── flare.exr
+│   │       │       │       │   │   ├── flaresheet.exr
+│   │       │       │       │   │   ├── halfRadial.png
+│   │       │       │       │   │   ├── halfRadial1.png
+│   │       │       │       │   │   ├── rain.png
+│   │       │       │       │   │   ├── splashSpriteSheet.png
+│   │       │       │       │   │   ├── testSplash.png
+│   │       │       │       │   │   ├── twinkle.exr
+│   │       │       │       │   │   └── waterDrop.png
+│   │       │       │       │   ├── Slide01.usda
+│   │       │       │       │   ├── Slide02.usda
+│   │       │       │       │   ├── Slide03.usda
+│   │       │       │       │   ├── Slide04.usda
+│   │       │       │       │   ├── Slide05.usda
+│   │       │       │       │   ├── Slide_01
+│   │       │       │       │   │   ├── Fish
+│   │       │       │       │   │   │   ├── adventureFish_slide01_glass_ride_animation.usdz
+│   │       │       │       │   │   │   └── adventureFish_slide01_noGlass_ride_animation.usdz
+│   │       │       │       │   │   ├── slide01_bottom.usdz
+│   │       │       │       │   │   ├── slide01_bottom_glow.usd
+│   │       │       │       │   │   ├── slide01_top.usdz
+│   │       │       │       │   │   ├── slide01_top_glow.usdz
+│   │       │       │       │   │   ├── slide01_water.usdz
+│   │       │       │       │   │   └── slide_01.usdz
+│   │       │       │       │   ├── Slide_02
+│   │       │       │       │   │   ├── Fish
+│   │       │       │       │   │   │   ├── adventureFish_slide02_glass_ride_animation.usdz
+│   │       │       │       │   │   │   └── adventureFish_slide02_noGlass_ride_animation.usdz
+│   │       │       │       │   │   ├── slide02_bottom.usdz
+│   │       │       │       │   │   ├── slide02_bottom_glow.usdz
+│   │       │       │       │   │   ├── slide02_top.usdz
+│   │       │       │       │   │   ├── slide02_top_glow.usd
+│   │       │       │       │   │   └── slide02_water.usdz
+│   │       │       │       │   ├── Slide_03
+│   │       │       │       │   │   ├── Fish
+│   │       │       │       │   │   │   ├── adventureFish_slide03_glass_ride_animation.usdz
+│   │       │       │       │   │   │   └── adventureFish_slide03_noGlass_ride_animation.usdz
+│   │       │       │       │   │   ├── slide03_bottom.usdz
+│   │       │       │       │   │   ├── slide03_bottom_glow.usdz
+│   │       │       │       │   │   ├── slide03_top.usdz
+│   │       │       │       │   │   ├── slide03_top_glow.usdz
+│   │       │       │       │   │   └── slide03_water.usdz
+│   │       │       │       │   ├── Slide_04
+│   │       │       │       │   │   ├── adventureFish_slide04_glass_ride_animation.usdz
+│   │       │       │       │   │   ├── adventureFish_slide04_noGlass_ride_animation.usdz
+│   │       │       │       │   │   ├── adventureFish_slide04_ride_animation.usdz
+│   │       │       │       │   │   ├── slide04_bottom.usdz
+│   │       │       │       │   │   ├── slide04_bottom_glow.usdz
+│   │       │       │       │   │   ├── slide04_top.usdz
+│   │       │       │       │   │   ├── slide04_top_glow.usdz
+│   │       │       │       │   │   └── slide04_water.usdz
+│   │       │       │       │   ├── Slide_05
+│   │       │       │       │   │   ├── Fish
+│   │       │       │       │   │   │   ├── adventureFish_slide05_glass_ride_animation.usdz
+│   │       │       │       │   │   │   └── adventureFish_slide05_noGlass_ride_animation.usdz
+│   │       │       │       │   │   ├── slide05_bottom.usdz
+│   │       │       │       │   │   ├── slide05_bottom_glow.usdz
+│   │       │       │       │   │   ├── slide05_top.usdz
+│   │       │       │       │   │   ├── slide05_top_glow.usdz
+│   │       │       │       │   │   └── slide05_water.usdz
+│   │       │       │       │   ├── Start
+│   │       │       │       │   │   ├── adventureFish_start_glass_idle_animation.usdz
+│   │       │       │       │   │   ├── adventureFish_start_glass_ride_animation.usdz
+│   │       │       │       │   │   ├── adventureFish_start_noGlass_idle_animation.usdz
+│   │       │       │       │   │   ├── adventureFish_start_noGlass_ride_animation.usdz
+│   │       │       │       │   │   ├── slideStart_bottom.usd
+│   │       │       │       │   │   ├── slideStart_water.usdz
+│   │       │       │       │   │   ├── start_glass.usd
+│   │       │       │       │   │   ├── start_glow.usdz
+│   │       │       │       │   │   ├── start_ride_animation.usdz
+│   │       │       │       │   │   └── waterDrain_ride_animation.usdz
+│   │       │       │       │   ├── StartPiece.usda
+│   │       │       │       │   ├── SwiftSplashTrackPieces.usda
+│   │       │       │       │   ├── Textures
+│   │       │       │       │   │   ├── Metal
+│   │       │       │       │   │   │   ├── mat_end_BaseColor_metal.png
+│   │       │       │       │   │   │   ├── mat_end_Normal_metal.png
+│   │       │       │       │   │   │   ├── mat_end_OcclusionRoughnessMetallic_metal.png
+│   │       │       │       │   │   │   ├── mat_end_OcclusionRoughnessMetallic_plastic.png
+│   │       │       │       │   │   │   ├── mat_slideTop_BaseColor_metal.png
+│   │       │       │       │   │   │   ├── mat_slideTop_Emissive_metal.png
+│   │       │       │       │   │   │   ├── mat_slideTop_Normal_metal.png
+│   │       │       │       │   │   │   ├── mat_slideTop_OcclusionRoughnessMetallic_metal.png
+│   │       │       │       │   │   │   ├── mat_slide_BaseColor_metal.png
+│   │       │       │       │   │   │   ├── mat_slide_Normal_metal.png
+│   │       │       │       │   │   │   ├── mat_slide_OcclusionRoughnessMetallic_metal.png
+│   │       │       │       │   │   │   ├── mat_start_BaseColor_metal.png
+│   │       │       │       │   │   │   ├── mat_start_Normal_metal.png
+│   │       │       │       │   │   │   ├── mat_start_OcclusionRoughnessMetallic_metal.png
+│   │       │       │       │   │   │   └── waterRidePieces_mat_slideTop_Opacity.png
+│   │       │       │       │   │   ├── Plastic
+│   │       │       │       │   │   │   ├── mat_end_BaseColor_plastic.png
+│   │       │       │       │   │   │   ├── mat_end_Normal_plastic.png
+│   │       │       │       │   │   │   ├── mat_end_OcclusionRoughnessMetallic_plastic.png
+│   │       │       │       │   │   │   ├── mat_slide_BaseColor_plastic.png
+│   │       │       │       │   │   │   ├── mat_slide_Normal_plastic.png
+│   │       │       │       │   │   │   ├── mat_slide_OcclusionRoughnessMetallic_plastic.png
+│   │       │       │       │   │   │   ├── mat_start_BaseColor_plastic.png
+│   │       │       │       │   │   │   ├── mat_start_Normal_plastic.png
+│   │       │       │       │   │   │   └── mat_start_OcclusionRoughnessMetallic_plastic.png
+│   │       │       │       │   │   ├── Universal
+│   │       │       │       │   │   │   ├── M_aquariumGlass_emissive.jpg
+│   │       │       │       │   │   │   ├── masks
+│   │       │       │       │   │   │   │   ├── gradientMask.png
+│   │       │       │       │   │   │   │   ├── water_ramp.png
+│   │       │       │       │   │   │   │   └── water_ramp_2.png
+│   │       │       │       │   │   │   ├── mat_aquariumGlass_BaseColor.png
+│   │       │       │       │   │   │   ├── mat_aquariumGlass_Emissive.png
+│   │       │       │       │   │   │   ├── mat_aquariumGlass_Normal.png
+│   │       │       │       │   │   │   ├── mat_aquariumGlass_OcclusionRoughnessMetallic.png
+│   │       │       │       │   │   │   ├── mat_aquariumGlass_Opacity.png
+│   │       │       │       │   │   │   ├── mat_lightsRim_BaseColor.png
+│   │       │       │       │   │   │   ├── mat_lightsRim_Normal.png
+│   │       │       │       │   │   │   ├── mat_lightsRim_OcclusionRoughnessMetallic.png
+│   │       │       │       │   │   │   ├── mat_rainbowLights_BaseColor.png
+│   │       │       │       │   │   │   ├── mat_rainbowLights_Normal.png
+│   │       │       │       │   │   │   ├── mat_rainbowLights_OcclusionRoughnessMetallic.png
+│   │       │       │       │   │   │   ├── mat_rainbowLights_emmissive.png
+│   │       │       │       │   │   │   ├── mat_slideLights_BaseColor.png
+│   │       │       │       │   │   │   ├── mat_slideLights_Normal.png
+│   │       │       │       │   │   │   ├── mat_slideLights_OcclusionRoughnessMetallic.png
+│   │       │       │       │   │   │   ├── noise.png
+│   │       │       │       │   │   │   └── water
+│   │       │       │       │   │   │       ├── Noise.PNG
+│   │       │       │       │   │   │       ├── cloudsNoise .png
+│   │       │       │       │   │   │       ├── endWater.png
+│   │       │       │       │   │   │       ├── end_water_normal.png
+│   │       │       │       │   │   │       ├── flowmap7.png
+│   │       │       │       │   │   │       ├── flowmap8.png
+│   │       │       │       │   │   │       ├── movingWater_AO.png
+│   │       │       │       │   │   │       ├── movingWater_BC.png
+│   │       │       │       │   │   │       ├── movingWater_H.png
+│   │       │       │       │   │   │       ├── movingWater_N.png
+│   │       │       │       │   │   │       ├── stagnantWater_AO.png
+│   │       │       │       │   │   │       ├── stagnantWater_BC.png
+│   │       │       │       │   │   │       ├── stagnantWater_H.png
+│   │       │       │       │   │   │       ├── stagnantWater_N.png
+│   │       │       │       │   │   │       ├── waterFallMask.png
+│   │       │       │       │   │   │       └── waterFallMask2.png
+│   │       │       │       │   │   └── Wood
+│   │       │       │       │   │       ├── mat_end_BaseColor_wood.png
+│   │       │       │       │   │       ├── mat_end_Normal_wood.png
+│   │       │       │       │   │       ├── mat_end_OcclusionRoughnessMetallic_wood.png
+│   │       │       │       │   │       ├── mat_slide_BaseColor_wood.png
+│   │       │       │       │   │       ├── mat_slide_Normal_wood.png
+│   │       │       │       │   │       ├── mat_slide_OcclusionRoughnessMetallic_wood.png
+│   │       │       │       │   │       ├── mat_start_BaseColor_wood.png
+│   │       │       │       │   │       ├── mat_start_Normal_wood.png
+│   │       │       │       │   │       └── mat_start_OcclusionRoughnessMetallic_wood.png
+│   │       │       │       │   ├── Untitled.usda
+│   │       │       │       │   ├── WaterRideMaterials.usda
+│   │       │       │       │   ├── distortion.usda
+│   │       │       │       │   ├── glow_mask.png
+│   │       │       │       │   ├── solidSpheres.usda
+│   │       │       │       │   ├── solidSpheres.usdz
+│   │       │       │       │   ├── sphere_opacity.png
+│   │       │       │       │   └── waterTest
+│   │       │       │       │       ├── slide01_water.usd
+│   │       │       │       │       └── slide02_water.usd
+│   │       │       │       └── SwiftSplashTrackPieces.swift
+│   │       │       └── build
+│   │       │           ├── EagerLinkingTBDs
+│   │       │           │   └── Release-xros
+│   │       │           ├── Release-xros
+│   │       │           │   ├── PackageFrameworks
+│   │       │           │   └── SwiftSplashTrackPieces_SwiftSplashTrackPieces.bundle
+│   │       │           └── SwiftSplashTrackPieces.build
+│   │       │               └── Release-xros
+│   │       │                   └── SwiftSplashTrackPieces_SwiftSplashTrackPieces.build
+│   │       │                       ├── 7edbc1cc5cc2d7d899440c5ab7769731.sb
+│   │       │                       ├── DerivedSources
+│   │       │                       │   └── RealityAssetsGenerated
+│   │       │                       │       ├── CustomComponentUSDInitializers.usda
+│   │       │                       │       └── ModuleWithDependencies.json
+│   │       │                       └── c9838f0f8c26148c3a159ab43e96009e.sb
+│   │       ├── README.md
+│   │       ├── SwiftSplash
+│   │       │   ├── Assets
+│   │       │   │   ├── deletePiece.wav
+│   │       │   │   ├── endRide.wav
+│   │       │   │   ├── fishSound_longLoudHappy.wav
+│   │       │   │   ├── fishSound_mediumHappy.wav
+│   │       │   │   ├── fishSound_quietHappy.wav
+│   │       │   │   ├── pickUp.wav
+│   │       │   │   ├── placePiece.wav
+│   │       │   │   ├── startRide.wav
+│   │       │   │   ├── swiftSplash_BuildMode.wav
+│   │       │   │   ├── swiftSplash_Menu.wav
+│   │       │   │   ├── swiftSplash_RideMode.m4a
+│   │       │   │   └── waterFlowing.wav
+│   │       │   ├── Assets.xcassets
+│   │       │   │   ├── AccentColor.colorset
+│   │       │   │   │   └── Contents.json
+│   │       │   │   ├── AppIcon.solidimagestack
+│   │       │   │   │   ├── Back.solidimagestacklayer
+│   │       │   │   │   │   ├── Content.imageset
+│   │       │   │   │   │   │   ├── Contents.json
+│   │       │   │   │   │   │   └── SPIcon_bottom.png
+│   │       │   │   │   │   └── Contents.json
+│   │       │   │   │   ├── Contents.json
+│   │       │   │   │   ├── Front.solidimagestacklayer
+│   │       │   │   │   │   ├── Content.imageset
+│   │       │   │   │   │   │   ├── Contents.json
+│   │       │   │   │   │   │   └── SPIcon_middle.png
+│   │       │   │   │   │   └── Contents.json
+│   │       │   │   │   └── Middle.solidimagestacklayer
+│   │       │   │   │       ├── Content.imageset
+│   │       │   │   │       │   ├── Contents.json
+│   │       │   │   │       │   └── SPIcon_top.png
+│   │       │   │   │       └── Contents.json
+│   │       │   │   ├── Contents.json
+│   │       │   │   ├── goal_metal.imageset
+│   │       │   │   │   ├── Contents.json
+│   │       │   │   │   └── goal_metal.png
+│   │       │   │   ├── goal_plastic.imageset
+│   │       │   │   │   ├── Contents.json
+│   │       │   │   │   └── goal_plastic.png
+│   │       │   │   ├── goal_wood.imageset
+│   │       │   │   │   ├── Contents.json
+│   │       │   │   │   └── goal_wood.png
+│   │       │   │   ├── metalPreview.imageset
+│   │       │   │   │   ├── Contents.json
+│   │       │   │   │   └── metalPreview@2x.png
+│   │       │   │   ├── plasticPreview.imageset
+│   │       │   │   │   ├── Contents.json
+│   │       │   │   │   └── plasticPreview@2x.png
+│   │       │   │   ├── slide_01_metal.imageset
+│   │       │   │   │   ├── Contents.json
+│   │       │   │   │   └── slide_01_metal.png
+│   │       │   │   ├── slide_01_plastic.imageset
+│   │       │   │   │   ├── Contents.json
+│   │       │   │   │   └── slide_01_plastic.png
+│   │       │   │   ├── slide_01_wood.imageset
+│   │       │   │   │   ├── Contents.json
+│   │       │   │   │   └── slide_01_wood.png
+│   │       │   │   ├── slide_02_metal.imageset
+│   │       │   │   │   ├── Contents.json
+│   │       │   │   │   └── slide_02_metal.png
+│   │       │   │   ├── slide_02_plastic.imageset
+│   │       │   │   │   ├── Contents.json
+│   │       │   │   │   └── slide_02_plastic.png
+│   │       │   │   ├── slide_02_wood.imageset
+│   │       │   │   │   ├── Contents.json
+│   │       │   │   │   └── slide_02_wood.png
+│   │       │   │   ├── slide_03_metal.imageset
+│   │       │   │   │   ├── Contents.json
+│   │       │   │   │   └── slide_03_metal.png
+│   │       │   │   ├── slide_03_plastic.imageset
+│   │       │   │   │   ├── Contents.json
+│   │       │   │   │   └── slide_03_plastic.png
+│   │       │   │   ├── slide_03_wood.imageset
+│   │       │   │   │   ├── Contents.json
+│   │       │   │   │   └── slide_03_wood.png
+│   │       │   │   ├── slide_04_metal.imageset
+│   │       │   │   │   ├── Contents.json
+│   │       │   │   │   └── slide_04_metal.png
+│   │       │   │   ├── slide_04_plastic.imageset
+│   │       │   │   │   ├── Contents.json
+│   │       │   │   │   └── slide_04_plastic.png
+│   │       │   │   ├── slide_04_wood.imageset
+│   │       │   │   │   ├── Contents.json
+│   │       │   │   │   └── slide_04_wood.png
+│   │       │   │   ├── slide_05_metal.imageset
+│   │       │   │   │   ├── Contents.json
+│   │       │   │   │   └── slide_05_metal.png
+│   │       │   │   ├── slide_05_plastic.imageset
+│   │       │   │   │   ├── Contents.json
+│   │       │   │   │   └── slide_05_plastic.png
+│   │       │   │   ├── slide_05_wood.imageset
+│   │       │   │   │   ├── Contents.json
+│   │       │   │   │   └── slide_05_wood.png
+│   │       │   │   ├── swiftSplashHero.imageset
+│   │       │   │   │   ├── Contents.json
+│   │       │   │   │   └── swiftSplashHero@2x.png
+│   │       │   │   └── woodPreview.imageset
+│   │       │   │       ├── Contents.json
+│   │       │   │       └── woodPreview@2x.png
+│   │       │   ├── Data & State
+│   │       │   │   ├── AppConfig.swift
+│   │       │   │   ├── AppPhase.swift
+│   │       │   │   ├── AppState+Phases.swift
+│   │       │   │   ├── AppState+PieceLoading.swift
+│   │       │   │   ├── AppState+PieceManagement.swift
+│   │       │   │   ├── AppState+PieceSelection.swift
+│   │       │   │   ├── AppState+RideRunning.swift
+│   │       │   │   ├── AppState+TrackUpdates.swift
+│   │       │   │   ├── AppState+Transparency.swift
+│   │       │   │   ├── AppState.swift
+│   │       │   │   ├── Piece.swift
+│   │       │   │   └── SoundEffects.swift
+│   │       │   ├── Extensions
+│   │       │   │   ├── Date+Logging.swift
+│   │       │   │   └── Entity+SwiftSplash.swift
+│   │       │   ├── InfoPlist.xcstrings
+│   │       │   ├── Localizable.xcstrings
+│   │       │   ├── Preview Content
+│   │       │   │   └── Preview Assets.xcassets
+│   │       │   │       └── Contents.json
+│   │       │   ├── SwiftSplashApp.swift
+│   │       │   ├── Views
+│   │       │   │   ├── ContentToolbar.swift
+│   │       │   │   ├── ContentView.swift
+│   │       │   │   ├── EditTrackPieceView.swift
+│   │       │   │   ├── ImageButton.swift
+│   │       │   │   ├── PieceShelfTrackButtonsView.swift
+│   │       │   │   ├── PieceShelfView.swift
+│   │       │   │   ├── PlaceStartPieceView.swift
+│   │       │   │   ├── RideControlView.swift
+│   │       │   │   ├── Sources
+│   │       │   │   │   └── Views
+│   │       │   │   │       └── Views.rkassets
+│   │       │   │   │           └── Scene.usda
+│   │       │   │   ├── SplashScreenView.swift
+│   │       │   │   ├── TrackBuildingView+Drag.swift
+│   │       │   │   ├── TrackBuildingView+Rotation.swift
+│   │       │   │   ├── TrackBuildingView+Snapping.swift
+│   │       │   │   └── TrackBuildingView.swift
+│   │       │   ├── de.lproj
+│   │       │   ├── fr.lproj
+│   │       │   ├── ja.lproj
+│   │       │   ├── ko.lproj
+│   │       │   └── zh_CN.lproj
+│   │       ├── SwiftSplash.xcodeproj
+│   │       │   ├── .xcodesamplecode.plist
+│   │       │   ├── project.pbxproj
+│   │       │   ├── project.xcworkspace
+│   │       │   │   └── xcshareddata
+│   │       │   │       └── WorkspaceSettings.xcsettings
+│   │       │   └── xcshareddata
+│   │       │       └── xcschemes
+│   │       │           └── SwiftSplash.xcscheme
+│   │       └── metadata.json
+│   └── urls
+│       ├── discovered_urls.json
+│       └── metadata.json
+├── extractors
+│   ├── __init__.py
+│   ├── base_extractor.py
+│   ├── code_extractor.py
+│   ├── doc_extractor.py
+│   ├── relationship_extractor.py
+│   └── validation_extractor.py
+├── instructions.md
+├── instructions_part2.md
+├── models
+│   ├── __init__.py
+│   └── base.py
+├── parsers
+│   └── __init__.py
+├── project_structure.txt
+├── requirements.txt
+├── run_scraper.py
+├── tests
+│   ├── data
+│   │   ├── accessing-the-main-camera.html
+│   │   ├── adding-3d-content-to-your-app.html
+│   │   ├── manifest_20241103_132703.json
+│   │   ├── manifest_20241103_132746.json
+│   │   ├── manifest_20241103_133041.json
+│   │   ├── manifest_20241103_133244.json
+│   │   ├── manifest_20241103_133425.json
+│   │   ├── sample.html
+│   │   ├── visionos_documentation_20241103_132703.json
+│   │   ├── visionos_documentation_20241103_132746.json
+│   │   ├── visionos_documentation_20241103_133041.json
+│   │   ├── visionos_documentation_20241103_133244.json
+│   │   └── visionos_documentation_20241103_133425.json
+│   ├── examine_debug.py
+│   ├── output
+│   ├── test_extractor_real.py
+│   ├── test_extractors.py
+│   ├── test_functionality.py
+│   ├── test_pattern_validation.py
+│   ├── test_sample_view.py
+│   ├── test_url_access.py
+│   └── utils
+│       └── examine_debug.py
+├── tools
+│   └── rollback.py
+└── utils
+    ├── __init__.py
+    └── logging.py
+
+550 directories, 1517 files
