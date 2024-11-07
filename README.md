@@ -17,6 +17,7 @@ A tool for building an LLM-optimized knowledge base from Apple's VisionOS docume
    - Relationship mapping between concepts
    - Test case extraction and verification
    - Automatic discovery of sample projects
+   - Content caching with validation
 
 3. **LLM Optimization**
    - Structured data format optimized for LLM consumption
@@ -27,12 +28,28 @@ A tool for building an LLM-optimized knowledge base from Apple's VisionOS docume
 
 ## Features
 
+### Caching System
+- **URL Cache**: Stores discovered documentation URLs
+- **Samples Cache**: Maintains list of found sample projects
+- **Documentation Cache**: Stores extracted content and relationships
+- **Analysis Cache**: Preserves pattern analysis results
+- **Cache Validation**: Age-based checks and content verification
+- **Auto-Update**: Refreshes stale cache entries
+
 ### URL Discovery and Management
 - Automatic discovery of documentation URLs
 - Categorization of discovered content
 - Metadata tracking for each URL
 - Deduplication and validation
 - Persistent storage of discovered URLs
+
+### Documentation Content Extraction
+- Structured content extraction from pages
+- Code sample collection with context
+- API reference documentation
+- Related topics and concepts
+- Key implementation patterns
+- Automatic content caching
 
 ### Relationship Mapping
 The tool automatically identifies and tracks relationships between VisionOS concepts:
@@ -75,13 +92,13 @@ Current implementation:
 │   ├── scraper.py         # Main scraping logic
 │   └── url_sources.py     # URL management
 ├── data/                  # Data storage
-│   ├── debug/            # Debug output
-│   ├── docs/            # Documentation cache
-│   ├── extracted/       # Extracted patterns
-│   ├── knowledge/      # Knowledge base
-│   ├── logs/          # Application logs
-│   ├── projects/      # Downloaded projects
-│   └── urls/         # URL management
+│   ├── cache/           # Cache storage
+│   ├── debug/           # Debug output
+│   ├── docs/           # Documentation cache
+│   ├── extracted/      # Extracted patterns
+│   ├── knowledge/     # Knowledge base
+│   ├── logs/         # Application logs
+│   └── projects/     # Downloaded projects
 ├── extractors/      # Content extraction
 │   ├── code_extractor.py
 │   ├── doc_extractor.py
@@ -108,25 +125,28 @@ python run_scraper.py
 Edit `core/config.py` to configure:
 - Test mode vs full analysis
 - Base documentation URLs
+- Cache settings and timeouts
 - Test project subset
 - Analysis parameters
+
+### Cache Management
+```bash
+# Clear all caches
+rm -rf data/cache/*
+
+# Clear specific cache
+rm data/cache/url_cache.json
+
+# Force cache refresh
+touch data/cache/samples_cache.json
+```
 
 ### For LLM Training
 1. Access extracted patterns in `data/knowledge/`
 2. Use relationship data in `data/extracted/relationships/`
 3. Reference implementations in `data/projects/`
 4. Learn from discovered patterns in `data/knowledge/patterns.json`
-
-## Current Status
-
-Successfully:
-- Discovering documentation URLs
-- Downloading sample projects
-- Analyzing code patterns
-- Mapping relationships
-- Learning from discovered content
-- Evolving knowledge base
-- Generating insights
+5. Access cached documentation in `data/cache/documentation_cache.json`
 
 ## Requirements
 

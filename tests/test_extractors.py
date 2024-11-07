@@ -101,5 +101,18 @@ def test_topic_extraction(doc_files, doc_extractor):
             assert topic.title, "Topic should have a title"
             assert topic.level in [2, 3], "Topic level should be 2 or 3"
 
+@pytest.mark.asyncio
+async def test_pattern_validation():
+    """Test pattern validation with real examples"""
+    test_cases = {
+        '3d_content': 'import RealityKit\n class MyEntity: Entity { }',
+        'animation': 'withAnimation(.spring()) { state.toggle() }',
+        'gestures': '.gesture(TapGesture().onEnded { })',
+        'spatial_audio': 'let engine = AudioEngine()',
+    }
+    
+    for pattern_type, code in test_cases.items():
+        assert pattern_matches(code, pattern_type), f"Failed to match {pattern_type}"
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])

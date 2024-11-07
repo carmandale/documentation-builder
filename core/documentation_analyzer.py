@@ -231,3 +231,28 @@ class DocumentationAnalyzer:
                 'first_seen': datetime.now(UTC).isoformat()
             }
             self._save_patterns('category_patterns.json', self.category_patterns) 
+    
+    def export_llm_knowledge_base(self, output_dir: Path):
+        """Export analyzed data in LLM-friendly format"""
+        output_dir.mkdir(exist_ok=True)
+        
+        # Export patterns with examples
+        patterns_file = output_dir / 'patterns.json'
+        relationships_file = output_dir / 'relationships.json'
+        examples_file = output_dir / 'examples.json'
+        
+        # Structure data for LLM consumption
+        knowledge_base = {
+            'patterns': self.patterns,
+            'examples': self.examples,
+            'relationships': self.relationships,
+            'metadata': {
+                'version': '1.0',
+                'generated': datetime.now(UTC).isoformat(),
+                'sample_count': len(self.analyzed_samples),
+                'pattern_types': list(self.patterns.keys())
+            }
+        }
+        
+        with open(patterns_file, 'w', encoding='utf-8') as f:
+            json.dump(knowledge_base, f, indent=2)

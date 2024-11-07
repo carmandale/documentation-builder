@@ -31,6 +31,9 @@ from analyzers.relationship_tracker import RelationshipTracker
 from typing import Optional
 import aiohttp
 from core.documentation_analyzer import DocumentationAnalyzer
+import hashlib
+from datetime import datetime, UTC
+from rich.progress import Progress
 
 console = Console()
 
@@ -41,18 +44,42 @@ project_analyzer = ProjectAnalyzer()
 relationship_tracker = RelationshipTracker(Path('data/knowledge'))
 
 async def process_url(url: str, url_collector: DocumentationURLCollector, skip_downloads: bool = True):
-    """Process a single URL"""
-    try:
-        project = await url_collector.process_documentation_page(url)
-        if project:
-            console.print(f"Found project: {project.title}")
-            if not skip_downloads:  # Only download if flag is False
-                await url_collector.download_project(project)
-                if project.local_path:
-                    console.print(f"Downloaded to: {project.local_path}")
-            return project
-    except Exception as e:
-        logger.error(f"Error processing URL {url}: {str(e)}")
+    """Process a single URL with improved error handling"""
+    retries = 3
+    while retries > 0:
+        try:
+            # Add debug logging
+            console.print(f"\n[cyan]Processing URL: {url}")
+            
+            # Extract documentation content first
+            doc_content = await url_collector.extract_documentation_content(url)
+            if doc_content:
+                console.print(f"[green]Extracted documentation content: {doc_content['title']}")
+            
+            # Then check for downloadable project
+            project = await url_collector.process_documentation_page(url)
+            if project:
+                console.print(f"Found project: {project.title}")
+                if not skip_downloads:
+                    console.print(f"[yellow]Attempting download...")
+                    success = await url_collector.download_project(project)
+                    if success:
+                        console.print(f"[green]Downloaded to: {project.local_path}")
+                    else:
+                        console.print(f"[red]Download failed")
+                return project
+            else:
+                console.print(f"[yellow]No project found at {url}")
+                
+        except aiohttp.ClientError as e:
+            retries -= 1
+            if retries == 0:
+                logger.error(f"Network error processing {url}: {str(e)}")
+                return None
+            await asyncio.sleep(2)  # Wait before retry
+        except Exception as e:
+            logger.error(f"Error processing {url}: {str(e)}")
+            return None
     return None
 
 async def discover_urls():
@@ -61,22 +88,27 @@ async def discover_urls():
     discovered_urls = {}
     
     # Process base URLs first
-    for base_url in BASE_URLS:  # Use imported BASE_URLS
+    for base_url in BASE_URLS:
         console.print(f"\n[cyan]Analyzing: {base_url}")
         
         # Get categorized links
         links = await url_collector.get_documentation_links(base_url)
         
-        # Analyze documentation structure
-        structure = await url_collector.analyze_documentation_structure(base_url)
+        # Look specifically for sample URLs
+        sample_urls = await url_collector.get_sample_urls_from_page(base_url)
+        if sample_urls:
+            if 'samples' not in discovered_urls:
+                discovered_urls['samples'] = set()
+            discovered_urls['samples'].update(sample_urls)
+            console.print(f"[green]Found {len(sample_urls)} sample URLs")
         
-        # Merge discovered URLs
+        # Merge other discovered URLs
         for category, urls in links.items():
             if category not in discovered_urls:
                 discovered_urls[category] = set()
             discovered_urls[category].update(urls)
             
-        console.print(f"[green]Found {sum(len(urls) for urls in links.values())} links")
+        console.print(f"[green]Found {sum(len(urls) for urls in links.values())} total links")
     
     return discovered_urls
 
@@ -140,28 +172,6 @@ async def analyze_patterns_from_docs(discovered_urls: Dict[str, Set[str]], url_c
     
     return pattern_data
 
-def pattern_matches(code: str, pattern_type: str) -> bool:
-    """Check if code matches a specific pattern type"""
-    try:
-        patterns = {
-            '3d_content': ['RealityKit', 'Entity', 'ModelEntity'],
-            'animation': ['animate', 'withAnimation', 'transition'],
-            'ui_components': ['View', 'Button', 'Text'],
-            'gestures': ['gesture', 'onTap', 'onDrag'],
-            'spatial_audio': ['AudioEngine', 'spatialAudio'],
-            'immersive_spaces': ['ImmersiveSpace', 'immersiveSpace']
-        }
-        
-        if pattern_type not in patterns:
-            logger.warning(f"Unknown pattern type: {pattern_type}")
-            return False
-            
-        return any(pattern.lower() in code.lower() for pattern in patterns[pattern_type])
-        
-    except Exception as e:
-        logger.error(f"Error matching pattern: {str(e)}")
-        return False
-
 def extract_pattern_keywords(soup: BeautifulSoup, pattern_type: str) -> Set[str]:
     """Extract keywords related to a pattern type"""
     keywords = set()
@@ -218,7 +228,25 @@ def extract_technical_terms(text: str) -> Set[str]:
     return terms
 
 async def fetch_content(url: str) -> Optional[str]:
-    """Fetch content from a URL"""
+    """Fetch content from a URL with improved caching"""
+    cache_key = hashlib.md5(url.encode()).hexdigest()
+    cache_file = Path('data/cache/content') / f"{cache_key}.html"
+    
+    # Check cache age
+    if cache_file.exists():
+        age = datetime.now(UTC) - datetime.fromtimestamp(cache_file.stat().st_mtime, UTC)
+        if age.days < 1:  # Cache is fresh
+            return cache_file.read_text(encoding='utf-8')
+    
+    # Fetch new content
+    content = await _fetch_url_content(url)
+    if content:
+        cache_file.parent.mkdir(exist_ok=True)
+        cache_file.write_text(content, encoding='utf-8')
+    return content
+
+async def _fetch_url_content(url: str) -> Optional[str]:
+    """Internal function to fetch URL content"""
     try:
         async with aiohttp.ClientSession() as session:
             async with session.get(url) as response:
@@ -227,19 +255,74 @@ async def fetch_content(url: str) -> Optional[str]:
                 logger.warning(f"Got status {response.status} for {url}")
                 return None
     except Exception as e:
-        logger.error(f"Error fetching content from {url}: {str(e)}")
+        logger.error(f"Error fetching URL {url}: {str(e)}")
         return None
 
 async def main():
     url_collector = DocumentationURLCollector()
     
-    # First check cache
-    console.print("[bold cyan]Checking sample cache...")
-    all_samples = await url_collector.discover_all_samples()
+    # First inspect cache
+    console.print("[bold cyan]Inspecting cache...")
+    url_collector.inspect_cache()
     
-    if not all_samples:
+    # Ask if cache should be cleared
+    if console.input("\nWould you like to clear the cache and start fresh? (y/n): ").lower() == 'y':
+        url_collector.clear_cache()
+        console.print("[yellow]Cache cleared. Starting fresh discovery...")
+        all_samples = []
+    else:
+        # Check cache
+        console.print("\n[bold cyan]Checking sample cache...")
+        all_samples = await url_collector.discover_all_samples()
+    
+    # Show detailed sample information
+    if all_samples:
+        console.print("\n[bold cyan]Found Samples in Cache:")
+        sample_table = Table(
+            title="Cached Samples",
+            show_lines=True,
+            width=120,
+            pad_edge=False
+        )
+        sample_table.add_column("Title", style="green", width=30, overflow="fold")
+        sample_table.add_column("URL", style="blue", width=50, overflow="ellipsis")
+        sample_table.add_column("Local Path", style="yellow", width=20, overflow="ellipsis")
+        sample_table.add_column("Status", style="magenta", width=15, justify="center")
+        
+        # Download missing samples with progress
+        if not SKIP_DOWNLOADS:
+            missing_samples = [s for s in all_samples if not s.downloaded]
+            if missing_samples:
+                console.print(f"\n[yellow]Found {len(missing_samples)} samples to download...")
+                with Progress() as progress:
+                    task = progress.add_task("[cyan]Downloading samples...", total=len(missing_samples))
+                    
+                    for sample in missing_samples:
+                        try:
+                            success = await url_collector.download_project(sample)
+                            if success:
+                                console.print(f"[green]Downloaded: {sample.title}")
+                            else:
+                                console.print(f"[red]Failed to download: {sample.title}")
+                            progress.update(task, advance=1)
+                        except Exception as e:
+                            console.print(f"[red]Error downloading {sample.title}: {str(e)}")
+                            progress.update(task, advance=1)
+        
+        # Update table with current status
+        for sample in all_samples:
+            status = "✓ Downloaded" if sample.local_path else "Not Downloaded"
+            # Truncate and format URL for display
+            url_display = sample.url[:47] + "..." if len(sample.url) > 50 else sample.url
+            sample_table.add_row(
+                sample.title,
+                url_display,
+                str(sample.local_path) if sample.local_path else "-",
+                status
+            )
+        console.print(sample_table)
+    else:
         console.print("[yellow]Cache miss - discovering samples...")
-        # Discover URLs
         discovered_urls = await discover_urls()
         
         # Process discovered URLs
@@ -250,93 +333,99 @@ async def main():
         # Process URLs based on mode
         if TESTING_MODE:
             console.print("\n[yellow]Running in TEST MODE with first 3 samples")
-            # Filter for actual sample URLs
-            sample_urls = [
-                url for url in discovered_urls.get('documentation', set())
-                if any(x in url.lower() for x in ['/sample/', 'sample-code', '.zip'])
-            ]
-            test_urls = sample_urls[:TEST_SAMPLE_COUNT]
-            console.print(f"Selected {len(test_urls)} sample URLs for testing")
+            test_urls = list(discovered_urls.get('documentation', set()))[:TEST_SAMPLE_COUNT]
         else:
             test_urls = discovered_urls.get('documentation', set())
-            
-        # Process URLs without downloading if SKIP_DOWNLOADS is True
-        processed_projects = []
-        for url in test_urls:
-            project = await process_url(url, url_collector, skip_downloads=SKIP_DOWNLOADS)
-            if project:
-                processed_projects.append(project)
-                
-        console.print(f"\nSuccessfully processed: {len(processed_projects)} projects")
         
-        # Cache the results
+        # Process URLs concurrently
+        processed_projects = await process_urls_concurrent(test_urls, url_collector)
+        processed_projects = [p for p in processed_projects if p is not None]
+        
+        console.print(f"\nSuccessfully processed: {len(processed_projects)} projects")
         all_samples = processed_projects
     
     # Analyze results
-    console.print("\nAnalysis Summary:")
+    console.print("\n[bold cyan]Analysis Summary:")
     pattern_data = defaultdict(lambda: {'count': 0, 'examples': [], 'files': []})
     
-    for project in all_samples:
-        if project.local_path:
-            console.print(f"\nAnalyzing {project.title}:")
-            analysis = project_analyzer.analyze_project(project.local_path)
-            
-            # Track patterns with context
-            for pattern_type, pattern_info in analysis['patterns'].items():
-                if pattern_info['count'] > 0:  # Only process if patterns were found
-                    pattern_data[pattern_type]['count'] += pattern_info['count']
-                    pattern_data[pattern_type]['files'].extend(pattern_info['files'])
-                    pattern_data[pattern_type]['examples'].extend(pattern_info['examples'])
+    with Progress() as progress:
+        task = progress.add_task("[cyan]Analyzing projects...", total=len(all_samples))
+        
+        for project in all_samples:
+            if project.local_path:
+                progress.update(task, advance=1, description=f"Analyzing {project.title}")
+                console.print(f"\nAnalyzing {project.title}:")
+                analysis = project_analyzer.analyze_project(project.local_path)
+                
+                # Track patterns with context
+                for pattern_type, pattern_info in analysis.get('patterns', {}).items():
+                    if pattern_info['count'] > 0:
+                        pattern_data[pattern_type]['count'] += pattern_info['count']
+                        pattern_data[pattern_type]['files'].extend(pattern_info['files'])
+                        pattern_data[pattern_type]['examples'].extend(pattern_info['examples'])
+                        console.print(f"[green]Found {pattern_info['count']} {pattern_type} patterns")
     
     # Show pattern analysis results
-    table = Table(title="Pattern Analysis Results")
-    table.add_column("Project", style="cyan")
-    table.add_column("Pattern Type", style="green")
-    table.add_column("Count", justify="right", style="yellow")
-    table.add_column("Files", style="blue")
-    table.add_column("Status", style="magenta")  # New column
+    results_table = Table(
+        title="Pattern Analysis Results",
+        show_lines=True,
+        width=120,
+        pad_edge=False
+    )
+    results_table.add_column("Project", style="cyan", width=30, overflow="fold")
+    results_table.add_column("Pattern Type", style="green", width=20)
+    results_table.add_column("Count", justify="right", style="yellow", width=10)
+    results_table.add_column("Files", style="blue", width=40, overflow="fold")
+    results_table.add_column("Status", style="magenta", width=10, justify="center")
     
-    # Track overall statistics
-    total_patterns = defaultdict(int)
-    total_files = defaultdict(set)
-    
+    # Group by project for better readability
     for project in all_samples:
         if project.local_path:
-            analysis = project_analyzer.analyze_project(project.local_path)
-            
-            for pattern_type, pattern_info in analysis.get('patterns', {}).items():
-                if pattern_info['count'] > 0:
-                    validation_status = "✓" if pattern_info.get('validated', False) else "⚠️"
-                    table.add_row(
+            for pattern_type, data in pattern_data.items():
+                project_files = [f for f in data['files'] if str(project.local_path) in str(f)]
+                if project_files:
+                    validation_status = "✓" if data.get('validated', False) else "-"
+                    results_table.add_row(
                         project.title,
                         pattern_type,
-                        str(pattern_info['count']),
-                        "\n".join(pattern_info['files'][:3]),  # Show first 3 files
+                        str(len(project_files)),
+                        "\n".join(str(f) for f in project_files[:3]),
                         validation_status
                     )
-                    
-                    # Update totals
-                    total_patterns[pattern_type] += pattern_info['count']
-                    total_files[pattern_type].update(pattern_info['files'])
     
-    console.print(table)
+    console.print(results_table)
     
     # Show summary
-    summary = Table(title="Pattern Analysis Summary")
-    summary.add_column("Pattern Type", style="cyan")
-    summary.add_column("Total Count", style="yellow")
-    summary.add_column("Total Files", style="green")
+    summary_table = Table(
+        title="Pattern Analysis Summary",
+        show_lines=True,
+        width=80,
+        pad_edge=False
+    )
+    summary_table.add_column("Pattern Type", style="cyan", width=30)
+    summary_table.add_column("Total Count", style="yellow", width=20, justify="right")
+    summary_table.add_column("Total Files", style="green", width=20, justify="right")
     
-    for pattern_type in total_patterns:
-        summary.add_row(
+    for pattern_type, data in pattern_data.items():
+        summary_table.add_row(
             pattern_type,
-            str(total_patterns[pattern_type]),
-            str(len(total_files[pattern_type]))
+            str(data['count']),
+            str(len(set(data['files'])))  # Use set to count unique files
         )
     
     console.print("\nSummary:")
-    console.print(summary)
-    console.print("\nAnalysis Complete!")
+    console.print(summary_table)
+    console.print("\n[bold green]Analysis Complete!")
+
+async def process_urls_concurrent(urls: List[str], url_collector: DocumentationURLCollector):
+    """Process URLs concurrently with rate limiting"""
+    semaphore = asyncio.Semaphore(5)  # Limit concurrent requests
+    async def process_with_limit(url):
+        async with semaphore:
+            return await process_url(url, url_collector)
+    
+    tasks = [process_with_limit(url) for url in urls]
+    return await asyncio.gather(*tasks)
 
 if __name__ == "__main__":
     asyncio.run(main())

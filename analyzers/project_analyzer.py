@@ -3,6 +3,7 @@ from typing import List, Dict, Optional
 import logging
 import re
 from core.config import TEST_PATTERN_VALIDATION
+from collections import defaultdict
 
 logger = logging.getLogger(__name__)
 
@@ -12,84 +13,41 @@ class ProjectAnalyzer:
     def __init__(self, projects_dir: Path = Path('data/projects')):
         self.projects_dir = projects_dir
     
-    def analyze_project(self, project_path: Path) -> Dict[str, any]:
-        """Analyze a downloaded project"""
-        try:
-            # Find Swift files
-            swift_files = list(project_path.rglob('*.swift'))
-            logger.debug(f"Found {len(swift_files)} Swift files in {project_path}")
-            
-            patterns = {
-                '3d_content': {'count': 0, 'files': [], 'examples': [], 'validated': False},
-                'animation': {'count': 0, 'files': [], 'examples': [], 'validated': False},
-                'ui_components': {'count': 0, 'files': [], 'examples': [], 'validated': False},
-                'gestures': {'count': 0, 'files': [], 'examples': [], 'validated': False},
-                'spatial_audio': {'count': 0, 'files': [], 'examples': [], 'validated': False},
-                'immersive_spaces': {'count': 0, 'files': [], 'examples': [], 'validated': False}
-            }
-            
-            for file in swift_files:
-                content = file.read_text()
-                logger.debug(f"Analyzing {file.name} for patterns")
-                
-                # Look for specific patterns with context
-                if 'RealityKit' in content:
-                    logger.debug(f"Found 3D content pattern in {file.name}")
-                    patterns['3d_content']['count'] += 1
-                    patterns['3d_content']['files'].append(str(file.relative_to(project_path)))
-                    patterns['3d_content']['examples'].append(content)
+    def analyze_project(self, project_path: Path) -> Dict:
+        """Analyze a project for patterns with detailed logging"""
+        logger.info(f"Analyzing project at: {project_path}")
+        
+        patterns = defaultdict(lambda: {'count': 0, 'files': [], 'examples': []})
+        
+        if not project_path.exists():
+            logger.error(f"Project path does not exist: {project_path}")
+            return {'patterns': patterns}
+        
+        # Find all Swift files
+        swift_files = list(project_path.glob('**/*.swift'))
+        logger.info(f"Found {len(swift_files)} Swift files")
+        
+        for file_path in swift_files:
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                    logger.debug(f"Analyzing file: {file_path}")
                     
-                if 'animation' in content.lower() or 'animate' in content.lower():
-                    logger.debug(f"Found animation pattern in {file.name}")
-                    patterns['animation']['count'] += 1
-                    patterns['animation']['files'].append(str(file.relative_to(project_path)))
-                    patterns['animation']['examples'].append(content)
-                    
-                if 'View' in content or 'Button' in content:
-                    logger.debug(f"Found UI component pattern in {file.name}")
-                    patterns['ui_components']['count'] += 1
-                    patterns['ui_components']['files'].append(str(file.relative_to(project_path)))
-                    patterns['ui_components']['examples'].append(content)
-                    
-                if 'gesture' in content.lower() or 'tap' in content.lower():
-                    logger.debug(f"Found gesture pattern in {file.name}")
-                    patterns['gestures']['count'] += 1
-                    patterns['gestures']['files'].append(str(file.relative_to(project_path)))
-                    patterns['gestures']['examples'].append(content)
-                    
-                if 'AudioEngine' in content or 'spatialAudio' in content:
-                    logger.debug(f"Found spatial audio pattern in {file.name}")
-                    patterns['spatial_audio']['count'] += 1
-                    patterns['spatial_audio']['files'].append(str(file.relative_to(project_path)))
-                    patterns['spatial_audio']['examples'].append(content)
-                    
-                if 'ImmersiveSpace' in content:
-                    logger.debug(f"Found immersive space pattern in {file.name}")
-                    patterns['immersive_spaces']['count'] += 1
-                    patterns['immersive_spaces']['files'].append(str(file.relative_to(project_path)))
-                    patterns['immersive_spaces']['examples'].append(content)
-            
-            # Validate patterns if enabled
-            if TEST_PATTERN_VALIDATION:
-                for pattern_type, data in patterns.items():
-                    if data['count'] > 0:
-                        data['validated'] = self._validate_pattern(pattern_type, data['examples'])
-                        logger.info(f"Pattern {pattern_type} validation: {'✓' if data['validated'] else '✗'}")
-            
-            logger.info(f"Analysis complete for {project_path.name}")
-            for pattern, data in patterns.items():
-                if data['count'] > 0:
-                    logger.info(f"Found {data['count']} {pattern} patterns in {len(data['files'])} files")
-            
-            return {
-                'patterns': patterns,
-                'usage': {},  # Deprecated
-                'validation': {}  # Deprecated
-            }
-            
-        except Exception as e:
-            logger.error(f"Error analyzing project: {str(e)}")
-            return {}
+                    # Check each pattern type using self.pattern_matches
+                    for pattern_type in ['3d_content', 'animation', 'ui_components', 
+                                       'gestures', 'spatial_audio', 'immersive_spaces']:
+                        if self.pattern_matches(content, pattern_type):
+                            patterns[pattern_type]['count'] += 1
+                            patterns[pattern_type]['files'].append(file_path)
+                            patterns[pattern_type]['examples'].append({
+                                'file': str(file_path),
+                                'content': content[:200] + '...'  # Preview
+                            })
+                            logger.info(f"Found {pattern_type} pattern in {file_path}")
+            except Exception as e:
+                logger.error(f"Error analyzing {file_path}: {str(e)}")
+        
+        return {'patterns': patterns}
     
     def _extract_code_block(self, content: str, pattern: str, context_lines: int = 5) -> str:
         """Extract code block around a pattern with context"""
@@ -396,4 +354,26 @@ class ProjectAnalyzer:
             
         except Exception as e:
             logger.error(f"Error validating pattern {pattern_type}: {str(e)}")
+            return False
+    
+    def pattern_matches(self, code: str, pattern_type: str) -> bool:
+        """Check if code matches a specific pattern type"""
+        try:
+            patterns = {
+                '3d_content': ['RealityKit', 'Entity', 'ModelEntity', 'Scene3D', 'Model3D'],
+                'animation': ['animate', 'withAnimation', 'transition', 'keyframeAnimation'],
+                'ui_components': ['View', 'Button', 'Text', 'Container', 'NavigationStack'],
+                'gestures': ['gesture', 'onTap', 'onDrag', 'spatialGesture', 'hoverable'],
+                'spatial_audio': ['AudioEngine', 'spatialAudio', 'AudioSession', 'SpatialMixer'],
+                'immersive_spaces': ['ImmersiveSpace', 'immersiveSpace', 'WindowGroup', 'ImmersiveView']
+            }
+            
+            if pattern_type not in patterns:
+                logger.warning(f"Unknown pattern type: {pattern_type}")
+                return False
+                
+            return any(pattern.lower() in code.lower() for pattern in patterns[pattern_type])
+            
+        except Exception as e:
+            logger.error(f"Error matching pattern: {str(e)}")
             return False

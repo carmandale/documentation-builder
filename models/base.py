@@ -1,6 +1,7 @@
 from datetime import datetime, UTC
 from typing import List, Dict, Optional, Set
 from pydantic import BaseModel, Field, ConfigDict
+from pathlib import Path
 
 class Topic(BaseModel):
     """Represents a section/topic in the documentation"""
@@ -96,4 +97,27 @@ class DocumentationPage(BaseModel):
             self.category = 'Getting_Started'
         else:
             self.category = 'Other'
+    
+class ProjectResource(BaseModel):
+    """Represents a downloadable project resource"""
+    title: str
+    url: str
+    download_url: Optional[str] = None
+    local_path: Optional[Path] = None
+    downloaded: bool = False
+    
+    def mark_downloaded(self, path: Path):
+        self.local_path = path
+        self.downloaded = True
+    
+    def model_dump(self, *args, **kwargs):
+        """Pydantic v2 compatible dump method"""
+        d = super().model_dump(*args, **kwargs)
+        if d.get('local_path'):
+            d['local_path'] = str(d['local_path'])
+        return d
+    
+    def dict(self, *args, **kwargs):
+        """Legacy dict method for compatibility"""
+        return self.model_dump(*args, **kwargs)
     
