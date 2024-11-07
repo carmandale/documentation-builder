@@ -1,13 +1,14 @@
 # Configuration settings
 TESTING_MODE = True  # Set to False for full analysis
-SKIP_DOWNLOADS = True  # Skip project downloads during testing
+SKIP_DOWNLOADS = False  # Allow downloads to test full process
 
-# Test URLs for initial validation
-TEST_URLS = [
-    "https://developer.apple.com/documentation/visionos/world",  # Basic structure
-    "https://developer.apple.com/documentation/visionos/bot-anist",  # 3D and gestures
-    "https://developer.apple.com/documentation/visionos/playing-spatial-audio-in-visionos"  # Audio
-]
+# Test mode configuration
+TEST_SAMPLE_COUNT = 3  # Number of samples to process in test mode
+TEST_PATTERN_VALIDATION = True  # Validate patterns during test runs
+PAGE_TIMEOUT = 60000  # Increase timeout to 60 seconds
+
+# Sample selection strategy
+TEST_SAMPLE_STRATEGY = "diverse"  # Options: "first", "diverse", "random"
 
 # Primary documentation URLs
 BASE_URLS = [

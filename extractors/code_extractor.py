@@ -17,8 +17,11 @@ class CodeBlockExtractor:
         'RealityFoundation', 'WindowKit', 'ImmersiveSpace'
     }
     
-    @staticmethod
-    def extract_code_blocks(soup: BeautifulSoup) -> List[CodeBlock]:
+    def __init__(self):
+        """Initialize extractor"""
+        self.doc_analyzer = DocumentationAnalyzer(Path('data/knowledge'))
+    
+    def extract_code_blocks(self, soup: BeautifulSoup) -> List[CodeBlock]:
         """Extract all code blocks from the page"""
         code_blocks = []
         
@@ -27,7 +30,7 @@ class CodeBlockExtractor:
         
         for listing in listings:
             try:
-                code_block = CodeBlockExtractor._process_code_block(listing)
+                code_block = self._process_code_block(listing)
                 if code_block:
                     code_blocks.append(code_block)
             except Exception as e:
@@ -35,38 +38,42 @@ class CodeBlockExtractor:
                 
         return code_blocks
     
-    @staticmethod
-    def _process_code_block(block: Tag) -> Optional[CodeBlock]:
+    def _process_code_block(self, block: Tag) -> Optional[CodeBlock]:
         """Process a single code block"""
-        # Get the code content
-        code_content = block.find('code')
-        if not code_content:
-            return None
+        try:
+            # Get the code content
+            code_content = block.find('code')
+            if not code_content:
+                return None
+                
+            # Get the full code text
+            code_text = code_content.get_text(strip=True)
             
-        # Get the full code text
-        code_text = code_content.get_text(strip=True)
-        
-        # Use DocumentationAnalyzer for context
-        doc_analyzer = DocumentationAnalyzer(Path('data/knowledge'))
-        context = doc_analyzer._get_code_context(block)
-        
-        # Get language (defaulting to swift)
-        language = block.get('data-syntax', 'swift')
-        
-        # Detect frameworks used
-        frameworks = CodeBlockExtractor._detect_frameworks(code_text)
-        
-        # Determine code type
-        code_type = CodeBlockExtractor._determine_code_type(code_text, frameworks)
-        
-        return CodeBlock(
-            code=code_text,
-            description=context.get('description', ''),
-            language=language,
-            preview=code_text[:200],
-            frameworks=list(frameworks),
-            type=code_type
-        )
+            # Use instance doc_analyzer instead of creating new one
+            context = self.doc_analyzer._get_code_context(block)  # Use instance variable
+            
+            # Get language (defaulting to swift)
+            language = block.get('data-syntax', 'swift')
+            
+            # Detect frameworks used
+            frameworks = self._detect_frameworks(code_text)
+            
+            # Create CodeBlock with validation
+            code_block = CodeBlock(
+                code=code_text,
+                description=context.get('description', ''),
+                language=language,
+                preview=code_text[:200],
+                frameworks=list(frameworks),
+                type=self._determine_code_type(code_text, frameworks)
+            )
+            
+            logger.debug(f"Processed code block: {code_block.preview[:50]}...")
+            return code_block
+            
+        except Exception as e:
+            logger.error(f"Error processing code block: {str(e)}")
+            return None
     
     @staticmethod
     def _detect_frameworks(code: str) -> Set[str]:

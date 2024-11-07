@@ -3,7 +3,13 @@ from core.scraper import DocumentationScraper
 from core.url_sources import DocumentationURLCollector, URLSources
 from analyzers.project_analyzer import ProjectAnalyzer
 from extractors.relationship_extractor import RelationshipExtractor
-from core.config import TESTING_MODE, TEST_URLS, BASE_URLS, SKIP_DOWNLOADS  # Import configuration
+from core.config import (
+    TESTING_MODE, 
+    BASE_URLS, 
+    SKIP_DOWNLOADS,
+    TEST_SAMPLE_COUNT,
+    TEST_PATTERN_VALIDATION
+)
 from utils.logging import logger  # Add this import
 import logging
 from pathlib import Path
@@ -18,7 +24,7 @@ import os
 import re
 from collections import defaultdict
 from collections import Counter
-from typing import Dict, Set
+from typing import Dict, Set, Optional, List
 from playwright.async_api import async_playwright
 from analyzers.pattern_evolution import PatternEvolution
 from analyzers.relationship_tracker import RelationshipTracker
@@ -75,128 +81,86 @@ async def discover_urls():
     return discovered_urls
 
 async def analyze_patterns_from_docs(discovered_urls: Dict[str, Set[str]], url_collector: DocumentationURLCollector) -> Dict[str, Dict]:
-    """Learn patterns from documentation content"""
-    pattern_data = {
-        'ui_components': {'keywords': set(), 'examples': []},
-        'animation': {'keywords': set(), 'examples': []},
-        'gestures': {'keywords': set(), 'examples': []},
-        '3d_content': {'keywords': set(), 'examples': []},
-        'spatial_audio': {'keywords': set(), 'examples': []},
-        'immersive_spaces': {'keywords': set(), 'examples': []},
-        'arkit_integration': {'keywords': set(), 'examples': []},
-        'realitykit': {'keywords': set(), 'examples': []}
-    }
+    """Analyze patterns from documentation pages"""
+    pattern_data = defaultdict(lambda: {'count': 0, 'examples': [], 'keywords': set()})
     
-    # Process documentation URLs to learn patterns
-    doc_urls = discovered_urls.get('documentation', set())
-    for url in doc_urls:
-        try:
-            async with async_playwright() as p:
-                browser = await p.chromium.launch()
-                page = await browser.new_page()
-                await page.goto(url)
-                content = await page.content()
-                
-                # Parse content
-                soup = BeautifulSoup(content, 'html.parser')
-                
-                # Extract code examples
-                code_blocks = soup.find_all('code')
-                for block in code_blocks:
-                    code = block.get_text()
+    try:
+        async with async_playwright() as p:
+            browser = await p.chromium.launch()
+            page = await browser.new_page()
+            
+            for url in discovered_urls.get('documentation', set()):
+                try:
+                    await page.goto(url)
+                    await page.wait_for_load_state('networkidle')
+                    content = await page.content()
                     
-                    # Analyze code to identify patterns
-                    for pattern_type, data in pattern_data.items():
-                        if pattern_matches(code, pattern_type):
-                            try:
-                                # Wrap code in HTML for BeautifulSoup
-                                html = f"<div><code>{code}</code></div>"
-                                soup = BeautifulSoup(html, 'html.parser')
-                                code_elem = soup.find('code')
-                                
-                                if code_elem:
-                                    context = doc_analyzer._get_code_context(code_elem)
-                                    data['examples'].append({
-                                        'code': code,
-                                        'source_url': url,
-                                        'context': context
-                                    })
-                                else:
-                                    logger.warning(f"Could not create code element for context extraction")
+                    soup = BeautifulSoup(content, 'html.parser')
+                    code_blocks = soup.find_all('code')
+                    
+                    for block in code_blocks:
+                        code = block.get_text()
+                        
+                        # Analyze code to identify patterns
+                        for pattern_type, data in pattern_data.items():
+                            if pattern_matches(code, pattern_type):
+                                try:
+                                    # Wrap code in HTML for BeautifulSoup
+                                    html = f"<div><code>{code}</code></div>"
+                                    soup = BeautifulSoup(html, 'html.parser')
+                                    code_elem = soup.find('code')
                                     
-                            except Exception as e:
-                                logger.error(f"Error extracting context: {str(e)}")
-                                continue
-                
-                # Extract keywords and concepts
-                for pattern_type, data in pattern_data.items():
-                    keywords = extract_pattern_keywords(soup, pattern_type)
-                    data['keywords'].update(keywords)
-                
-                await browser.close()
-                
-        except Exception as e:
-            logger.error(f"Error analyzing patterns in {url}: {str(e)}")
+                                    if code_elem:
+                                        context = doc_analyzer._get_code_context(code_elem)
+                                        data['examples'].append({
+                                            'code': code,
+                                            'source_url': url,
+                                            'context': context
+                                        })
+                                    else:
+                                        logger.warning(f"Could not create code element for context extraction")
+                                        
+                                except Exception as e:
+                                    logger.error(f"Error extracting context: {str(e)}")
+                                    continue
+                    
+                    # Extract keywords and concepts
+                    for pattern_type, data in pattern_data.items():
+                        keywords = extract_pattern_keywords(soup, pattern_type)
+                        data['keywords'].update(keywords)
+                    
+                except Exception as e:
+                    logger.error(f"Error analyzing patterns in {url}: {str(e)}")
+                    continue
+                    
+            await browser.close()
+            
+    except Exception as e:
+        logger.error(f"Error in pattern analysis: {str(e)}")
     
     return pattern_data
 
 def pattern_matches(code: str, pattern_type: str) -> bool:
-    """Check if code matches a pattern type"""
-    pattern_indicators = {
-        'ui_components': [
-            r'View\s*{',
-            r'struct\s+\w+\s*:\s*View',
-            r'WindowGroup',
-            r'@ViewBuilder'
-        ],
-        'animation': [
-            r'\.animation',
-            r'Animation\.',
-            r'withAnimation',
-            r'AnimationPhase',
-            r'transition'
-        ],
-        'gestures': [
-            r'\.gesture',
-            r'Gesture\.',
-            r'DragGesture',
-            r'TapGesture',
-            r'RotateGesture'
-        ],
-        '3d_content': [
-            r'RealityView',
-            r'Entity\.',
-            r'ModelEntity',
-            r'AnchorEntity',
-            r'Transform3D'
-        ],
-        'spatial_audio': [
-            r'AudioEngine',
-            r'SpatialAudio',
-            r'AVAudioNode',
-            r'AudioSession'
-        ],
-        'immersive_spaces': [
-            r'ImmersiveSpace',
-            r'WindowGroup',
-            r'immersiveSpace',
-            r'ImmersionStyle'
-        ],
-        'arkit_integration': [
-            r'ARKit',
-            r'ARSession',
-            r'ARConfiguration',
-            r'SceneReconstruction'
-        ],
-        'realitykit': [
-            r'RealityKit',
-            r'RealityView',
-            r'ModelComponent',
-            r'PhysicsBody'
-        ]
-    }
-    
-    return any(re.search(pattern, code) for pattern in pattern_indicators[pattern_type])
+    """Check if code matches a specific pattern type"""
+    try:
+        patterns = {
+            '3d_content': ['RealityKit', 'Entity', 'ModelEntity'],
+            'animation': ['animate', 'withAnimation', 'transition'],
+            'ui_components': ['View', 'Button', 'Text'],
+            'gestures': ['gesture', 'onTap', 'onDrag'],
+            'spatial_audio': ['AudioEngine', 'spatialAudio'],
+            'immersive_spaces': ['ImmersiveSpace', 'immersiveSpace']
+        }
+        
+        if pattern_type not in patterns:
+            logger.warning(f"Unknown pattern type: {pattern_type}")
+            return False
+            
+        return any(pattern.lower() in code.lower() for pattern in patterns[pattern_type])
+        
+    except Exception as e:
+        logger.error(f"Error matching pattern: {str(e)}")
+        return False
 
 def extract_pattern_keywords(soup: BeautifulSoup, pattern_type: str) -> Set[str]:
     """Extract keywords related to a pattern type"""
@@ -209,13 +173,11 @@ def extract_pattern_keywords(soup: BeautifulSoup, pattern_type: str) -> Set[str]
         'gestures': ['gesture', 'interaction', 'input'],
         '3d_content': ['3d', 'model', 'entity'],
         'spatial_audio': ['audio', 'sound', 'spatial'],
-        'immersive_spaces': ['space', 'immersive', 'environment'],
-        'arkit_integration': ['arkit', 'tracking', 'scene'],
-        'realitykit': ['realitykit', 'physics', 'rendering']
+        'immersive_spaces': ['space', 'immersive', 'environment']
     }
     
     # Find relevant sections
-    for indicator in section_indicators[pattern_type]:
+    for indicator in section_indicators.get(pattern_type, []):
         sections = soup.find_all(['h1', 'h2', 'h3', 'h4'], 
                                string=re.compile(indicator, re.I))
         for section in sections:
@@ -287,8 +249,14 @@ async def main():
         
         # Process URLs based on mode
         if TESTING_MODE:
-            console.print("\n[yellow]Running in TEST MODE with subset of URLs")
-            test_urls = TEST_URLS
+            console.print("\n[yellow]Running in TEST MODE with first 3 samples")
+            # Filter for actual sample URLs
+            sample_urls = [
+                url for url in discovered_urls.get('documentation', set())
+                if any(x in url.lower() for x in ['/sample/', 'sample-code', '.zip'])
+            ]
+            test_urls = sample_urls[:TEST_SAMPLE_COUNT]
+            console.print(f"Selected {len(test_urls)} sample URLs for testing")
         else:
             test_urls = discovered_urls.get('documentation', set())
             
@@ -314,51 +282,60 @@ async def main():
             analysis = project_analyzer.analyze_project(project.local_path)
             
             # Track patterns with context
-            for pattern_type, data in analysis['patterns'].items():
-                pattern_data[pattern_type]['count'] += len(data)
-                pattern_data[pattern_type]['files'].extend(data)
-                
-                # Create BeautifulSoup object for context extraction
-                for code_block in data:
-                    try:
-                        # Wrap code in a basic HTML structure
-                        html = f"<div><code>{code_block}</code></div>"
-                        soup = BeautifulSoup(html, 'html.parser')
-                        code_elem = soup.find('code')
-                        
-                        if code_elem:
-                            context = doc_analyzer._get_code_context(code_elem)
-                            pattern_data[pattern_type]['examples'].append({
-                                'code': code_block,
-                                'context': context,
-                                'file': data.get('file', 'unknown'),
-                                'project': project.title
-                            })
-                        else:
-                            logger.warning(f"Could not create code element for context extraction")
-                            
-                    except Exception as e:
-                        logger.error(f"Error extracting context: {str(e)}")
-                        continue
+            for pattern_type, pattern_info in analysis['patterns'].items():
+                if pattern_info['count'] > 0:  # Only process if patterns were found
+                    pattern_data[pattern_type]['count'] += pattern_info['count']
+                    pattern_data[pattern_type]['files'].extend(pattern_info['files'])
+                    pattern_data[pattern_type]['examples'].extend(pattern_info['examples'])
     
     # Show pattern analysis results
     table = Table(title="Pattern Analysis Results")
-    table.add_column("Project")
-    table.add_column("Pattern Type")
-    table.add_column("Count")
-    table.add_column("Files")
+    table.add_column("Project", style="cyan")
+    table.add_column("Pattern Type", style="green")
+    table.add_column("Count", justify="right", style="yellow")
+    table.add_column("Files", style="blue")
+    table.add_column("Status", style="magenta")  # New column
     
-    for pattern_type, data in pattern_data.items():
-        if data['count'] > 0:  # Only show patterns that were found
-            for file in data['files']:
-                table.add_row(
-                    project.title,
-                    pattern_type,
-                    str(data['count']),
-                    file
-                )
+    # Track overall statistics
+    total_patterns = defaultdict(int)
+    total_files = defaultdict(set)
+    
+    for project in all_samples:
+        if project.local_path:
+            analysis = project_analyzer.analyze_project(project.local_path)
+            
+            for pattern_type, pattern_info in analysis.get('patterns', {}).items():
+                if pattern_info['count'] > 0:
+                    validation_status = "✓" if pattern_info.get('validated', False) else "⚠️"
+                    table.add_row(
+                        project.title,
+                        pattern_type,
+                        str(pattern_info['count']),
+                        "\n".join(pattern_info['files'][:3]),  # Show first 3 files
+                        validation_status
+                    )
+                    
+                    # Update totals
+                    total_patterns[pattern_type] += pattern_info['count']
+                    total_files[pattern_type].update(pattern_info['files'])
     
     console.print(table)
+    
+    # Show summary
+    summary = Table(title="Pattern Analysis Summary")
+    summary.add_column("Pattern Type", style="cyan")
+    summary.add_column("Total Count", style="yellow")
+    summary.add_column("Total Files", style="green")
+    
+    for pattern_type in total_patterns:
+        summary.add_row(
+            pattern_type,
+            str(total_patterns[pattern_type]),
+            str(len(total_files[pattern_type]))
+        )
+    
+    console.print("\nSummary:")
+    console.print(summary)
     console.print("\nAnalysis Complete!")
 
 if __name__ == "__main__":

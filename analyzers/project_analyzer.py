@@ -2,6 +2,7 @@ from pathlib import Path
 from typing import List, Dict, Optional
 import logging
 import re
+from core.config import TEST_PATTERN_VALIDATION
 
 logger = logging.getLogger(__name__)
 
@@ -16,40 +17,69 @@ class ProjectAnalyzer:
         try:
             # Find Swift files
             swift_files = list(project_path.rglob('*.swift'))
-            logger.info(f"Found {len(swift_files)} Swift files")
+            logger.debug(f"Found {len(swift_files)} Swift files in {project_path}")
             
             patterns = {
-                '3d_content': {'count': 0, 'files': []},
-                'animation': {'count': 0, 'files': []},
-                'ui_components': {'count': 0, 'files': []},
-                'gestures': {'count': 0, 'files': []},
-                'spatial_audio': {'count': 0, 'files': []},
-                'immersive_spaces': {'count': 0, 'files': []}
+                '3d_content': {'count': 0, 'files': [], 'examples': [], 'validated': False},
+                'animation': {'count': 0, 'files': [], 'examples': [], 'validated': False},
+                'ui_components': {'count': 0, 'files': [], 'examples': [], 'validated': False},
+                'gestures': {'count': 0, 'files': [], 'examples': [], 'validated': False},
+                'spatial_audio': {'count': 0, 'files': [], 'examples': [], 'validated': False},
+                'immersive_spaces': {'count': 0, 'files': [], 'examples': [], 'validated': False}
             }
             
             for file in swift_files:
                 content = file.read_text()
-                logger.info(f"\nAnalyzing {file.name}:")
+                logger.debug(f"Analyzing {file.name} for patterns")
                 
-                # Look for specific patterns
+                # Look for specific patterns with context
                 if 'RealityKit' in content:
+                    logger.debug(f"Found 3D content pattern in {file.name}")
                     patterns['3d_content']['count'] += 1
-                    patterns['3d_content']['files'].append(file.name)
+                    patterns['3d_content']['files'].append(str(file.relative_to(project_path)))
+                    patterns['3d_content']['examples'].append(content)
+                    
                 if 'animation' in content.lower() or 'animate' in content.lower():
+                    logger.debug(f"Found animation pattern in {file.name}")
                     patterns['animation']['count'] += 1
-                    patterns['animation']['files'].append(file.name)
+                    patterns['animation']['files'].append(str(file.relative_to(project_path)))
+                    patterns['animation']['examples'].append(content)
+                    
                 if 'View' in content or 'Button' in content:
+                    logger.debug(f"Found UI component pattern in {file.name}")
                     patterns['ui_components']['count'] += 1
-                    patterns['ui_components']['files'].append(file.name)
+                    patterns['ui_components']['files'].append(str(file.relative_to(project_path)))
+                    patterns['ui_components']['examples'].append(content)
+                    
                 if 'gesture' in content.lower() or 'tap' in content.lower():
+                    logger.debug(f"Found gesture pattern in {file.name}")
                     patterns['gestures']['count'] += 1
-                    patterns['gestures']['files'].append(file.name)
+                    patterns['gestures']['files'].append(str(file.relative_to(project_path)))
+                    patterns['gestures']['examples'].append(content)
+                    
                 if 'AudioEngine' in content or 'spatialAudio' in content:
+                    logger.debug(f"Found spatial audio pattern in {file.name}")
                     patterns['spatial_audio']['count'] += 1
-                    patterns['spatial_audio']['files'].append(file.name)
+                    patterns['spatial_audio']['files'].append(str(file.relative_to(project_path)))
+                    patterns['spatial_audio']['examples'].append(content)
+                    
                 if 'ImmersiveSpace' in content:
+                    logger.debug(f"Found immersive space pattern in {file.name}")
                     patterns['immersive_spaces']['count'] += 1
-                    patterns['immersive_spaces']['files'].append(file.name)
+                    patterns['immersive_spaces']['files'].append(str(file.relative_to(project_path)))
+                    patterns['immersive_spaces']['examples'].append(content)
+            
+            # Validate patterns if enabled
+            if TEST_PATTERN_VALIDATION:
+                for pattern_type, data in patterns.items():
+                    if data['count'] > 0:
+                        data['validated'] = self._validate_pattern(pattern_type, data['examples'])
+                        logger.info(f"Pattern {pattern_type} validation: {'✓' if data['validated'] else '✗'}")
+            
+            logger.info(f"Analysis complete for {project_path.name}")
+            for pattern, data in patterns.items():
+                if data['count'] > 0:
+                    logger.info(f"Found {data['count']} {pattern} patterns in {len(data['files'])} files")
             
             return {
                 'patterns': patterns,
@@ -308,3 +338,62 @@ class ProjectAnalyzer:
                 'content': '\n'.join(attachment_matches),
                 'context': self._extract_code_block(content, attachment_matches[0], 15)
             })
+    
+    def _validate_pattern(self, pattern_type: str, examples: List[str]) -> bool:
+        """Validate pattern examples against known good patterns"""
+        try:
+            validation_rules = {
+                '3d_content': {
+                    'required': ['RealityKit', 'Entity'],
+                    'optional': ['ModelEntity', 'AnchorEntity'],
+                    'min_matches': 1
+                },
+                'animation': {
+                    'required': ['animate', 'withAnimation'],
+                    'optional': ['transition', 'keyframe'],
+                    'min_matches': 1
+                },
+                'ui_components': {
+                    'required': ['View', 'struct'],
+                    'optional': ['Button', 'Text', 'Stack'],
+                    'min_matches': 1
+                },
+                'gestures': {
+                    'required': ['gesture', 'onTap', 'onDrag'],
+                    'optional': ['onRotate', 'onLongPress'],
+                    'min_matches': 1
+                },
+                'spatial_audio': {
+                    'required': ['AudioEngine', 'spatialAudio'],
+                    'optional': ['playSound', 'volume'],
+                    'min_matches': 1
+                },
+                'immersive_spaces': {
+                    'required': ['ImmersiveSpace', 'immersiveSpace'],
+                    'optional': ['openImmersiveSpace', 'WindowGroup'],
+                    'min_matches': 1
+                }
+            }
+            
+            if pattern_type not in validation_rules:
+                logger.warning(f"No validation rules for pattern type: {pattern_type}")
+                return True
+                
+            rules = validation_rules[pattern_type]
+            
+            for example in examples:
+                required_matches = sum(1 for pattern in rules['required'] 
+                                     if pattern.lower() in example.lower())
+                optional_matches = sum(1 for pattern in rules['optional'] 
+                                     if pattern.lower() in example.lower())
+                                     
+                if required_matches + optional_matches >= rules['min_matches']:
+                    logger.debug(f"Pattern {pattern_type} validated with {required_matches} required and {optional_matches} optional matches")
+                    return True
+                    
+            logger.warning(f"Pattern {pattern_type} failed validation")
+            return False
+            
+        except Exception as e:
+            logger.error(f"Error validating pattern {pattern_type}: {str(e)}")
+            return False
