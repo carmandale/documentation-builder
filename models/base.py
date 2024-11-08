@@ -105,6 +105,8 @@ class ProjectResource(BaseModel):
     download_url: Optional[str] = None
     local_path: Optional[Path] = None
     downloaded: bool = False
+    documentation_url: Optional[str] = None
+    documentation_title: Optional[str] = None
     
     def mark_downloaded(self, path: Path):
         self.local_path = path

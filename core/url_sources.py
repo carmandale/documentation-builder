@@ -13,6 +13,7 @@ from utils.logging import logger
 from core.config import TEST_SAMPLE_COUNT, BASE_URLS
 import zipfile
 import io
+from datetime import datetime, UTC
 
 @dataclass
 class ProjectResource:
@@ -22,24 +23,21 @@ class ProjectResource:
     download_url: Optional[str] = None
     local_path: Optional[Path] = None
     downloaded: bool = False
+    documentation_url: Optional[str] = None
+    documentation_title: Optional[str] = None
 
     def mark_downloaded(self, path: Path):
         self.local_path = path
         self.downloaded = True
 
 class DocumentationURLCollector:
+    """Handles documentation URL discovery and sample collection"""
     BASE_URL = "https://developer.apple.com"
     
+    # Framework and tool detection
     ESSENTIAL_FRAMEWORKS = {
-        'SwiftUI',
-        'RealityKit', 
-        'ARKit',
-        'AVFoundation',
-        'CoreML',
-        'Metal',
-        'WebKit',
-        'VisionKit',
-        'Foundation'
+        'SwiftUI', 'RealityKit', 'ARKit', 'AVFoundation',
+        'CoreML', 'Metal', 'WebKit', 'VisionKit', 'Foundation'
     }
     
     REALITY_COMPOSER_TERMS = {
@@ -47,37 +45,36 @@ class DocumentationURLCollector:
         'reality composer pro',
         'realitycomposerpro'
     }
+    
+    # Sample detection patterns
+    SAMPLE_SELECTORS = [
+        'a.sample-download',  # Primary download button
+        'a[href*="sample"][href$=".zip"]',
+        'a[href*="download"][href$=".zip"]',
+        '.sample-card a[href$=".zip"]'
+    ]
 
     def __init__(self, base_dir: Path = Path('data')):
+        # Directory setup
         self.base_dir = base_dir
         self.projects_dir = base_dir / 'projects'
         self.debug_dir = base_dir / 'debug'
         self.cache_dir = base_dir / 'cache'
+        
+        # Cache files
         self.url_cache = self.cache_dir / 'url_cache.json'
         self.samples_cache = self.cache_dir / 'discovered_samples.json'
         self.doc_cache = self.cache_dir / 'documentation_cache.json'
         self.analysis_cache = self.cache_dir / 'analysis_cache.json'
         
-        # Ensure all directories exist
-        self.projects_dir.mkdir(parents=True, exist_ok=True)
-        self.debug_dir.mkdir(parents=True, exist_ok=True)
-        self.cache_dir.mkdir(parents=True, exist_ok=True)
+        # Create directories
+        for directory in [self.projects_dir, self.debug_dir, self.cache_dir]:
+            directory.mkdir(parents=True, exist_ok=True)
         
-        # Initialize cache files if they don't exist
+        # Initialize cache files
         for cache_file in [self.url_cache, self.samples_cache, self.doc_cache, self.analysis_cache]:
             if not cache_file.exists():
                 cache_file.write_text('{}')
-
-    def _make_absolute_url(self, url: str) -> str:
-        """Convert relative URLs to absolute URLs"""
-        if url.startswith('http'):
-            return url
-        elif url.startswith('//'):
-            return f"https:{url}"
-        elif url.startswith('/'):
-            return f"{self.BASE_URL}{url}"
-        else:
-            return f"{self.BASE_URL}/{url}"
 
     def is_relevant_url(self, url: str) -> bool:
         """Check if URL is relevant for visionOS development"""
@@ -97,7 +94,6 @@ class DocumentationURLCollector:
         for framework in self.ESSENTIAL_FRAMEWORKS:
             framework_path = f"/documentation/{framework.lower()}"
             if framework_path in url_lower:
-                # Check for visionOS relevance
                 is_relevant = any(term in url_lower for term in [
                     "visionos", "spatial", "3d", "reality", "immersive"
                 ])
@@ -108,38 +104,105 @@ class DocumentationURLCollector:
         return False
 
     async def get_documentation_links(self, base_url: str) -> Dict[str, Set[str]]:
-        """Get categorized documentation links"""
+        """Get categorized documentation links with improved page handling"""
         links = defaultdict(set)
         processed_urls = set()
         
         try:
+            logger.info(f"\nStarting documentation link discovery from: {base_url}")
             async with async_playwright() as p:
                 browser = await p.chromium.launch()
-                page = await browser.new_page()
+                logger.debug("Browser launched successfully")
                 
-                # Process initial page
-                await self._process_page_for_samples(page, base_url, links, processed_urls)
+                # Step 1: Collect URLs from base page
+                logger.debug(f"Creating initial page for URL collection: {base_url}")
+                collector_page = await browser.new_page()
+                try:
+                    logger.debug(f"Navigating to base URL: {base_url}")
+                    await collector_page.goto(base_url)
+                    await collector_page.wait_for_load_state('networkidle')
+                    
+                    logger.debug("Collecting links from base page")
+                    all_links = await collector_page.query_selector_all('a[href]')
+                    urls_to_process = set()
+                    
+                    for link in all_links:
+                        href = await link.get_attribute('href')
+                        if href:
+                            abs_url = self._make_absolute_url(href)
+                            if self.is_relevant_url(abs_url):
+                                urls_to_process.add(abs_url)
+                                logger.debug(f"Found relevant URL: {abs_url}")
+                    
+                    logger.info(f"Found {len(urls_to_process)} relevant URLs to process")
+                    
+                except Exception as e:
+                    logger.error(f"Error collecting URLs from base page: {str(e)}")
+                    logger.debug("Error details:", exc_info=True)
+                finally:
+                    logger.debug("Closing collector page")
+                    await collector_page.close()
                 
-                # Get all links from the page
-                all_links = await page.query_selector_all('a[href]')
-                for link in all_links:
-                    href = await link.get_attribute('href')
-                    if href:
-                        abs_url = self._make_absolute_url(href)
-                        if self.is_relevant_url(abs_url):
-                            await self._process_page_for_samples(page, abs_url, links, processed_urls)
+                # Step 2: Process each URL with its own page
+                for url in urls_to_process:
+                    if url in processed_urls:
+                        logger.debug(f"Skipping already processed URL: {url}")
+                        continue
+                        
+                    logger.debug(f"\nProcessing URL: {url}")
+                    page = await browser.new_page()
+                    try:
+                        logger.debug(f"Navigating to: {url}")
+                        await page.goto(url)
+                        await page.wait_for_load_state('networkidle')
+                        
+                        # Look for sample download buttons
+                        download_buttons = await page.query_selector_all('a.button-cta.sample-download')
+                        for button in download_buttons:
+                            href = await button.get_attribute('href')
+                            if href and 'docs-assets.developer.apple.com' in href and href.endswith('.zip'):
+                                logger.info(f"Found sample download: {href}")
+                                links['samples'].add(self._make_absolute_url(href))
+                        
+                        # Track frameworks and tools
+                        if "/documentation/visionos" in url.lower():
+                            links['documentation'].add(url)
+                            logger.debug(f"Added to documentation: {url}")
+                        
+                        for framework in self.ESSENTIAL_FRAMEWORKS:
+                            if f"/documentation/{framework.lower()}" in url.lower():
+                                links['frameworks'].add(url)
+                                logger.debug(f"Added to frameworks: {url}")
+                                break
+                        
+                        if any(term in url.lower() for term in self.REALITY_COMPOSER_TERMS):
+                            links['tools'].add(url)
+                            logger.debug(f"Added to tools: {url}")
+                        
+                        processed_urls.add(url)
+                        
+                    except Exception as e:
+                        logger.error(f"Error processing URL {url}: {str(e)}")
+                        logger.debug("Error details:", exc_info=True)
+                    finally:
+                        logger.debug(f"Closing page for URL: {url}")
+                        await page.close()
                 
+                logger.debug("Closing browser")
                 await browser.close()
                 
                 # Log summary
-                logger.debug("\nURL Discovery Summary:")
+                logger.info("\nURL Discovery Summary:")
                 for category, urls in links.items():
-                    logger.debug(f"{category}: {len(urls)} URLs found")
+                    logger.info(f"{category}: {len(urls)} URLs found")
+                    for url in urls:
+                        logger.debug(f"  {category}: {url}")
                 
                 return dict(links)
                 
         except Exception as e:
-            logger.error(f"Error getting documentation links: {str(e)}")
+            logger.error(f"Fatal error in get_documentation_links: {str(e)}")
+            logger.debug("Error details:", exc_info=True)
             return dict(links)
 
     async def _process_page_for_samples(self, page, url: str, links: Dict[str, Set[str]], processed_urls: Set[str]):
@@ -149,616 +212,179 @@ class DocumentationURLCollector:
             
         try:
             logger.debug("Processing URL: %s", url)
-            
-            # Add navigation timeout and retry logic
-            for attempt in range(3):
-                try:
-                    response = await page.goto(url, wait_until='networkidle', timeout=30000)
-                    if response.ok:
-                        break
-                except Exception as e:
-                    logger.warning("Navigation attempt %d failed: %s", attempt + 1, str(e))
-                    if attempt == 2:
-                        raise
-                
+            await page.goto(url)
             processed_urls.add(url)
+
+            # Special handling for introductory samples page
+            if 'introductory-visionos-samples' in url:
+                logger.info(f"Processing samples page: {url}")
+                sample_links = await page.query_selector_all('article a')
+                for link in sample_links:
+                    href = await link.get_attribute('href')
+                    if href:
+                        sample_url = self._make_absolute_url(href)
+                        if sample_url not in processed_urls:
+                            await self._process_page_for_samples(page, sample_url, links, processed_urls)
             
-            # Create new context for each page
-            content = await page.content()
+            # Find sample pages from navigation (with {} icons)
+            nav_items = await page.query_selector_all('article.article-content a')
+            for item in nav_items:
+                text = await item.text_content()
+                if text and '{' in text:
+                    href = await item.get_attribute('href')
+                    if href:
+                        links['documentation'].add(self._make_absolute_url(href))
+            
+            # Find direct download links
+            for selector in self.SAMPLE_SELECTORS:
+                buttons = await page.query_selector_all(selector)
+                for button in buttons:
+                    href = await button.get_attribute('href')
+                    if href and href.endswith('.zip'):
+                        links['samples'].add(self._make_absolute_url(href))
             
             # Save debug content
+            content = await page.content()
             debug_path = self.debug_dir / f"raw_{url.split('/')[-1]}.html"
             debug_path.write_text(content)
-            logger.debug("Saved debug content to %s", debug_path)
             
-            # Find direct download buttons
-            download_buttons = await page.query_selector_all('a.sample-download')
-            logger.debug("Found %d sample-download links", len(download_buttons))
+            # Process documentation structure
+            soup = BeautifulSoup(content, 'html.parser')
+            self._analyze_documentation_structure(soup, links)
             
-            for button in download_buttons:
-                href = await button.get_attribute('href')
-                if href and href.endswith('.zip'):
-                    abs_url = self._make_absolute_url(href)
-                    links['samples'].add(abs_url)
-                    logger.debug("Found sample download: %s", abs_url)
-            
-            # Get all links before categorizing
-            all_links = await page.query_selector_all('a[href]')
-            for link in all_links:
-                href = await link.get_attribute('href')
-                if href:
-                    abs_url = self._make_absolute_url(href)
-                    if self.is_relevant_url(abs_url):
-                        if 'documentation' in abs_url:
-                            links['documentation'].add(abs_url)
-                        else:
-                            links['other'].add(abs_url)
-                            
         except Exception as e:
-            logger.error("Error processing page %s: %s", url, str(e))
-            logger.debug("Full error details:", exc_info=True)
+            logger.error(f"Error processing {url}: {str(e)}")
 
-    async def analyze_documentation_structure(self, url: str) -> Dict:
-        """Analyze the structure of a documentation page"""
+    def _analyze_documentation_structure(self, soup: BeautifulSoup, links: Dict[str, Set[str]]):
+        """Analyze documentation page structure"""
         try:
-            async with async_playwright() as p:
-                browser = await p.chromium.launch()
-                page = await browser.new_page()
-                await page.goto(url)
-                content = await page.content()
-                
-                # Save debug content
-                debug_file = self.debug_dir / f"{url.split('/')[-1]}_structure.html"
-                debug_file.write_text(content)
-                
-                soup = BeautifulSoup(content, 'html.parser')
-                
-                # Find sections and topics
-                sections = soup.find_all(['h1', 'h2', 'h3'])
-                topics = soup.find_all(class_='topic')
-                
-                # Look for samples more aggressively
-                samples = set()
-                
-                # 1. Look for direct sample links
-                sample_links = soup.find_all('a', href=lambda x: x and (
-                    'sample' in x.lower() or 
-                    x.endswith('.zip') or 
-                    '/documentation/visionos/' in x
-                ))
-                for link in sample_links:
-                    href = link.get('href', '')
-                    if href:
-                        logger.debug(f"Found potential sample link: {href}")
-                        samples.add(href)
-                
-                # 2. Look for sample cards/sections
-                sample_sections = soup.find_all(['div', 'section'], class_=lambda x: x and 'sample' in x.lower())
-                for section in sample_sections:
-                    links = section.find_all('a', href=True)
-                    for link in links:
-                        href = link.get('href', '')
-                        if href:
-                            logger.debug(f"Found sample in section: {href}")
-                            samples.add(href)
-                
-                # 3. Look for download buttons
-                download_buttons = soup.find_all(class_='sample-download')
-                for button in download_buttons:
-                    parent_link = button.find_parent('a', href=True)
-                    if parent_link and parent_link.get('href'):
-                        logger.debug(f"Found sample download button: {parent_link['href']}")
-                        samples.add(parent_link['href'])
-                
-                structure = {
-                    'sections': len(sections),
-                    'topics': len(topics),
-                    'samples': len(samples)
-                }
-                
-                logger.info(f"Found {structure['sections']} sections, {structure['topics']} topics, and {structure['samples']} samples")
-                
-                await browser.close()
-                return structure
+            # Find framework references
+            for framework in self.ESSENTIAL_FRAMEWORKS:
+                framework_refs = soup.find_all(
+                    lambda tag: tag.name in ['p', 'div', 'span', 'a'] and 
+                    framework.lower() in tag.text.lower()
+                )
+                if framework_refs:
+                    links['frameworks'].add(framework)
+            
+            # Find Reality Composer Pro references
+            rc_refs = soup.find_all(
+                lambda tag: tag.name in ['p', 'div', 'span', 'a'] and
+                any(term in tag.text.lower() for term in self.REALITY_COMPOSER_TERMS)
+            )
+            if rc_refs:
+                links['tools'].add('Reality Composer Pro')
                 
         except Exception as e:
             logger.error(f"Error analyzing documentation structure: {str(e)}")
-            logger.debug("Full error details:", exc_info=True)
-            return {'sections': 0, 'topics': 0, 'samples': 0}
-
-    async def process_documentation_page(self, url: str) -> Optional[ProjectResource]:
-        """Process a documentation page to extract project information"""
-        if not url.endswith('.zip'):
-            return None
-            
-        try:
-            # Extract title from zip filename
-            title = Path(url).stem
-            
-            # Create ProjectResource
-            resource = ProjectResource(
-                title=title,
-                url=url,
-                download_url=url
-            )
-            
-            # Download the zip file using aiohttp instead of playwright
-            async with aiohttp.ClientSession() as session:
-                async with session.get(url) as response:
-                    if response.status == 200:
-                        content = await response.read()
-                        
-                        # Save zip content
-                        cache_dir = Path('data/cache/samples')
-                        cache_dir.mkdir(parents=True, exist_ok=True)
-                        
-                        local_path = cache_dir / f"{title}.zip"
-                        local_path.write_bytes(content)
-                        
-                        # Verify zip content
-                        try:
-                            with zipfile.ZipFile(local_path) as zf:
-                                has_source = any(
-                                    name.endswith(('.swift', '.h', '.m', '.cpp', '.c', '.mm'))
-                                    for name in zf.namelist()
-                                )
-                                if has_source:
-                                    resource.mark_downloaded(local_path)
-                                    logger.info(f"Successfully downloaded {title}")
-                                    return resource
-                                else:
-                                    logger.warning(f"No source code files found in {url}")
-                                    local_path.unlink()  # Remove invalid zip
-                                    return None
-                        except zipfile.BadZipFile:
-                            logger.error(f"Invalid zip file: {url}")
-                            local_path.unlink()  # Remove invalid zip
-                            return None
-                    else:
-                        logger.error(f"Failed to download {url}: {response.status}")
-                        return None
-                        
-        except Exception as e:
-            logger.error(f"Error processing {url}: {str(e)}")
-            return None
-
-    async def process_and_download(self, url: str) -> Optional[ProjectResource]:
-        """Process page and optionally download"""
-        project = await self.process_documentation_page(url)
-        if project:
-            await self.download_project(project)
-        return project
-
-    async def download_project(self, project: ProjectResource) -> bool:
-        """Download a project if not already downloaded"""
-        if project.downloaded and project.local_path and project.local_path.exists():
-            logger.info(f"Project already downloaded: {project.title}")
-            return True
-
-        if not project.download_url:
-            logger.error(f"No download URL for project: {project.title}")
-            return False
-
-        try:
-            async with aiohttp.ClientSession() as session:
-                logger.info(f"Downloading {project.title} from {project.download_url}")
-                async with session.get(project.download_url) as response:
-                    if response.status == 200:
-                        # Verify content type
-                        content_type = response.headers.get('content-type', '')
-                        if not ('zip' in content_type.lower() or 'octet-stream' in content_type.lower()):
-                            logger.warning(f"Unexpected content type: {content_type} for {project.download_url}")
-                            return False
-                        
-                        # Create project directory with sanitized name
-                        project_name = re.sub(r'[^\w\-]', '-', project.title.lower())
-                        project_dir = self.projects_dir / project_name
-                        project_dir.mkdir(parents=True, exist_ok=True)
-                        
-                        # Save zip file
-                        zip_path = project_dir / 'project.zip'
-                        content = await response.read()
-                        
-                        # Verify it's actually a zip file
-                        if not content.startswith(b'PK'):
-                            logger.error(f"Downloaded content is not a zip file for {project.title}")
-                            return False
-                            
-                        zip_path.write_bytes(content)
-                        
-                        try:
-                            # Extract zip file
-                            import zipfile
-                            with zipfile.ZipFile(zip_path) as zf:
-                                zf.extractall(project_dir)
-                                
-                            # Update project path and status
-                            project.mark_downloaded(project_dir)
-                            logger.info(f"Downloaded project to {project_dir}")
-                            
-                            # Clean up zip file
-                            zip_path.unlink()
-                            
-                            # Update cache
-                            self._update_cache(project)
-                            
-                            return True
-                        except zipfile.BadZipFile:
-                            logger.error(f"Invalid zip file for {project.title}")
-                            if zip_path.exists():
-                                zip_path.unlink()
-                            return False
-                            
-                    logger.error(f"Got status {response.status} for {project.download_url}")
-                        
-        except Exception as e:
-            logger.error(f"Error downloading project {project.title}: {str(e)}")
-            
-        return False
 
     async def discover_all_samples(self) -> List[ProjectResource]:
         """Load or discover all samples"""
         if self._validate_samples_cache():
             return self._load_from_cache()
             
-        # Cache miss - discover new samples
-        samples = []
-        base_url = "https://developer.apple.com/documentation/visionos/"
-        
-        # Get sample URLs
-        sample_urls = await self.get_sample_urls_from_page(base_url)
-        
-        # Process each sample URL
-        for url in sample_urls:
-            if self._validate_sample_url(url):
-                project = await self.process_documentation_page(url)
-                if project:
-                    samples.append(project)
-                    
-        # Update cache
-        self._update_cache(samples)
-        return samples
-
-    async def download_samples(self, samples: List[ProjectResource], 
-                             mode: str = 'test') -> List[ProjectResource]:
-        """Download samples based on mode"""
-        if mode == 'skip':
-            return []
-            
-        to_download = samples
-        if mode == 'test':
-            # Use first TEST_SAMPLE_COUNT samples
-            to_download = samples[:TEST_SAMPLE_COUNT]
-            
-        return [s for s in to_download if await self.download_project(s)]
-
-    async def _get_page_content(self, url: str) -> str:
-        """Get page content using playwright"""
-        try:
-            async with async_playwright() as p:
-                browser = await p.chromium.launch()
-                page = await browser.new_page()
-                await page.goto(url)
-                await page.wait_for_load_state('networkidle')
-                content = await page.content()
-                await browser.close()
-                return content
-        except Exception as e:
-            logger.error(f"Error getting page content: {str(e)}")
-            return ""
-
-    def _validate_cache(self, cache_file: Path, max_age: int = 86400) -> bool:
-        """Validate cache file with age check"""
-        try:
-            if not cache_file.exists():
-                return False
-                
-            # Check cache age
-            cache_age = time.time() - cache_file.stat().st_mtime
-            if cache_age > max_age:  # Default 24 hours
-                logger.info(f"Cache {cache_file.name} is older than {max_age/3600:.1f} hours")
-                return False
-                
-            # Validate content
-            json.loads(cache_file.read_text())
-            return True
-            
-        except Exception as e:
-            logger.error(f"Cache validation error for {cache_file}: {str(e)}")
-            return False
-
-    def _validate_samples_cache(self):
-        """Validate the samples cache"""
-        try:
-            if not self.samples_cache.exists():
-                return False
-                
-            # Check cache age
-            cache_age = time.time() - self.samples_cache.stat().st_mtime
-            if cache_age > 86400:  # 24 hours
-                logger.info("Cache is older than 24 hours")
-                return False
-                
-            # Validate cache content
-            cache_data = json.loads(self.samples_cache.read_text())
-            if not isinstance(cache_data, list):
-                logger.warning("Invalid cache format")
-                return False
-                
-            return True
-        except Exception as e:
-            logger.error(f"Cache validation error: {str(e)}")
-            return False
-
-    def _validate_url_cache(self) -> bool:
-        """Validate URL cache"""
-        schema = {
-            'url': str,
-            'category': str,
-            'last_checked': str
-        }
-        return self._validate_cache(self.url_cache, schema)
-
-    async def get_sample_urls_from_page(self, url: str) -> Set[str]:
-        """Get sample URLs from a documentation page"""
-        logger.debug("Searching for samples on: %s", url)
-        samples = set()
-        
-        try:
-            async with async_playwright() as p:
-                browser = await p.chromium.launch()
-                start = time.time()
-                logger.debug("[Timing] Browser launch: %.2fs", time.time() - start)
-                
-                page = await browser.new_page()
-                await page.goto(url)
-                logger.debug("[Timing] Initial page load: %.2fs", time.time() - start)
-                
-                # Find pages with {} icons in navigation
-                nav_items = await page.query_selector_all('article.article-content a')
-                for item in nav_items:
-                    text = await item.text_content()
-                    href = await item.get_attribute('href')
-                    if text and '{' in text and href:
-                        logger.debug("Found sample page from nav: %s", href)
-                        samples.add(self._make_absolute_url(href))
-                
-                # Check intro samples section
-                intro_section = await page.query_selector('text="Introductory visionOS samples"')
-                if intro_section:
-                    parent = await intro_section.query_selector('xpath=ancestor::section')
-                    if parent:
-                        links = await parent_section.query_selector_all('a[href]')
-                        for link in links:
-                            href = await link.get_attribute('href')
-                            if href:
-                                logger.debug("Found sample from intro section: %s", href)
-                                samples.add(self._make_absolute_url(href))
-                
-                # Look for direct download buttons
-                for selector in self.SAMPLE_SELECTORS:
-                    buttons = await page.query_selector_all(selector)
-                    logger.debug("Found %d elements with selector: %s", len(buttons), selector)
-                    for button in buttons:
-                        href = await button.get_attribute('href')
-                        if href and href.endswith('.zip'):
-                            samples.add(self._make_absolute_url(href))
-                
-                await browser.close()
-                return samples
-                
-        except Exception as e:
-            logger.error("Error getting sample URLs: %s", str(e))
-            
-        return samples
-
-    async def extract_documentation_content(self, url: str) -> Dict:
-        """Extract and cache documentation content"""
-        # Check cache first
-        cache_key = re.sub(r'[^\w\-]', '-', url.split('/')[-1])
-        cache_file = self.doc_cache.parent / f"{cache_key}.json"
-        
-        if cache_file.exists():
-            try:
-                cached = json.loads(cache_file.read_text())
-                logger.info(f"Using cached documentation for {url}")
-                return cached
-            except json.JSONDecodeError:
-                logger.warning(f"Invalid cache for {url}")
-
-        # Cache miss - extract content
-        content = await self._extract_doc_content(url)
-        if content:
-            try:
-                cache_file.write_text(json.dumps(content, indent=2))
-                logger.info(f"Cached documentation for {url}")
-            except Exception as e:
-                logger.error(f"Error caching documentation: {str(e)}")
-        
-        return content
-
-    def _get_code_context(self, element, context_lines=3):
-        """Get surrounding context for a code block"""
-        context = []
-        prev = element.find_previous_siblings(limit=context_lines)
-        next = element.find_next_siblings(limit=context_lines)
-        
-        for p in reversed(prev):
-            if p.get_text(strip=True):
-                context.append(p.get_text(strip=True))
-        
-        for n in next:
-            if n.get_text(strip=True):
-                context.append(n.get_text(strip=True))
-                
-        return context
-
-    async def _discover_new_samples(self) -> List[ProjectResource]:
-        """Internal method to discover new samples"""
+        logger.debug("Cache miss - discovering samples...")
         samples = []
         
-        # First get all documentation URLs
-        discovered_urls = {}
         for base_url in BASE_URLS:
-            # Get categorized links
             links = await self.get_documentation_links(base_url)
-            
-            # Merge discovered URLs
-            for category, urls in links.items():
-                if category not in discovered_urls:
-                    discovered_urls[category] = set()
-                discovered_urls[category].update(urls)
-                
-            # Check for samples in documentation structure
-            structure = await self.analyze_documentation_structure(base_url)
-            if structure['samples'] > 0:
-                # Get sample URLs from this page
-                page_samples = await self.get_sample_urls_from_page(base_url)
-                for sample_url in page_samples:
-                    # Process each sample URL
-                    project = await self.process_documentation_page(sample_url)
+            for url in links.get('samples', set()):
+                if self._validate_sample_url(url):
+                    project = await self.process_documentation_page(url)
                     if project:
                         samples.append(project)
         
-        # Process all documentation URLs for samples
-        doc_urls = discovered_urls.get('documentation', set())
-        for url in doc_urls:
-            # Skip if URL is already processed
-            if any(s.url == url for s in samples):
-                continue
-            
-            # Check if this is a sample page
-            project = await self.process_documentation_page(url)
-            if project:
-                samples.append(project)
-                logger.info(f"Found sample: {project.title}")
-        
-        logger.info(f"Discovered {len(samples)} total samples")
+        self._update_cache(samples)
         return samples
 
-    def _update_cache(self, project: ProjectResource):
-        """Update the cache with latest project status"""
-        try:
-            samples = []
-            if self.samples_cache.exists():
-                cache_data = json.loads(self.samples_cache.read_text())
-                samples = [ProjectResource(**item) for item in cache_data]
-
-            # Update or add project
-            updated = False
-            for i, sample in enumerate(samples):
-                if sample.url == project.url:
-                    samples[i] = project
-                    updated = True
-                    break
-            if not updated:
-                samples.append(project)
-
-            # Save updated cache using model_dump
-            cache_data = [s.model_dump() for s in samples]
-            self.samples_cache.write_text(json.dumps(cache_data, indent=2))
-            
-        except Exception as e:
-            logger.error(f"Error updating cache: {str(e)}")
-            # Backup corrupted cache
-            if self.samples_cache.exists():
-                backup = self.samples_cache.with_suffix('.json.bak')
-                self.samples_cache.rename(backup)
-                logger.info(f"Backed up corrupted cache to {backup}")
-            # Start fresh
-            self.samples_cache.write_text('[]')
-
-    def clear_cache(self):
-        """Clear all cache files"""
-        logger.info("Clearing cache files...")
-        cache_files = [
-            self.url_cache,
-            self.samples_cache,
-            self.doc_cache,
-            self.analysis_cache
-        ]
-        
-        for cache_file in cache_files:
-            if cache_file.exists():
-                logger.info(f"Removing {cache_file}")
-                cache_file.unlink()
-                
-        logger.info("Cache cleared")
-
-    def inspect_cache(self):
-        """Inspect and report on cache contents"""
-        logger.info("\nCache Inspection:")
-        
-        if self.samples_cache.exists():
-            try:
-                cache_data = json.loads(self.samples_cache.read_text())
-                logger.info(f"\nSamples Cache:")
-                logger.info(f"Total samples: {len(cache_data)}")
-                
-                downloaded = sum(1 for s in cache_data if s.get('downloaded', False))
-                logger.info(f"Downloaded: {downloaded}")
-                logger.info(f"Not downloaded: {len(cache_data) - downloaded}")
-                
-                # Show sample details
-                logger.info("\nSample Details:")
-                for sample in cache_data:
-                    status = "Downloaded" if sample.get('downloaded') else "Not Downloaded"
-                    logger.info(f"- {sample['title']}: {status}")
-                    if sample.get('local_path'):
-                        path = Path(sample['local_path'])
-                        if not path.exists():
-                            logger.warning(f"  Warning: Path does not exist: {path}")
-            except json.JSONDecodeError:
-                logger.error("Samples cache is corrupted")
-        else:
-            logger.info("No samples cache found")
-
-    async def _extract_doc_content(self, url: str) -> Dict:
-        """Extract content from documentation page"""
+    async def process_documentation_page(self, url: str) -> Optional[ProjectResource]:
+        """Process a documentation page to create a ProjectResource"""
         try:
             async with async_playwright() as p:
                 browser = await p.chromium.launch()
                 page = await browser.new_page()
                 await page.goto(url)
-                await page.wait_for_load_state('networkidle')
                 
-                content = await page.content()
-                soup = BeautifulSoup(content, 'html.parser')
+                # Get the documentation page title
+                title_elem = await page.query_selector('h1')
+                title = await title_elem.text_content() if title_elem else url.split('/')[-1]
                 
-                # Get title
-                title_elem = soup.find(['h1', 'title'])
-                title = title_elem.get_text(strip=True) if title_elem else url.split('/')[-1]
+                # Get the download URL if present
+                download_button = await page.query_selector('a.sample-download')
+                download_url = await download_button.get_attribute('href') if download_button else None
                 
-                # Get introduction
-                intro_elem = soup.find('div', class_='introduction')
-                intro = intro_elem.get_text(strip=True) if intro_elem else None
-                
-                # Look for sample downloads
-                sample_links = soup.find_all('a', href=lambda x: x and (
-                    'sample' in x.lower() or 
-                    x.endswith('.zip') or 
-                    '/documentation/visionos/' in x
-                ))
-                
-                samples = []
-                for link in sample_links:
-                    href = link.get('href', '')
-                    if href:
-                        samples.append({
-                            'url': self._make_absolute_url(href),
-                            'title': link.get_text(strip=True) or href.split('/')[-1]
-                        })
-                
-                return {
-                    'title': title,
-                    'url': url,
-                    'introduction': intro,
-                    'samples': samples
-                }
-                
+                if download_url:
+                    # Create ProjectResource with documentation reference
+                    project = ProjectResource(
+                        title=title,
+                        url=url,
+                        download_url=self._make_absolute_url(download_url),
+                        documentation_url=url,  # Store the documentation URL
+                        documentation_title=title  # Store the documentation title
+                    )
+                    
+                    # Cache the relationship
+                    self._cache_doc_relationship(project)
+                    
+                    return project
+                    
         except Exception as e:
-            logger.error(f"Error extracting content from {url}: {str(e)}")
-            return None
+            logger.error(f"Error processing documentation page {url}: {str(e)}")
+            
+        return None
+
+    def _cache_doc_relationship(self, project: ProjectResource):
+        """Cache the relationship between sample and documentation"""
+        relationships = {}
+        if self.doc_cache.exists():
+            relationships = json.loads(self.doc_cache.read_text())
+        
+        relationships[project.title] = {
+            'sample_url': project.download_url,
+            'documentation_url': project.documentation_url,
+            'documentation_title': project.documentation_title,
+            'cached_at': datetime.now(UTC).isoformat()
+        }
+        
+        self.doc_cache.write_text(json.dumps(relationships, indent=2))
+
+    async def download_project(self, project: ProjectResource) -> bool:
+        """Download and extract a project"""
+        if not project.download_url:
+            return False
+            
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.get(project.download_url) as response:
+                    if response.status == 200:
+                        content = await response.read()
+                        
+                        # Create project directory
+                        project_name = re.sub(r'[^\w\-_]', '_', project.title)
+                        project_dir = self.projects_dir / project_name
+                        project_dir.mkdir(exist_ok=True)
+                        
+                        # Extract zip content
+                        with zipfile.ZipFile(io.BytesIO(content)) as zip_ref:
+                            zip_ref.extractall(project_dir)
+                            
+                        project.mark_downloaded(project_dir)
+                        return True
+                        
+        except Exception as e:
+            logger.error(f"Error downloading project: {str(e)}")
+            
+        return False
+
+    def _make_absolute_url(self, url: str) -> str:
+        """Convert relative URLs to absolute URLs"""
+        if url.startswith('http'):
+            return url
+        elif url.startswith('//'):
+            return f"https:{url}"
+        elif url.startswith('/'):
+            return f"{self.BASE_URL}{url}"
+        return f"{self.BASE_URL}/{url}"
 
     def _validate_sample_url(self, url: str) -> bool:
         """Validate if a URL is likely a sample project"""
@@ -768,29 +394,76 @@ class DocumentationURLCollector:
             'example.code' in url.lower() and url.endswith('.zip')
         ])
 
-    # Add more sample link selectors
-    SAMPLE_SELECTORS = [
-        'a.sample-download',
-        'a[href*="sample"][href$=".zip"]',
-        'a[href*="download"][href$=".zip"]',
-        '.sample-card a[href$=".zip"]',
-        '.documentation-card a[href$=".zip"]'
-    ]
+    # Cache management methods
+    def _validate_samples_cache(self) -> bool:
+        """Check if samples cache is valid"""
+        try:
+            if not self.samples_cache.exists():
+                return False
+                
+            cache_data = json.loads(self.samples_cache.read_text())
+            cache_time = cache_data.get('cached_at', 0)
+            return time.time() - cache_time < 24 * 60 * 60
+            
+        except Exception:
+            return False
 
-    async def _find_sample_links(self, page):
-        """Find sample download links using multiple selectors"""
-        sample_links = set()
-        for selector in self.SAMPLE_SELECTORS:
-            try:
-                elements = await page.query_selector_all(selector)
-                logger.debug("Found %d elements with selector: %s", len(elements), selector)
-                for element in elements:
-                    href = await element.get_attribute('href')
-                    if href and href.endswith('.zip'):
-                        sample_links.add(self._make_absolute_url(href))
-            except Exception as e:
-                logger.warning("Error with selector %s: %s", selector, str(e))
-        return sample_links
+    def _load_from_cache(self) -> List[ProjectResource]:
+        """Load samples from cache"""
+        try:
+            cache_data = json.loads(self.samples_cache.read_text())
+            return [ProjectResource(**p) for p in cache_data.get('samples', [])]
+        except Exception as e:
+            logger.error(f"Error loading cache: {str(e)}")
+            return []
+
+    def _update_cache(self, samples: List[ProjectResource]):
+        """Update samples cache"""
+        try:
+            cache_data = {
+                'cached_at': time.time(),
+                'samples': [vars(s) for s in samples]
+            }
+            self.samples_cache.write_text(json.dumps(cache_data, indent=2))
+        except Exception as e:
+            logger.error(f"Error updating cache: {str(e)}")
+
+    def clear_cache(self):
+        """Clear all cache files"""
+        logger.info("Clearing cache files...")
+        for cache_file in [self.url_cache, self.samples_cache, self.doc_cache, self.analysis_cache]:
+            if cache_file.exists():
+                logger.info(f"Removing {cache_file}")
+                cache_file.unlink()
+        logger.info("Cache cleared")
+
+    def inspect_cache(self):
+        """Inspect and report on cache contents"""
+        logger.info("\nCache Inspection:")
+        if not self.samples_cache.exists():
+            logger.info("No samples cache found")
+            return
+            
+        try:
+            cache_data = json.loads(self.samples_cache.read_text())
+            logger.info("\nSamples Cache:")
+            logger.info(f"Total samples: {len(cache_data)}")
+            
+            downloaded = sum(1 for s in cache_data if s.get('downloaded', False))
+            logger.info(f"Downloaded: {downloaded}")
+            logger.info(f"Not downloaded: {len(cache_data) - downloaded}")
+            
+            logger.info("\nSample Details:")
+            for sample in cache_data:
+                status = "Downloaded" if sample.get('downloaded') else "Not Downloaded"
+                logger.info(f"- {sample['title']}: {status}")
+                if sample.get('local_path'):
+                    path = Path(sample['local_path'])
+                    if not path.exists():
+                        logger.warning(f"  Warning: Path does not exist: {path}")
+                        
+        except json.JSONDecodeError:
+            logger.error("Samples cache is corrupted")
 
 class URLSources:
     """Simple URL management class"""

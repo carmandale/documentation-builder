@@ -1,7 +1,7 @@
 import asyncio
 from pathlib import Path
 from core.scraper import DocumentationScraper
-from core.url_sources import DocumentationURLCollector, URLSources
+from core.url_sources import DocumentationURLCollector, URLSources, ProjectResource
 from analyzers.project_analyzer import ProjectAnalyzer
 from extractors.relationship_extractor import RelationshipExtractor
 from core.config import (
@@ -43,33 +43,33 @@ pattern_evolution = PatternEvolution(Path('data/knowledge'))
 project_analyzer = ProjectAnalyzer()
 relationship_tracker = RelationshipTracker(Path('data/knowledge'))
 
-async def process_url(url: str, url_collector: DocumentationURLCollector, skip_downloads: bool = True):
+async def process_url(url: str, url_collector: DocumentationURLCollector, skip_downloads: bool = SKIP_DOWNLOADS):
     """Process a single URL with improved error handling"""
     retries = 3
     while retries > 0:
         try:
-            # Add debug logging
             console.print(f"\n[cyan]Processing URL: {url}")
             
-            # Extract documentation content first
-            doc_content = await url_collector.extract_documentation_content(url)
-            if doc_content:
-                console.print(f"[green]Extracted documentation content: {doc_content['title']}")
-            
-            # Then check for downloadable project
-            project = await url_collector.process_documentation_page(url)
-            if project:
-                console.print(f"Found project: {project.title}")
+            # Handle ZIP URLs differently from documentation URLs
+            if url.endswith('.zip'):
+                # For ZIP URLs, just create ProjectResource and download
+                project = ProjectResource(
+                    title=url.split('/')[-1].replace('.zip', ''),
+                    url=url,
+                    download_url=url
+                )
+                
                 if not skip_downloads:
-                    console.print(f"[yellow]Attempting download...")
+                    console.print(f"[yellow]Attempting download to {url_collector.projects_dir}...")
                     success = await url_collector.download_project(project)
                     if success:
                         console.print(f"[green]Downloaded to: {project.local_path}")
+                        console.print(f"[green]Project contents: {list(project.local_path.glob('**/*'))}")
                     else:
                         console.print(f"[red]Download failed")
+                else:
+                    console.print(f"[yellow]Skipping download (SKIP_DOWNLOADS=True)")
                 return project
-            else:
-                console.print(f"[yellow]No project found at {url}")
                 
         except aiohttp.ClientError as e:
             retries -= 1
