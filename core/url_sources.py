@@ -62,6 +62,8 @@ class DocumentationURLCollector:
             if not cache_file.exists():
                 cache_file.write_text('{}')
 
+        self.logged_samples = set()
+
     def is_relevant_url(self, url: str) -> bool:
         """Check if URL is relevant for visionOS development"""
         url_lower = url.lower()
@@ -100,15 +102,14 @@ class DocumentationURLCollector:
                 browser = await p.chromium.launch()
                 logger.debug("Browser launched successfully")
                 
-                # Step 1: Collect URLs from base page
-                logger.debug(f"Creating initial page for URL collection: {base_url}")
+                # Step 1: Initial page setup
                 collector_page = await browser.new_page()
                 try:
                     logger.debug(f"Navigating to base URL: {base_url}")
                     await collector_page.goto(base_url)
                     await collector_page.wait_for_load_state('networkidle')
                     
-                    logger.debug("Collecting links from base page")
+                    # Collect initial URLs
                     all_links = await collector_page.query_selector_all('a[href]')
                     urls_to_process = set()
                     
@@ -118,17 +119,14 @@ class DocumentationURLCollector:
                             abs_url = self._make_absolute_url(href)
                             if self.is_relevant_url(abs_url):
                                 urls_to_process.add(abs_url)
-                                logger.debug(f"Found relevant URL: {abs_url}")
-                    
+                                if 'introductory-visionos-samples' in abs_url:
+                                    logger.debug(f"Found intro samples page: {abs_url}")
+                
                     logger.info(f"Found {len(urls_to_process)} relevant URLs to process")
                     
-                except Exception as e:
-                    logger.error(f"Error collecting URLs from base page: {str(e)}")
-                    logger.debug("Error details:", exc_info=True)
                 finally:
-                    logger.debug("Closing collector page")
                     await collector_page.close()
-                
+
                 # Step 2: Process each URL with its own page
                 for url in urls_to_process:
                     if url in processed_urls:
@@ -141,6 +139,68 @@ class DocumentationURLCollector:
                         logger.debug(f"Navigating to: {url}")
                         await page.goto(url)
                         await page.wait_for_load_state('networkidle')
+                        
+                        # Special handling for intro samples page
+                        if 'introductory-visionos-samples' in url:
+                            logger.info(f"Processing intro samples page: {url}")
+                            
+                            # Debug: Save the page content
+                            content = await page.content()
+                            debug_path = self.debug_dir / "intro_samples_page.html"
+                            debug_path.write_text(content)
+                            logger.debug(f"Saved intro page content to {debug_path}")
+                            
+                            # Find all sample page links
+                            sample_page_links = await page.query_selector_all('div.section-content a.link')
+                            logger.debug(f"Found {len(sample_page_links)} sample page links")
+                            
+                            # Visit each sample page
+                            for link in sample_page_links:
+                                href = await link.get_attribute('href')
+                                if href:
+                                    sample_page_url = self._make_absolute_url(href)
+                                    logger.debug(f"Visiting sample page: {sample_page_url}")
+                                    
+                                    # Create new page for each sample
+                                    sample_page = await browser.new_page()
+                                    try:
+                                        await sample_page.goto(sample_page_url)
+                                        await sample_page.wait_for_load_state('networkidle')
+                                        
+                                        # Use the same selector that works for other samples
+                                        download_buttons = await sample_page.query_selector_all('a.button-cta.sample-download')
+                                        for button in download_buttons:
+                                            download_href = await button.get_attribute('href')
+                                            if download_href and 'docs-assets.developer.apple.com' in download_href and download_href.endswith('.zip'):
+                                                logger.info(f"Found sample download from intro page: {download_href}")
+                                                links['samples'].add(self._make_absolute_url(download_href))
+                                    finally:
+                                        await sample_page.close()
+                        
+                        # Also get links with {} icons
+                        nav_items = await page.query_selector_all('article.article-content a')
+                        for item in nav_items:
+                            text = await item.text_content()
+                            if text and '{' in text:
+                                href = await item.get_attribute('href')
+                                if href:
+                                    sample_url = self._make_absolute_url(href)
+                                    if sample_url not in processed_urls:
+                                        # Create a new page for each sample
+                                        sample_page = await browser.new_page()
+                                        try:
+                                            await sample_page.goto(sample_url)
+                                            await sample_page.wait_for_load_state('networkidle')
+                                            
+                                            # Now look for the actual download button on the sample page
+                                            download_buttons = await sample_page.query_selector_all('a.button-cta.sample-download')
+                                            for button in download_buttons:
+                                                download_href = await button.get_attribute('href')
+                                                if download_href and 'docs-assets.developer.apple.com' in download_href and download_href.endswith('.zip'):
+                                                    logger.info(f"Found sample download from intro page: {download_href}")
+                                                    links['samples'].add(self._make_absolute_url(download_href))
+                                        finally:
+                                            await sample_page.close()
                         
                         # Look for sample download buttons
                         download_buttons = await page.query_selector_all('a.button-cta.sample-download')
@@ -201,17 +261,6 @@ class DocumentationURLCollector:
             await page.goto(url)
             processed_urls.add(url)
 
-            # Special handling for introductory samples page
-            if 'introductory-visionos-samples' in url:
-                logger.info(f"Processing samples page: {url}")
-                sample_links = await page.query_selector_all('article a')
-                for link in sample_links:
-                    href = await link.get_attribute('href')
-                    if href:
-                        sample_url = self._make_absolute_url(href)
-                        if sample_url not in processed_urls:
-                            await self._process_page_for_samples(page, sample_url, links, processed_urls)
-            
             # Find sample pages from navigation (with {} icons)
             nav_items = await page.query_selector_all('article.article-content a')
             for item in nav_items:
