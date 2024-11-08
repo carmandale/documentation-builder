@@ -60,6 +60,30 @@ The tool automatically identifies and tracks relationships between VisionOS conc
 - **Implementation Patterns**: Common code patterns and their usage
 
 ### Pattern Recognition
+The system uses simple string matching to detect patterns in code. To add new patterns:
+
+1. Add pattern type to `PATTERN_TYPES` in `core/config.py`:
+```python
+PATTERN_TYPES = [
+    'existing_pattern',
+    'your_new_pattern'  # Add here
+]
+```
+
+2. Add detection terms in `analyzers/project_analyzer.py`:
+```python
+patterns = {
+    'existing_pattern': ['term1', 'term2'],
+    'your_new_pattern': [
+        'detection_term1',
+        'detection_term2',
+        'detection_term3'
+    ]
+}
+```
+
+That's it! The system uses case-insensitive string matching to find these terms in code files.
+
 Currently implemented patterns:
 - UI Components
 - Animation

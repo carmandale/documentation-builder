@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import List, Dict, Optional
 import logging
 import re
-from core.config import TEST_PATTERN_VALIDATION
+from core.config import TEST_PATTERN_VALIDATION, PATTERN_TYPES
 from collections import defaultdict
 
 logger = logging.getLogger(__name__)
@@ -18,6 +18,7 @@ class ProjectAnalyzer:
         logger.info(f"Analyzing project at: {project_path}")
         
         patterns = defaultdict(lambda: {'count': 0, 'files': [], 'examples': []})
+        project_code = {}  # Store all code for project-level analysis
         
         if not project_path.exists():
             logger.error(f"Project path does not exist: {project_path}")
@@ -27,23 +28,30 @@ class ProjectAnalyzer:
         swift_files = list(project_path.glob('**/*.swift'))
         logger.info(f"Found {len(swift_files)} Swift files")
         
+        # First pass: collect all code
         for file_path in swift_files:
             try:
                 with open(file_path, 'r', encoding='utf-8') as f:
-                    content = f.read()
-                    logger.debug(f"Analyzing file: {file_path}")
-                    
-                    # Check each pattern type using self.pattern_matches
-                    for pattern_type in ['3d_content', 'animation', 'ui_components', 
-                                       'gestures', 'spatial_audio', 'immersive_spaces']:
-                        if self.pattern_matches(content, pattern_type):
-                            patterns[pattern_type]['count'] += 1
-                            patterns[pattern_type]['files'].append(file_path)
-                            patterns[pattern_type]['examples'].append({
-                                'file': str(file_path),
-                                'content': content[:200] + '...'  # Preview
-                            })
-                            logger.info(f"Found {pattern_type} pattern in {file_path}")
+                    project_code[file_path] = f.read()
+            except Exception as e:
+                logger.error(f"Error reading {file_path}: {str(e)}")
+        
+        # Second pass: analyze patterns
+        for file_path, content in project_code.items():
+            try:
+                logger.debug(f"Analyzing file: {file_path}")
+                
+                # Check each pattern type
+                for pattern_type in PATTERN_TYPES:
+                    if self.pattern_matches(content, pattern_type):
+                        patterns[pattern_type]['count'] += 1
+                        patterns[pattern_type]['files'].append(file_path)
+                        patterns[pattern_type]['examples'].append({
+                            'file': str(file_path),
+                            'content': content[:200] + '...'  # Preview
+                        })
+                        logger.info(f"Found {pattern_type} pattern in {file_path}")
+                        
             except Exception as e:
                 logger.error(f"Error analyzing {file_path}: {str(e)}")
         
@@ -365,15 +373,48 @@ class ProjectAnalyzer:
                 'ui_components': ['View', 'Button', 'Text', 'Container', 'NavigationStack'],
                 'gestures': ['gesture', 'onTap', 'onDrag', 'spatialGesture', 'hoverable'],
                 'spatial_audio': ['AudioEngine', 'spatialAudio', 'AudioSession', 'SpatialMixer'],
-                'immersive_spaces': ['ImmersiveSpace', 'immersiveSpace', 'WindowGroup', 'ImmersiveView']
+                'immersive_spaces': ['ImmersiveSpace', 'immersiveSpace', 'WindowGroup', 'ImmersiveView'],
+                'arkit': [
+                    'ARKitSession',
+                    'PlaneDetectionProvider',
+                    'PlaneAnchor',
+                    'HandTrackingProvider',
+                    'SceneReconstruction',
+                    'RoomTrackingProvider',
+                    'WorldTrackingProvider',
+                    'RoomAnchor',
+                    'WorldAnchor'
+                ]
             }
-            
+
             if pattern_type not in patterns:
                 logger.warning(f"Unknown pattern type: {pattern_type}")
                 return False
-                
-            return any(pattern.lower() in code.lower() for pattern in patterns[pattern_type])
-            
+
+            return any(pattern.lower() in code.lower() 
+                      for pattern in patterns[pattern_type])
+
         except Exception as e:
             logger.error(f"Error matching pattern: {str(e)}")
             return False
+    
+    def analyze_patterns(self, content: str, file_path: str) -> Dict[str, List[str]]:
+        """Analyze patterns in a file"""
+        patterns = defaultdict(lambda: {'count': 0, 'files': [], 'examples': []})
+        
+        try:
+            # Check each pattern type
+            for pattern_type in PATTERN_TYPES:  # From config.py
+                if self.pattern_matches(content, pattern_type):
+                    patterns[pattern_type]['count'] += 1
+                    patterns[pattern_type]['files'].append(file_path)
+                    patterns[pattern_type]['examples'].append({
+                        'file': str(file_path),
+                        'content': content[:200] + '...'  # Preview
+                    })
+                    logger.info(f"Found {pattern_type} pattern in {file_path}")
+                    
+        except Exception as e:
+            logger.error(f"Error analyzing patterns in {file_path}: {str(e)}")
+            
+        return dict(patterns)

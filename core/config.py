@@ -9,10 +9,18 @@ PAGE_TIMEOUT = 60000  # Increase timeout to 60 seconds
 
 # Cache settings
 CACHE_DURATION = 24 * 60 * 60  # 24 hours in seconds
-FORCE_DOWNLOAD = False  # Set to True to force re-download of samples
+FORCE_DOWNLOAD = True  # Set to True to force re-download of samples
 
 # Sample selection strategy
-TEST_SAMPLE_STRATEGY = "diverse"  # Options: "first", "diverse", "random"
+TEST_SAMPLE_STRATEGY = "arkit_first"  # Options: "first", "diverse", "random", "arkit_first"
+
+# Add ARKit-specific samples to prioritize
+ARKIT_SAMPLES = [
+    'ExploringObjectTrackingWithARKit',
+    'BuildingLocalExperiencesWithRoomTracking',
+    'ObjectPlacementExample',
+    'SceneReconstructionExample'
+]
 
 # Primary documentation URLs
 BASE_URLS = [
@@ -32,4 +40,15 @@ KNOWN_SAMPLES = [
     '/food-truck',
     '/happy-beam',
     '/solar-system'
+]
+
+# Pattern types
+PATTERN_TYPES = [
+    'ui_components',
+    'immersive_spaces',
+    'spatial_audio',
+    'animation',
+    'gestures',
+    '3d_content',
+    'arkit'
 ] 

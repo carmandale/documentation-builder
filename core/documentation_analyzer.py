@@ -256,3 +256,20 @@ class DocumentationAnalyzer:
         
         with open(patterns_file, 'w', encoding='utf-8') as f:
             json.dump(knowledge_base, f, indent=2)
+
+    def _analyze_documentation_structure(self, soup: BeautifulSoup, links: Dict[str, Set[str]]):
+        """Add ARKit pattern detection to documentation analysis"""
+        try:
+            # Existing code...
+            
+            # Find ARKit references
+            arkit_refs = soup.find_all(
+                lambda tag: tag.name in ['p', 'div', 'span', 'a'] and 
+                'arkit' in tag.text.lower()
+            )
+            if arkit_refs:
+                links['arkit'] = links.get('arkit', set())
+                links['arkit'].add('ARKit')
+                
+        except Exception as e:
+            logger.error(f"Error analyzing documentation structure: {str(e)}")

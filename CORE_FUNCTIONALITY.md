@@ -51,6 +51,23 @@
   - Gestures
   - Immersive Spaces
   - Spatial Audio
+  - ARKit
+
+### Adding New Patterns
+1. Add pattern type to `PATTERN_TYPES` in `core/config.py`
+2. Add pattern matching terms to `pattern_matches()` in `analyzers/project_analyzer.py`
+3. Pattern matching uses simple string detection:
+```python
+patterns = {
+    'pattern_name': [
+        'term1',
+        'term2',
+        'term3'
+    ]
+}
+```
+
+All patterns follow the same simple structure - just add the terms you want to detect.
 
 ## 6. Current Focus
 1. Enhance documentation content extraction

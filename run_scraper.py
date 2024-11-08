@@ -9,7 +9,9 @@ from core.config import (
     BASE_URLS, 
     SKIP_DOWNLOADS,
     TEST_SAMPLE_COUNT,
-    TEST_PATTERN_VALIDATION
+    TEST_PATTERN_VALIDATION,
+    TEST_SAMPLE_STRATEGY,
+    ARKIT_SAMPLES
 )
 from utils.logging import logger
 
@@ -34,6 +36,7 @@ from core.documentation_analyzer import DocumentationAnalyzer
 import hashlib
 from datetime import datetime, UTC
 from rich.progress import Progress
+import random
 
 console = Console()
 
@@ -288,6 +291,33 @@ async def _fetch_url_content(url: str) -> Optional[str]:
         logger.error(f"Error fetching URL {url}: {str(e)}")
         return None
 
+def select_test_samples(samples: List[str], strategy: str = TEST_SAMPLE_STRATEGY) -> List[str]:
+    """Select samples based on strategy"""
+    if strategy == "arkit_first":
+        # Prioritize ARKit samples first
+        arkit_samples = [
+            sample for sample in samples 
+            if any(arkit_name in sample.lower() for arkit_name in ARKIT_SAMPLES)
+        ]
+        other_samples = [
+            sample for sample in samples 
+            if not any(arkit_name in sample.lower() for arkit_name in ARKIT_SAMPLES)
+        ]
+        
+        # Take ARKit samples first, then fill with others up to TEST_SAMPLE_COUNT
+        selected = arkit_samples[:TEST_SAMPLE_COUNT]
+        if len(selected) < TEST_SAMPLE_COUNT:
+            selected.extend(other_samples[:TEST_SAMPLE_COUNT - len(selected)])
+            
+        return selected[:TEST_SAMPLE_COUNT]
+        
+    elif strategy == "first":
+        return samples[:TEST_SAMPLE_COUNT]
+    elif strategy == "random":
+        return random.sample(samples, min(TEST_SAMPLE_COUNT, len(samples)))
+    else:  # diverse
+        return samples[:TEST_SAMPLE_COUNT]
+
 async def main():
     logger.debug("Starting documentation scraper")
     url_collector = DocumentationURLCollector()
@@ -374,7 +404,11 @@ async def main():
         # Process URLs based on mode
         if TESTING_MODE:
             console.print("\n[yellow]Running in TEST MODE with first 3 samples")
-            test_urls = list(discovered_urls.get('samples', set()))[:TEST_SAMPLE_COUNT]
+            sample_urls = list(discovered_urls.get('samples', set()))
+            
+            # Use the sample selection strategy
+            test_urls = select_test_samples(sample_urls, TEST_SAMPLE_STRATEGY)
+            
             console.print("\nProcessing these sample URLs:")
             for url in test_urls:
                 console.print(f"[green]- {url}")
