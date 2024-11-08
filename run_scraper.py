@@ -1,4 +1,5 @@
 import asyncio
+from pathlib import Path
 from core.scraper import DocumentationScraper
 from core.url_sources import DocumentationURLCollector, URLSources
 from analyzers.project_analyzer import ProjectAnalyzer
@@ -10,9 +11,8 @@ from core.config import (
     TEST_SAMPLE_COUNT,
     TEST_PATTERN_VALIDATION
 )
-from utils.logging import logger  # Add this import
-import logging
-from pathlib import Path
+from utils.logging import logger
+
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
@@ -84,33 +84,80 @@ async def process_url(url: str, url_collector: DocumentationURLCollector, skip_d
 
 async def discover_urls():
     """Discover all relevant URLs from base documentation"""
+    logger.debug("Starting URL discovery process")
     url_collector = DocumentationURLCollector()
-    discovered_urls = {}
+    discovered_urls = defaultdict(set)
     
-    # Process base URLs first
     for base_url in BASE_URLS:
-        console.print(f"\n[cyan]Analyzing: {base_url}")
-        
-        # Get categorized links
+        logger.debug(f"Processing base URL: {base_url}")
         links = await url_collector.get_documentation_links(base_url)
         
-        # Look specifically for sample URLs
-        sample_urls = await url_collector.get_sample_urls_from_page(base_url)
-        if sample_urls:
-            if 'samples' not in discovered_urls:
-                discovered_urls['samples'] = set()
-            discovered_urls['samples'].update(sample_urls)
-            console.print(f"[green]Found {len(sample_urls)} sample URLs")
-        
-        # Merge other discovered URLs
+        # Actually process and store the links we find
         for category, urls in links.items():
-            if category not in discovered_urls:
-                discovered_urls[category] = set()
             discovered_urls[category].update(urls)
-            
-        console.print(f"[green]Found {sum(len(urls) for urls in links.values())} total links")
+            logger.debug(f"Found {len(urls)} {category} links in {base_url}")
+            for url in urls:
+                logger.debug(f"  {category}: {url}")
     
-    return discovered_urls
+    # Log summary before returning
+    logger.info("URL Discovery Summary:")
+    for category, urls in discovered_urls.items():
+        logger.info(f"{category}: {len(urls)} URLs found")
+    
+    return dict(discovered_urls)
+
+def pattern_matches(code: str, pattern_type: str) -> bool:
+    """Check if code matches a specific pattern type"""
+    patterns = {
+        'ui_components': [
+            r'WindowGroup',
+            r'NavigationStack',
+            r'TabView',
+            r'View\s*{',
+            r'@main\s+struct.*App\s*:'
+        ],
+        'animation': [
+            r'withAnimation',
+            r'animation',
+            r'transition',
+            r'\.animate',
+            r'Animation'
+        ],
+        'gestures': [
+            r'gesture',
+            r'onTapGesture',
+            r'DragGesture',
+            r'LongPressGesture',
+            r'RotationGesture'
+        ],
+        '3d_content': [
+            r'RealityView',
+            r'Entity',
+            r'Model3D',
+            r'attachments',
+            r'\.load\(".*\.usd[z]?"'
+        ],
+        'spatial_audio': [
+            r'SpatialAudioEmitter',
+            r'AudioEngine',
+            r'playSound',
+            r'spatial\.audio',
+            r'\.audio\('
+        ],
+        'immersive_spaces': [
+            r'ImmersiveSpace',
+            r'immersiveSpace',
+            r'fullspace',
+            r'ornament',
+            r'WindowGroup\s*{\s*ImmersiveSpace'
+        ]
+    }
+    
+    # Get patterns for the specified type
+    type_patterns = patterns.get(pattern_type, [])
+    
+    # Check if any pattern matches
+    return any(re.search(pattern, code, re.IGNORECASE) for pattern in type_patterns)
 
 async def analyze_patterns_from_docs(discovered_urls: Dict[str, Set[str]], url_collector: DocumentationURLCollector) -> Dict[str, Dict]:
     """Analyze patterns from documentation pages"""
@@ -134,33 +181,14 @@ async def analyze_patterns_from_docs(discovered_urls: Dict[str, Set[str]], url_c
                         code = block.get_text()
                         
                         # Analyze code to identify patterns
-                        for pattern_type, data in pattern_data.items():
+                        for pattern_type in ['ui_components', 'animation', 'gestures', '3d_content', 'spatial_audio', 'immersive_spaces']:
                             if pattern_matches(code, pattern_type):
-                                try:
-                                    # Wrap code in HTML for BeautifulSoup
-                                    html = f"<div><code>{code}</code></div>"
-                                    soup = BeautifulSoup(html, 'html.parser')
-                                    code_elem = soup.find('code')
-                                    
-                                    if code_elem:
-                                        context = doc_analyzer._get_code_context(code_elem)
-                                        data['examples'].append({
-                                            'code': code,
-                                            'source_url': url,
-                                            'context': context
-                                        })
-                                    else:
-                                        logger.warning(f"Could not create code element for context extraction")
-                                        
-                                except Exception as e:
-                                    logger.error(f"Error extracting context: {str(e)}")
-                                    continue
-                    
-                    # Extract keywords and concepts
-                    for pattern_type, data in pattern_data.items():
-                        keywords = extract_pattern_keywords(soup, pattern_type)
-                        data['keywords'].update(keywords)
-                    
+                                pattern_data[pattern_type]['count'] += 1
+                                pattern_data[pattern_type]['examples'].append({
+                                    'code': code,
+                                    'source_url': url
+                                })
+                                
                 except Exception as e:
                     logger.error(f"Error analyzing patterns in {url}: {str(e)}")
                     continue
@@ -259,19 +287,23 @@ async def _fetch_url_content(url: str) -> Optional[str]:
         return None
 
 async def main():
+    logger.debug("Starting documentation scraper")
     url_collector = DocumentationURLCollector()
     
     # First inspect cache
+    logger.debug("Inspecting cache...")
     console.print("[bold cyan]Inspecting cache...")
     url_collector.inspect_cache()
     
     # Ask if cache should be cleared
     if console.input("\nWould you like to clear the cache and start fresh? (y/n): ").lower() == 'y':
+        logger.debug("Clearing cache...")
         url_collector.clear_cache()
         console.print("[yellow]Cache cleared. Starting fresh discovery...")
         all_samples = []
     else:
         # Check cache
+        logger.debug("Checking sample cache...")
         console.print("\n[bold cyan]Checking sample cache...")
         all_samples = await url_collector.discover_all_samples()
     
@@ -322,8 +354,15 @@ async def main():
             )
         console.print(sample_table)
     else:
+        logger.debug("Cache miss - discovering samples...")
         console.print("[yellow]Cache miss - discovering samples...")
         discovered_urls = await discover_urls()
+        
+        # Log discovered URLs
+        for category, urls in discovered_urls.items():
+            logger.debug(f"Found {len(urls)} {category} URLs")
+            for url in urls:
+                logger.debug(f"{category}: {url}")
         
         # Process discovered URLs
         console.print("\n[bold cyan]Found URLs by Category:")
@@ -333,9 +372,12 @@ async def main():
         # Process URLs based on mode
         if TESTING_MODE:
             console.print("\n[yellow]Running in TEST MODE with first 3 samples")
-            test_urls = list(discovered_urls.get('documentation', set()))[:TEST_SAMPLE_COUNT]
+            test_urls = list(discovered_urls.get('samples', set()))[:TEST_SAMPLE_COUNT]
+            console.print("\nProcessing these sample URLs:")
+            for url in test_urls:
+                console.print(f"[green]- {url}")
         else:
-            test_urls = discovered_urls.get('documentation', set())
+            test_urls = discovered_urls.get('samples', set())
         
         # Process URLs concurrently
         processed_projects = await process_urls_concurrent(test_urls, url_collector)
@@ -417,14 +459,19 @@ async def main():
     console.print(summary_table)
     console.print("\n[bold green]Analysis Complete!")
 
-async def process_urls_concurrent(urls: List[str], url_collector: DocumentationURLCollector):
-    """Process URLs concurrently with rate limiting"""
-    semaphore = asyncio.Semaphore(5)  # Limit concurrent requests
-    async def process_with_limit(url):
-        async with semaphore:
-            return await process_url(url, url_collector)
+async def process_urls_concurrent(urls: Set[str], url_collector: DocumentationURLCollector):
+    processed = set()
+    tasks = []
     
-    tasks = [process_with_limit(url) for url in urls]
+    async def process_with_limit(url: str):
+        if url in processed:
+            return None
+        processed.add(url)
+        return await process_url(url, url_collector)
+    
+    for url in urls:
+        tasks.append(process_with_limit(url))
+    
     return await asyncio.gather(*tasks)
 
 if __name__ == "__main__":

@@ -11,6 +11,8 @@ import time
 import asyncio
 from utils.logging import logger
 from core.config import TEST_SAMPLE_COUNT, BASE_URLS
+import zipfile
+import io
 
 @dataclass
 class ProjectResource:
@@ -28,6 +30,24 @@ class ProjectResource:
 class DocumentationURLCollector:
     BASE_URL = "https://developer.apple.com"
     
+    ESSENTIAL_FRAMEWORKS = {
+        'SwiftUI',
+        'RealityKit', 
+        'ARKit',
+        'AVFoundation',
+        'CoreML',
+        'Metal',
+        'WebKit',
+        'VisionKit',
+        'Foundation'
+    }
+    
+    REALITY_COMPOSER_TERMS = {
+        'reality-composer-pro',
+        'reality composer pro',
+        'realitycomposerpro'
+    }
+
     def __init__(self, base_dir: Path = Path('data')):
         self.base_dir = base_dir
         self.projects_dir = base_dir / 'projects'
@@ -50,87 +70,133 @@ class DocumentationURLCollector:
 
     def _make_absolute_url(self, url: str) -> str:
         """Convert relative URLs to absolute URLs"""
-        if url.startswith('/'):
+        if url.startswith('http'):
+            return url
+        elif url.startswith('//'):
+            return f"https:{url}"
+        elif url.startswith('/'):
             return f"{self.BASE_URL}{url}"
-        return url
+        else:
+            return f"{self.BASE_URL}/{url}"
 
-    async def get_documentation_links(self, url: str) -> Dict[str, Set[str]]:
-        """Get all documentation links from a page"""
+    def is_relevant_url(self, url: str) -> bool:
+        """Check if URL is relevant for visionOS development"""
+        url_lower = url.lower()
+        
+        # Direct visionOS content
+        if "/documentation/visionos" in url_lower:
+            logger.debug(f"Found visionOS URL: {url}")
+            return True
+            
+        # Reality Composer Pro content
+        if any(term in url_lower for term in self.REALITY_COMPOSER_TERMS):
+            logger.debug(f"Found Reality Composer Pro URL: {url}")
+            return True
+            
+        # Essential frameworks - only when related to visionOS
+        for framework in self.ESSENTIAL_FRAMEWORKS:
+            framework_path = f"/documentation/{framework.lower()}"
+            if framework_path in url_lower:
+                # Check for visionOS relevance
+                is_relevant = any(term in url_lower for term in [
+                    "visionos", "spatial", "3d", "reality", "immersive"
+                ])
+                if is_relevant:
+                    logger.debug(f"Found relevant framework URL ({framework}): {url}")
+                return is_relevant
+                
+        return False
+
+    async def get_documentation_links(self, base_url: str) -> Dict[str, Set[str]]:
+        """Get categorized documentation links"""
         links = defaultdict(set)
-        start_time = time.time()
+        processed_urls = set()
         
         try:
             async with async_playwright() as p:
                 browser = await p.chromium.launch()
                 page = await browser.new_page()
                 
-                logger.debug(f"[Timing] Browser launch: {time.time() - start_time:.2f}s")
+                # Process initial page
+                await self._process_page_for_samples(page, base_url, links, processed_urls)
                 
-                page_start = time.time()
-                await page.goto(url)
-                logger.debug(f"[Timing] Initial page load: {time.time() - page_start:.2f}s")
-                
-                wait_start = time.time()
-                await page.wait_for_load_state('networkidle')
-                logger.debug(f"[Timing] Wait for network idle: {time.time() - wait_start:.2f}s")
-                
-                # Get content at different stages
-                initial_content = await page.content()
-                initial_size = len(initial_content)
-                logger.debug(f"[Content] Initial size: {initial_size}")
-                
-                # Wait a bit and check content again
-                await asyncio.sleep(1)
-                after_wait_content = await page.content()
-                after_size = len(after_wait_content)
-                logger.debug(f"[Content] After wait size: {after_size}")
-                
-                if initial_size != after_size:
-                    logger.debug(f"[Content] Size changed by: {after_size - initial_size}")
-                    # Save both versions for comparison
-                    debug_file = self.debug_dir / f"{url.split('/')[-1]}_initial.html"
-                    debug_file.write_text(initial_content)
-                    debug_file = self.debug_dir / f"{url.split('/')[-1]}_after.html"
-                    debug_file.write_text(after_wait_content)
-                
-                # Save raw content for debugging
-                debug_file = self.debug_dir / f"{url.split('/')[-1]}_initial.html"
-                debug_file.write_text(initial_content)
-                logger.debug(f"Saved initial content to {debug_file}")
-                
-                # Parse content
-                soup = BeautifulSoup(initial_content, 'html.parser')
-                
-                # Log all links before categorization
-                all_links = soup.find_all('a', href=True)
-                logger.debug(f"Found {len(all_links)} total links before categorization")
-                
-                # Find all links
+                # Get all links from the page
+                all_links = await page.query_selector_all('a[href]')
                 for link in all_links:
-                    href = link['href']
-                    logger.debug(f"Processing link: {href}")
-                    
-                    # Categorize URLs
-                    if '/documentation/' in href:
-                        logger.debug(f"Found documentation link: {href}")
-                        links['documentation'].add(self._make_absolute_url(href))
-                    elif '/videos/' in href or '/wwdc/' in href:
-                        logger.debug(f"Found videos link: {href}")
-                        links['videos'].add(self._make_absolute_url(href))
-                    else:
-                        links['other'].add(self._make_absolute_url(href))
+                    href = await link.get_attribute('href')
+                    if href:
+                        abs_url = self._make_absolute_url(href)
+                        if self.is_relevant_url(abs_url):
+                            await self._process_page_for_samples(page, abs_url, links, processed_urls)
                 
                 await browser.close()
                 
                 # Log summary
+                logger.debug("\nURL Discovery Summary:")
                 for category, urls in links.items():
-                    logger.info(f"Found {len(urls)} {category} links")
+                    logger.debug(f"{category}: {len(urls)} URLs found")
                 
-                return links
+                return dict(links)
                 
         except Exception as e:
-            logger.error(f"Error getting links from {url}: {str(e)}")
-            return links
+            logger.error(f"Error getting documentation links: {str(e)}")
+            return dict(links)
+
+    async def _process_page_for_samples(self, page, url: str, links: Dict[str, Set[str]], processed_urls: Set[str]):
+        """Process a single page for sample downloads"""
+        if url in processed_urls:
+            return
+            
+        try:
+            logger.debug("Processing URL: %s", url)
+            
+            # Add navigation timeout and retry logic
+            for attempt in range(3):
+                try:
+                    response = await page.goto(url, wait_until='networkidle', timeout=30000)
+                    if response.ok:
+                        break
+                except Exception as e:
+                    logger.warning("Navigation attempt %d failed: %s", attempt + 1, str(e))
+                    if attempt == 2:
+                        raise
+                
+            processed_urls.add(url)
+            
+            # Create new context for each page
+            content = await page.content()
+            
+            # Save debug content
+            debug_path = self.debug_dir / f"raw_{url.split('/')[-1]}.html"
+            debug_path.write_text(content)
+            logger.debug("Saved debug content to %s", debug_path)
+            
+            # Find direct download buttons
+            download_buttons = await page.query_selector_all('a.sample-download')
+            logger.debug("Found %d sample-download links", len(download_buttons))
+            
+            for button in download_buttons:
+                href = await button.get_attribute('href')
+                if href and href.endswith('.zip'):
+                    abs_url = self._make_absolute_url(href)
+                    links['samples'].add(abs_url)
+                    logger.debug("Found sample download: %s", abs_url)
+            
+            # Get all links before categorizing
+            all_links = await page.query_selector_all('a[href]')
+            for link in all_links:
+                href = await link.get_attribute('href')
+                if href:
+                    abs_url = self._make_absolute_url(href)
+                    if self.is_relevant_url(abs_url):
+                        if 'documentation' in abs_url:
+                            links['documentation'].add(abs_url)
+                        else:
+                            links['other'].add(abs_url)
+                            
+        except Exception as e:
+            logger.error("Error processing page %s: %s", url, str(e))
+            logger.debug("Full error details:", exc_info=True)
 
     async def analyze_documentation_structure(self, url: str) -> Dict:
         """Analyze the structure of a documentation page"""
@@ -201,60 +267,57 @@ class DocumentationURLCollector:
             return {'sections': 0, 'topics': 0, 'samples': 0}
 
     async def process_documentation_page(self, url: str) -> Optional[ProjectResource]:
-        """Process a documentation page for samples with improved download URL detection"""
+        """Process a documentation page to extract project information"""
+        if not url.endswith('.zip'):
+            return None
+            
         try:
-            async with async_playwright() as p:
-                browser = await p.chromium.launch()
-                page = await browser.new_page()
-                
-                logger.info(f"Processing page: {url}")
-                await page.goto(url)
-                await page.wait_for_load_state('networkidle')
-                
-                # Get the title
-                title_elem = await page.query_selector('h1')
-                title = await title_elem.text_content() if title_elem else url.split('/')[-1]
-                
-                # Look for download URLs in multiple ways
-                download_url = None
-                
-                # 1. Direct download button
-                download_button = await page.query_selector('a.sample-download')
-                if download_button:
-                    download_url = await download_button.get_attribute('href')
-                    logger.debug(f"Found download button with URL: {download_url}")
-                
-                # 2. Check for zip links
-                if not download_url:
-                    zip_link = await page.query_selector('a[href$=".zip"]')
-                    if zip_link:
-                        download_url = await zip_link.get_attribute('href')
-                        logger.debug(f"Found zip link with URL: {download_url}")
-                
-                # 3. Check docs-assets links
-                if not download_url:
-                    assets_link = await page.query_selector('a[href*="docs-assets.developer.apple.com"]')
-                    if assets_link:
-                        href = await assets_link.get_attribute('href')
-                        if href and href.endswith('.zip'):
-                            download_url = href
-                            logger.debug(f"Found docs-assets link with URL: {download_url}")
-                
-                if download_url:
-                    download_url = self._make_absolute_url(download_url)
-                    logger.info(f"Found download URL for {title}: {download_url}")
-                    return ProjectResource(
-                        title=title,
-                        url=url,
-                        download_url=download_url,
-                        downloaded=False  # Explicitly set initial state
-                    )
-                else:
-                    logger.debug(f"No download URL found for {url}")
-                
-                await browser.close()
-                return None
-                
+            # Extract title from zip filename
+            title = Path(url).stem
+            
+            # Create ProjectResource
+            resource = ProjectResource(
+                title=title,
+                url=url,
+                download_url=url
+            )
+            
+            # Download the zip file using aiohttp instead of playwright
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url) as response:
+                    if response.status == 200:
+                        content = await response.read()
+                        
+                        # Save zip content
+                        cache_dir = Path('data/cache/samples')
+                        cache_dir.mkdir(parents=True, exist_ok=True)
+                        
+                        local_path = cache_dir / f"{title}.zip"
+                        local_path.write_bytes(content)
+                        
+                        # Verify zip content
+                        try:
+                            with zipfile.ZipFile(local_path) as zf:
+                                has_source = any(
+                                    name.endswith(('.swift', '.h', '.m', '.cpp', '.c', '.mm'))
+                                    for name in zf.namelist()
+                                )
+                                if has_source:
+                                    resource.mark_downloaded(local_path)
+                                    logger.info(f"Successfully downloaded {title}")
+                                    return resource
+                                else:
+                                    logger.warning(f"No source code files found in {url}")
+                                    local_path.unlink()  # Remove invalid zip
+                                    return None
+                        except zipfile.BadZipFile:
+                            logger.error(f"Invalid zip file: {url}")
+                            local_path.unlink()  # Remove invalid zip
+                            return None
+                    else:
+                        logger.error(f"Failed to download {url}: {response.status}")
+                        return None
+                        
         except Exception as e:
             logger.error(f"Error processing {url}: {str(e)}")
             return None
@@ -335,23 +398,26 @@ class DocumentationURLCollector:
 
     async def discover_all_samples(self) -> List[ProjectResource]:
         """Load or discover all samples"""
-        if self.samples_cache.exists():
-            # Load from cache
-            cache_data = json.loads(self.samples_cache.read_text())
-            samples = []
-            for item in cache_data:
-                sample = ProjectResource(**item)
-                # Verify if project still exists
-                if sample.local_path:
-                    path = Path(sample.local_path)
-                    if path.exists():
-                        sample.downloaded = True
-                    else:
-                        sample.local_path = None
-                        sample.downloaded = False
-                samples.append(sample)
-            return samples
-        return []
+        if self._validate_samples_cache():
+            return self._load_from_cache()
+            
+        # Cache miss - discover new samples
+        samples = []
+        base_url = "https://developer.apple.com/documentation/visionos/"
+        
+        # Get sample URLs
+        sample_urls = await self.get_sample_urls_from_page(base_url)
+        
+        # Process each sample URL
+        for url in sample_urls:
+            if self._validate_sample_url(url):
+                project = await self.process_documentation_page(url)
+                if project:
+                    samples.append(project)
+                    
+        # Update cache
+        self._update_cache(samples)
+        return samples
 
     async def download_samples(self, samples: List[ProjectResource], 
                              mode: str = 'test') -> List[ProjectResource]:
@@ -433,56 +499,58 @@ class DocumentationURLCollector:
         }
         return self._validate_cache(self.url_cache, schema)
 
-    async def get_sample_urls_from_page(self, url: str) -> List[str]:
-        """Extract sample URLs from a documentation page with improved detection"""
+    async def get_sample_urls_from_page(self, url: str) -> Set[str]:
+        """Get sample URLs from a documentation page"""
+        logger.debug("Searching for samples on: %s", url)
+        samples = set()
+        
         try:
             async with async_playwright() as p:
                 browser = await p.chromium.launch()
+                start = time.time()
+                logger.debug("[Timing] Browser launch: %.2fs", time.time() - start)
+                
                 page = await browser.new_page()
-                
                 await page.goto(url)
-                await page.wait_for_load_state('networkidle')
+                logger.debug("[Timing] Initial page load: %.2fs", time.time() - start)
                 
-                # Look for sample links with various patterns
-                sample_urls = set()  # Use set for automatic deduplication
+                # Find pages with {} icons in navigation
+                nav_items = await page.query_selector_all('article.article-content a')
+                for item in nav_items:
+                    text = await item.text_content()
+                    href = await item.get_attribute('href')
+                    if text and '{' in text and href:
+                        logger.debug("Found sample page from nav: %s", href)
+                        samples.add(self._make_absolute_url(href))
                 
-                # 1. Direct download links
-                download_links = await page.query_selector_all('a[href*="docs-assets.developer.apple.com"]')
-                for link in download_links:
-                    href = await link.get_attribute('href')
-                    if href and href.endswith('.zip'):
-                        sample_urls.add(self._make_absolute_url(href))
+                # Check intro samples section
+                intro_section = await page.query_selector('text="Introductory visionOS samples"')
+                if intro_section:
+                    parent = await intro_section.query_selector('xpath=ancestor::section')
+                    if parent:
+                        links = await parent_section.query_selector_all('a[href]')
+                        for link in links:
+                            href = await link.get_attribute('href')
+                            if href:
+                                logger.debug("Found sample from intro section: %s", href)
+                                samples.add(self._make_absolute_url(href))
                 
-                # 2. Sample project pages
-                sample_pages = await page.query_selector_all([
-                    'a[href*="/documentation/visionos/"][href*="-sample"]',
-                    'a[href*="/documentation/visionos/"][href*="example"]',
-                    'a.sample-download',  # Sample download buttons
-                    'div.sample-card a',  # Sample cards
-                ].join(','))
-                
-                for link in sample_pages:
-                    href = await link.get_attribute('href')
-                    if href:
-                        sample_urls.add(self._make_absolute_url(href))
-                
-                # Save debug content
-                debug_file = self.debug_dir / f"{url.split('/')[-1]}_samples.html"
-                debug_file.write_text(await page.content())
+                # Look for direct download buttons
+                for selector in self.SAMPLE_SELECTORS:
+                    buttons = await page.query_selector_all(selector)
+                    logger.debug("Found %d elements with selector: %s", len(buttons), selector)
+                    for button in buttons:
+                        href = await button.get_attribute('href')
+                        if href and href.endswith('.zip'):
+                            samples.add(self._make_absolute_url(href))
                 
                 await browser.close()
-                
-                # Log what we found
-                if sample_urls:
-                    logger.info(f"Found {len(sample_urls)} unique sample URLs on {url}")
-                    for sample_url in sample_urls:
-                        logger.debug(f"Sample URL: {sample_url}")
-                
-                return list(sample_urls)
+                return samples
                 
         except Exception as e:
-            logger.error(f"Error getting sample URLs from {url}: {str(e)}")
-            return []
+            logger.error("Error getting sample URLs: %s", str(e))
+            
+        return samples
 
     async def extract_documentation_content(self, url: str) -> Dict:
         """Extract and cache documentation content"""
@@ -691,6 +759,38 @@ class DocumentationURLCollector:
         except Exception as e:
             logger.error(f"Error extracting content from {url}: {str(e)}")
             return None
+
+    def _validate_sample_url(self, url: str) -> bool:
+        """Validate if a URL is likely a sample project"""
+        return any([
+            url.endswith('.zip') and 'docs-assets.developer.apple.com' in url,
+            'sample.code' in url.lower() and url.endswith('.zip'),
+            'example.code' in url.lower() and url.endswith('.zip')
+        ])
+
+    # Add more sample link selectors
+    SAMPLE_SELECTORS = [
+        'a.sample-download',
+        'a[href*="sample"][href$=".zip"]',
+        'a[href*="download"][href$=".zip"]',
+        '.sample-card a[href$=".zip"]',
+        '.documentation-card a[href$=".zip"]'
+    ]
+
+    async def _find_sample_links(self, page):
+        """Find sample download links using multiple selectors"""
+        sample_links = set()
+        for selector in self.SAMPLE_SELECTORS:
+            try:
+                elements = await page.query_selector_all(selector)
+                logger.debug("Found %d elements with selector: %s", len(elements), selector)
+                for element in elements:
+                    href = await element.get_attribute('href')
+                    if href and href.endswith('.zip'):
+                        sample_links.add(self._make_absolute_url(href))
+            except Exception as e:
+                logger.warning("Error with selector %s: %s", selector, str(e))
+        return sample_links
 
 class URLSources:
     """Simple URL management class"""

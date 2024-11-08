@@ -1,0 +1,259 @@
+2024-11-08 03:22:48,558 - documentation_analyzer - DEBUG - Starting documentation scraper
+2024-11-08 03:22:48,559 - documentation_analyzer - DEBUG - Inspecting cache...
+2024-11-08 03:22:48,560 - documentation_analyzer - INFO - 
+Cache Inspection:
+2024-11-08 03:22:48,561 - documentation_analyzer - INFO - 
+Samples Cache:
+2024-11-08 03:22:48,561 - documentation_analyzer - INFO - Total samples: 0
+2024-11-08 03:22:48,561 - documentation_analyzer - INFO - Downloaded: 0
+2024-11-08 03:22:48,561 - documentation_analyzer - INFO - Not downloaded: 0
+2024-11-08 03:22:48,561 - documentation_analyzer - INFO - 
+Sample Details:
+2024-11-08 03:22:55,112 - documentation_analyzer - DEBUG - Clearing cache...
+2024-11-08 03:22:55,112 - documentation_analyzer - INFO - Clearing cache files...
+2024-11-08 03:22:55,112 - documentation_analyzer - INFO - Removing data/cache/url_cache.json
+2024-11-08 03:22:55,112 - documentation_analyzer - INFO - Removing data/cache/discovered_samples.json
+2024-11-08 03:22:55,112 - documentation_analyzer - INFO - Removing data/cache/documentation_cache.json
+2024-11-08 03:22:55,113 - documentation_analyzer - INFO - Removing data/cache/analysis_cache.json
+2024-11-08 03:22:55,113 - documentation_analyzer - INFO - Cache cleared
+2024-11-08 03:22:55,113 - documentation_analyzer - DEBUG - Cache miss - discovering samples...
+2024-11-08 03:22:55,113 - documentation_analyzer - DEBUG - Starting URL discovery
+2024-11-08 03:22:55,114 - documentation_analyzer - DEBUG - Processing base URL: https://developer.apple.com/documentation/visionos/
+2024-11-08 03:22:55,630 - documentation_analyzer - DEBUG - Navigating to https://developer.apple.com/documentation/visionos/
+2024-11-08 03:22:58,659 - documentation_analyzer - DEBUG - Retrieved page content (280865 bytes)
+2024-11-08 03:22:58,660 - documentation_analyzer - DEBUG - Saved debug content to data/debug/_content.html
+2024-11-08 03:22:58,671 - documentation_analyzer - DEBUG - Found 0 download buttons
+2024-11-08 03:22:58,702 - documentation_analyzer - DEBUG - Found 193 total links
+2024-11-08 03:22:58,963 - documentation_analyzer - DEBUG - Found 148 total links for https://developer.apple.com/documentation/visionos/
+2024-11-08 03:23:01,634 - documentation_analyzer - DEBUG - Processing base URL: https://developer.apple.com/design/human-interface-guidelines/immersive-experiences
+2024-11-08 03:23:01,922 - documentation_analyzer - DEBUG - Navigating to https://developer.apple.com/design/human-interface-guidelines/immersive-experiences
+2024-11-08 03:23:04,812 - documentation_analyzer - DEBUG - Retrieved page content (105619 bytes)
+2024-11-08 03:23:04,812 - documentation_analyzer - DEBUG - Saved debug content to data/debug/immersive-experiences_content.html
+2024-11-08 03:23:04,823 - documentation_analyzer - DEBUG - Found 0 download buttons
+2024-11-08 03:23:04,842 - documentation_analyzer - DEBUG - Found 153 total links
+2024-11-08 03:23:05,064 - documentation_analyzer - DEBUG - Found 120 total links for https://developer.apple.com/design/human-interface-guidelines/immersive-experiences
+2024-11-08 03:23:07,455 - documentation_analyzer - DEBUG - Processing base URL: https://developer.apple.com/design/human-interface-guidelines/designing-for-visionos
+2024-11-08 03:23:07,750 - documentation_analyzer - DEBUG - Navigating to https://developer.apple.com/design/human-interface-guidelines/designing-for-visionos
+2024-11-08 03:23:10,269 - documentation_analyzer - DEBUG - Retrieved page content (74243 bytes)
+2024-11-08 03:23:10,269 - documentation_analyzer - DEBUG - Saved debug content to data/debug/designing-for-visionos_content.html
+2024-11-08 03:23:10,280 - documentation_analyzer - DEBUG - Found 0 download buttons
+2024-11-08 03:23:10,296 - documentation_analyzer - DEBUG - Found 133 total links
+2024-11-08 03:23:10,493 - documentation_analyzer - DEBUG - Found 111 total links for https://developer.apple.com/design/human-interface-guidelines/designing-for-visionos
+2024-11-08 03:23:12,889 - documentation_analyzer - DEBUG - Found 119 other URLs
+2024-11-08 03:23:12,889 - documentation_analyzer - DEBUG - other: https://developer.apple.com/app-store/small-business-program/
+2024-11-08 03:23:12,889 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/foundations
+2024-11-08 03:23:12,889 - documentation_analyzer - DEBUG - other: https://developer.apple.com/academies/
+2024-11-08 03:23:12,889 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/immersive-experiences#Immersion-and-passthrough
+2024-11-08 03:23:12,889 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/immersive-experiences#app-top
+2024-11-08 03:23:12,889 - documentation_analyzer - DEBUG - other: https://developer.apple.com/#
+2024-11-08 03:23:12,889 - documentation_analyzer - DEBUG - other: https://developer.apple.com/ios/
+2024-11-08 03:23:12,889 - documentation_analyzer - DEBUG - other: https://developer.apple.com/security-bounty/
+2024-11-08 03:23:12,889 - documentation_analyzer - DEBUG - other: https://developer.apple.com/#app-main
+2024-11-08 03:23:12,889 - documentation_analyzer - DEBUG - other: https://developer.apple.com/forums/
+2024-11-08 03:23:12,889 - documentation_analyzer - DEBUG - other: https://developer.apple.com/app-store/
+2024-11-08 03:23:12,889 - documentation_analyzer - DEBUG - other: https://developer.apple.com/system-status/
+2024-11-08 03:23:12,889 - documentation_analyzer - DEBUG - other: https://developer.apple.com/in-app-purchase/
+2024-11-08 03:23:12,889 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/playing-audio#visionOS
+2024-11-08 03:23:12,889 - documentation_analyzer - DEBUG - other: https://developer.apple.com/entrepreneur-camp/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/designing-for-visionos#Related
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/immersive-experiences#Creating-an-environment
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://appstoreconnect.apple.com/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/playing-audio
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/motion#visionOS
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/programs/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/spatial-layout#Scale
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/programs/enterprise/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/getting-started
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/swiftui/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://www.apple.com/legal/internet-services/terms/site.html
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/resources/#visionos-apps
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/windows
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://opensource.apple.com/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/designing-for-visionos#Resources
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/wwdc/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/distribute/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/support/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/testflight/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/health-fitness/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/app-store/app-store-awards/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/support/articles/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/tvos/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/machine-learning/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/accessibility/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/safari/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/ipados/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/immersive-experiences#Resources
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/events/developer-centers/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/games/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/swift/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/xcode/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/#ac-gn-menustate
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/account/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/sf-symbols/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/augmented-reality/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/immersive-experiences#Transitioning-between-immersive-styles
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/app-extensions/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/programs/video-partner/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/xcode-cloud/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/immersive-experiences#Displaying-virtual-hands
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/immersive-experiences#Platform-considerations
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/immersive-experiences#Change-log
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/designing-for-visionos
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/accessories/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/education/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/components
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/news/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/resources/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/audio/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/windows#visionOS-volumes
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/eyes
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/Human-Interface-Guidelines/designing-for-visionos
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/designing-for-visionos#Videos
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/swift-playgrounds/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/fonts/
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/immersive-experiences#Best-practices
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/immersive-experiences#Videos
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/patterns
+2024-11-08 03:23:12,890 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/accessibility
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/immersive-experiences#Promoting-comfort
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/motion
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/learn/
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/technologies
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/support/terms/
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/macos/
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/programs/news-partner/
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/designing-for-visionos#app-top
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/maps/
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/whats-new/
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://www.apple.com
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/localization/
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/immersive-experiences#Related
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://support.apple.com/guide/apple-vision-pro
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/inputs
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/security/
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/contact/
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/account/ios/certificate/
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/discover/
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/windows#visionOS
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/pathway/
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/designing-for-visionos#Best-practices
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/bug-reporting/
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/awards/
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://mfi.apple.com/
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/shareplay#visionOS
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/designing-for-visionos#Change-log
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/digital-crown
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/spatial-layout
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/develop/
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/programs/security-research-device/
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/events/
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/gestures#visionOS
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/download/
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/visionos/
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://feedbackassistant.apple.com/
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://www.apple.com/legal/privacy/
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/immersive-experiences
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/privacy
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/search/
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/design/human-interface-guidelines/spatial-layout#Field-of-view
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - other: https://developer.apple.com/
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - Found 89 documentation URLs
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/SwiftUI/ImmersionStyle/full
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/analyzing-the-performance-of-your-visionos-app
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/arkit/scenereconstructionprovider
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/#Design
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/arkit
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/#Performance
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/bot-anist
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/SwiftUI
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/#SwiftUI
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/making-your-app-compatible-with-visionos
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/SwiftUI/SurroundingsEffect
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/avfoundation/media_playback/configuring_your_app_for_media_playback
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/setting-up-access-to-arkit-data
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/RealityKit/RealityView
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/#Expand-your-app-into-immersive-spaces
+2024-11-08 03:23:12,891 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/destination-video
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/#ARKit
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/#Overview
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/#Enterprise-APIs-for-visionOS
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/reducing-the-rendering-cost-of-realitykit-content-on-visionos
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/designing-realitykit-content-with-reality-composer-pro
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/reducing-the-rendering-cost-of-your-ui-on-visionos
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/accessing-the-main-camera
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionOS/creating-your-first-visionos-app
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionOS/incorporating-real-world-surroundings-in-an-immersive-experience
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/happybeam
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/applefeedback://new?form_identifier=developertools.fba&answers%5B%3Aarea%5D=seedADC%3Adevpubs&answers%5B%3Adoc_type_req%5D=Technology%20Documentation&answers%5B%3Adocumentation_link_req%5D=https%3A%2F%2Fdeveloper.apple.com%2Fdesign%2Fhuman-interface-guidelines%2Fimmersive-experiences
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/presenting-windows-and-spaces
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/#RealityKit-and-Reality-Composer-Pro
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/avfoundation/media_playback/monitoring_playback_progress_in_your_app
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/SwiftUI/ImmersionStyle
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/enabling-video-reflections-in-an-immersive-environment
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/SwiftUI/Immersive-spaces
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/RealityKit
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/bringing-your-arkit-app-to-visionos
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/#Explore-new-kinds-of-interaction
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/applefeedback://new?form_identifier=developertools.fba&answers%5B%3Aarea%5D=seedADC%3Adevpubs&answers%5B%3Adoc_type_req%5D=Technology%20Documentation&answers%5B%3Adocumentation_link_req%5D=https%3A%2F%2Fdeveloper.apple.com%2Fdocumentation%2Fvisionos%2F
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/locating-and-decoding-barcodes-in-3d-space
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/#Dive-into-featured-sample-apps
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/#Xcode-and-Simulator
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/placing-content-on-detected-planes
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/adding-3d-content-to-your-app
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/Xcode/diagnosing-and-resolving-bugs-in-your-running-app
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/#app-top
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/tracking-points-in-world-space
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/adopting-best-practices-for-privacy
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/building_local_experiences_with_room_tracking
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/#iOS-migration-and-compatibility
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/bringing-your-app-to-visionos
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/Xcode/interacting-with-your-app-in-the-visionos-simulator
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/exploring_object_tracking_with_arkit
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/SwiftUI/ImmersionStyle/progressive
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/tracking-images-in-3d-space
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/capturing-screenshots-and-video-from-your-apple-vision-pro-for-2d-viewing
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/incorporating-real-world-surroundings-in-an-immersive-experience
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/drawing-sharp-layer-based-content
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/creating-fully-immersive-experiences
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/#Video-playback
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/Xcode/running-your-app-in-simulator-or-on-a-device
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/implementing-object-tracking-in-your-visionos-app
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/AVKit/adopting-the-system-player-interface-in-visionos
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/applefeedback://new?form_identifier=developertools.fba&answers%5B%3Aarea%5D=seedADC%3Adevpubs&answers%5B%3Adoc_type_req%5D=Technology%20Documentation&answers%5B%3Adocumentation_link_req%5D=https%3A%2F%2Fdeveloper.apple.com%2Fdesign%2Fhuman-interface-guidelines%2Fdesigning-for-visionos
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/swift-splash
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/design/human-interface-guidelines/immersive-experiences#Developer-documentation
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/building-an-immersive-media-viewing-experience
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/building-spatial-experiences-for-business-apps-with-enterprise-apis
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/design/human-interface-guidelines/designing-for-visionos#Developer-documentation
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/understanding-the-realitykit-modular-architecture
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/Xcode/diagnosing-issues-in-the-appearance-of-your-running-app
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/improving-accessibility-support-in-your-app
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/diorama
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/introductory-visionos-samples
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/#topics
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/avfoundation/media_playback/controlling_the_transport_behavior_of_a_player
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/SwiftUI/ImmersionStyle/mixed
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/SwiftUI/ImmersionStyle/automatic
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/checking-whether-your-app-is-compatible-with-visionos
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/creating-a-performance-plan-for-visionos-app
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/creating-your-first-visionos-app
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/understanding-the-visionos-render-pipeline
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionOS/creating-fully-immersive-experiences
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/positioning-and-sizing-windows
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/AVKit/trimming-and-exporting-media-in-visionos
+2024-11-08 03:23:12,892 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/#App-construction
+2024-11-08 03:23:12,893 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/Xcode/configuring-your-app-icon
+2024-11-08 03:23:12,893 - documentation_analyzer - DEBUG - documentation: https://developer.apple.com/documentation/visionos/world
+2024-11-08 03:23:12,893 - documentation_analyzer - DEBUG - Found 7 videos URLs
+2024-11-08 03:23:12,893 - documentation_analyzer - DEBUG - videos: https://developer.apple.com/watchos/
+2024-11-08 03:23:12,893 - documentation_analyzer - DEBUG - videos: https://developer.apple.com/videos/play/wwdc2024/10086
+2024-11-08 03:23:12,893 - documentation_analyzer - DEBUG - videos: https://developer.apple.com/videos/play/wwdc2023/10072
+2024-11-08 03:23:12,893 - documentation_analyzer - DEBUG - videos: https://developer.apple.com/videos/play/wwdc2023/10075
+2024-11-08 03:23:12,893 - documentation_analyzer - DEBUG - videos: https://developer.apple.com/videos/play/wwdc2024/10087
+2024-11-08 03:23:12,893 - documentation_analyzer - DEBUG - videos: https://developer.apple.com/videos/
+2024-11-08 03:23:12,893 - documentation_analyzer - DEBUG - videos: https://developer.apple.com/videos/play/wwdc2024/10096
