@@ -14,21 +14,7 @@ from core.config import TEST_SAMPLE_COUNT, BASE_URLS
 import zipfile
 import io
 from datetime import datetime, UTC
-
-@dataclass
-class ProjectResource:
-    """Represents a downloadable project resource"""
-    title: str
-    url: str
-    download_url: Optional[str] = None
-    local_path: Optional[Path] = None
-    downloaded: bool = False
-    documentation_url: Optional[str] = None
-    documentation_title: Optional[str] = None
-
-    def mark_downloaded(self, path: Path):
-        self.local_path = path
-        self.downloaded = True
+from models.base import ProjectResource
 
 class DocumentationURLCollector:
     """Handles documentation URL discovery and sample collection"""
@@ -412,19 +398,33 @@ class DocumentationURLCollector:
         """Load samples from cache"""
         try:
             cache_data = json.loads(self.samples_cache.read_text())
-            return [ProjectResource(**p) for p in cache_data.get('samples', [])]
+            return [ProjectResource.model_validate(p) for p in cache_data.get('samples', [])]
         except Exception as e:
             logger.error(f"Error loading cache: {str(e)}")
             return []
 
-    def _update_cache(self, samples: List[ProjectResource]):
-        """Update samples cache"""
+    def _update_cache(self, new_samples: List[ProjectResource]):
+        """Update samples cache by merging with existing samples"""
         try:
+            # Load existing cache
+            existing_samples = self._load_from_cache()
+            
+            # Create a dict of existing samples by URL for easy lookup
+            existing_by_url = {s.url: s for s in existing_samples}
+            
+            # Update/add new samples
+            for sample in new_samples:
+                existing_by_url[sample.url] = sample
+                
+            # Create updated cache data
             cache_data = {
-                'cached_at': time.time(),
-                'samples': [vars(s) for s in samples]
+                'cached_at': datetime.now(UTC).isoformat(),
+                'samples': [s.model_dump() for s in existing_by_url.values()]
             }
+            
             self.samples_cache.write_text(json.dumps(cache_data, indent=2))
+            logger.info(f"Successfully cached {len(new_samples)} samples (Total: {len(existing_by_url)})")
+            logger.debug(f"Cache updated at: {cache_data['cached_at']}")
         except Exception as e:
             logger.error(f"Error updating cache: {str(e)}")
 
@@ -446,24 +446,29 @@ class DocumentationURLCollector:
             
         try:
             cache_data = json.loads(self.samples_cache.read_text())
-            logger.info("\nSamples Cache:")
-            logger.info(f"Total samples: {len(cache_data)}")
+            samples = cache_data.get('samples', [])  # Get the samples array from cache_data
             
-            downloaded = sum(1 for s in cache_data if s.get('downloaded', False))
+            logger.info("\nSamples Cache:")
+            logger.info(f"Total samples: {len(samples)}")
+            
+            # Count downloaded samples
+            downloaded = sum(1 for s in samples if s.get('downloaded', False))
             logger.info(f"Downloaded: {downloaded}")
-            logger.info(f"Not downloaded: {len(cache_data) - downloaded}")
+            logger.info(f"Not downloaded: {len(samples) - downloaded}")
             
             logger.info("\nSample Details:")
-            for sample in cache_data:
+            for sample in samples:
                 status = "Downloaded" if sample.get('downloaded') else "Not Downloaded"
-                logger.info(f"- {sample['title']}: {status}")
+                logger.info(f"- {sample.get('title')}: {status}")
                 if sample.get('local_path'):
-                    path = Path(sample['local_path'])
+                    path = Path(sample.get('local_path'))
                     if not path.exists():
                         logger.warning(f"  Warning: Path does not exist: {path}")
                         
         except json.JSONDecodeError:
             logger.error("Samples cache is corrupted")
+        except Exception as e:
+            logger.error(f"Error inspecting cache: {str(e)}")
 
 class URLSources:
     """Simple URL management class"""

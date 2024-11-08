@@ -108,6 +108,13 @@ class ProjectResource(BaseModel):
     documentation_url: Optional[str] = None
     documentation_title: Optional[str] = None
     
+    @classmethod
+    def model_validate(cls, data: dict):
+        """Pydantic v2 compatible validation method"""
+        if isinstance(data.get('local_path'), str):
+            data['local_path'] = Path(data['local_path'])
+        return cls(**data)
+    
     def mark_downloaded(self, path: Path):
         self.local_path = path
         self.downloaded = True

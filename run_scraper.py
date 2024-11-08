@@ -64,7 +64,9 @@ async def process_url(url: str, url_collector: DocumentationURLCollector, skip_d
                     success = await url_collector.download_project(project)
                     if success:
                         console.print(f"[green]Downloaded to: {project.local_path}")
-                        console.print(f"[green]Project contents: {list(project.local_path.glob('**/*'))}")
+                        # Update cache with downloaded project
+                        url_collector._update_cache([project])
+                        console.print(f"[green]Project cached: {project.title}")
                     else:
                         console.print(f"[red]Download failed")
                 else:
