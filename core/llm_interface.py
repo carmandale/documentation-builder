@@ -1,3 +1,7 @@
+from typing import Dict, Any
+from core.knowledge_base import VisionOSKnowledgeBase
+from core.prompt_templates import VisionOSPromptTemplate
+
 class VisionOSCodeGenerator:
     def __init__(self):
         self.knowledge_base = VisionOSKnowledgeBase()

@@ -3,6 +3,8 @@ from pathlib import Path
 from core.scraper import DocumentationScraper
 from core.url_sources import DocumentationURLCollector, URLSources, ProjectResource
 from analyzers.project_analyzer import ProjectAnalyzer
+from analyzers.pattern_refiner import PatternRefiner
+from core.knowledge_base import VisionOSKnowledgeBase
 from extractors.relationship_extractor import RelationshipExtractor
 from core.config import (
     TESTING_MODE, 
@@ -37,6 +39,7 @@ import hashlib
 from datetime import datetime, UTC
 from rich.progress import Progress
 import random
+from core.llm_interface import VisionOSCodeGenerator
 
 console = Console()
 
@@ -496,14 +499,44 @@ async def main():
     console.print(summary_table)
     console.print("\n[bold green]Analysis Complete!")
 
-    # After analysis, prepare knowledge base
+    # After pattern analysis, before showing results
+    console.print("\n[bold cyan]Refining Pattern Analysis...")
+    pattern_refiner = PatternRefiner()
+    refined_patterns = pattern_refiner.analyze_existing_patterns(pattern_data)
+    
+    # Update pattern data with refined patterns
+    for pattern_type, refined_data in refined_patterns.items():
+        if pattern_type in pattern_data:
+            pattern_data[pattern_type].update({
+                "detection_terms": refined_data["detection_terms"],
+                "common_imports": refined_data["common_imports"],
+                "confidence": refined_data["confidence"]
+            })
+    
+    # Add refined pattern summary to output
+    refined_table = Table(title="Refined Pattern Analysis")
+    refined_table.add_column("Pattern Type", style="cyan")
+    refined_table.add_column("Detection Terms", style="green")
+    refined_table.add_column("Common Imports", style="yellow")
+    refined_table.add_column("Confidence", style="blue")
+    
+    for pattern_type, data in refined_patterns.items():
+        refined_table.add_row(
+            pattern_type,
+            ", ".join(sorted(data["detection_terms"])),
+            ", ".join(sorted(data["common_imports"])),
+            f"{data['confidence']:.2f}"
+        )
+    
+    console.print(refined_table)
+    
+    # Initialize knowledge base with refined patterns
     knowledge_base = VisionOSKnowledgeBase()
     knowledge_base.build_from_analysis(pattern_data)
     
     # Initialize code generator
     code_generator = VisionOSCodeGenerator()
     
-    # Now ready for LLM use
     return code_generator
 
 async def process_urls_concurrent(urls: Set[str], url_collector: DocumentationURLCollector):
@@ -520,6 +553,41 @@ async def process_urls_concurrent(urls: Set[str], url_collector: DocumentationUR
         tasks.append(process_with_limit(url))
     
     return await asyncio.gather(*tasks)
+
+async def analyze_real_samples():
+    """Analyze patterns in downloaded samples"""
+    # Get real sample paths
+    sample_paths = list(Path('data/projects').glob('**/*.swift'))
+    
+    # Group files by pattern type
+    pattern_data = {
+        "scene_understanding": {
+            "count": 0,
+            "files": [],
+            "examples": []
+        }
+        # ... other patterns ...
+    }
+    
+    # Analyze each file
+    for file_path in sample_paths:
+        content = file_path.read_text()
+        
+        # Check for scene understanding patterns
+        if any(term in content for term in ["SceneUnderstanding", "PlaneAnchor", "MeshAnchor"]):
+            pattern_data["scene_understanding"]["files"].append(str(file_path))
+            pattern_data["scene_understanding"]["count"] += 1
+    
+    # Refine patterns
+    pattern_refiner = PatternRefiner()
+    refined_patterns = pattern_refiner.analyze_existing_patterns(pattern_data)
+    
+    # Show results
+    console.print("\nPattern Analysis Results:")
+    for pattern_type, data in refined_patterns.items():
+        console.print(f"\n[cyan]{pattern_type}:")
+        console.print(f"Terms found: {data['detection_terms']}")
+        console.print(f"Confidence: {data['confidence']:.2f}")
 
 if __name__ == "__main__":
     asyncio.run(main())

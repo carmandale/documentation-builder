@@ -1,3 +1,6 @@
+from typing import Dict, Any
+from core.knowledge_base import VisionOSKnowledgeBase
+
 class VisionOSPromptTemplate:
     def generate_component_prompt(self, component: str, knowledge_base: VisionOSKnowledgeBase) -> str:
         """Generate an LLM prompt with context from knowledge base"""

@@ -23,7 +23,7 @@ class VisionOSKnowledgeBase:
             for pattern_type, data in pattern_data.items():
                 patterns[pattern_type] = {
                     "count": data['count'],
-                    "files": list(set(data['files'])),  # Unique files
+                    "files": [str(f) for f in data['files']],  # Convert Path to string
                     "examples": data.get('examples', []),
                     "relationships": self._extract_relationships(data)
                 }
