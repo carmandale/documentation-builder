@@ -2,25 +2,25 @@ from datetime import datetime, UTC
 from pathlib import Path
 from typing import Dict, List
 import json
+from utils.cache_manager import CacheManager
 
 class RelationshipTracker:
     """Tracks relationships between patterns and concepts"""
     
     def __init__(self, knowledge_dir: Path):
         self.knowledge_dir = knowledge_dir
-        self.knowledge_dir.mkdir(parents=True, exist_ok=True)
-        self.relationships_file = knowledge_dir / 'relationships.json'
+        self.cache_manager = CacheManager(knowledge_dir.parent)  # Use parent since knowledge_dir is under base_dir
         self.relationships = self._load_relationships()
     
     def _load_relationships(self) -> Dict:
         """Load existing relationships from file"""
-        if self.relationships_file.exists():
-            return json.loads(self.relationships_file.read_text())
+        relationships_file = self.cache_manager.cache_files['relationships']
+        if relationships_file.exists():
+            return json.loads(relationships_file.read_text())
         return {}
     
     def _save_relationships(self):
         """Save relationships to file"""
-        # Convert sets to lists for JSON serialization
         serializable = {}
         for key, rel in self.relationships.items():
             rel_copy = rel.copy()
@@ -28,7 +28,8 @@ class RelationshipTracker:
                 rel_copy['evidence'] = list(rel_copy['evidence'])
             serializable[key] = rel_copy
         
-        self.relationships_file.write_text(json.dumps(serializable, indent=2))
+        relationships_file = self.cache_manager.cache_files['relationships']
+        relationships_file.write_text(json.dumps(serializable, indent=2))
     
     def _calculate_strength(self, evidence: List[Dict]) -> float:
         """Calculate relationship strength based on evidence"""
@@ -51,7 +52,7 @@ class RelationshipTracker:
     def record_relationship(self, source: str, target: str, relationship_type: str, 
                           evidence: Dict):
         """Record a relationship between patterns/concepts"""
-        key = f"{source}:{target}"
+        key = f"{source}||{target}"
         
         if key not in self.relationships:
             self.relationships[key] = {
@@ -73,7 +74,7 @@ class RelationshipTracker:
         related = []
         
         for key, rel in self.relationships.items():
-            source, target = key.split(':')
+            source, target = key.split('||')
             if source == item and rel['strength'] >= min_strength:
                 related.append({
                     'item': target,
@@ -109,7 +110,8 @@ class RelationshipTracker:
         
         # Count connections per item
         for key in self.relationships:
-            source, _ = key.split(':')
+            # Handle both : and || separators
+            source = key.split('||')[0] if '||' in key else key.split(':')[0]
             stats['most_connected_items'][source] = stats['most_connected_items'].get(source, 0) + 1
         
         return stats

@@ -51,30 +51,31 @@ async def process_url(url: str, url_collector: DocumentationURLCollector, skip_d
     retries = 3
     while retries > 0:
         try:
-            console.print(f"\n[cyan]Processing URL: {url}")
-            
-            # Handle ZIP URLs differently from documentation URLs
-            if url.endswith('.zip'):
-                # For ZIP URLs, just create ProjectResource and download
-                project = ProjectResource(
-                    title=url.split('/')[-1].replace('.zip', ''),
-                    url=url,
-                    download_url=url
-                )
+            async with aiohttp.ClientSession(timeout=aiohttp.ClientTimeout(total=30)) as session:
+                console.print(f"\n[cyan]Processing URL: {url}")
                 
-                if not skip_downloads:
-                    console.print(f"[yellow]Attempting download to {url_collector.projects_dir}...")
-                    success = await url_collector.download_project(project)
-                    if success:
-                        console.print(f"[green]Downloaded to: {project.local_path}")
-                        # Update cache with downloaded project
-                        url_collector._update_cache([project])
-                        console.print(f"[green]Project cached: {project.title}")
-                    else:
-                        console.print(f"[red]Download failed")
-                else:
-                    console.print(f"[yellow]Skipping download (SKIP_DOWNLOADS=True)")
-                return project
+                # Handle ZIP URLs differently from documentation URLs
+                if url.endswith('.zip'):
+                    project = ProjectResource(
+                        title=url.split('/')[-1].replace('.zip', ''),
+                        url=url,
+                        download_url=url
+                    )
+                    
+                    if not skip_downloads:
+                        console.print(f"[yellow]Attempting download to {url_collector.projects_dir}...")
+                        success = await url_collector.download_project(project)
+                        if success:
+                            console.print(f"[green]Downloaded to: {project.local_path}")
+                            url_collector._update_cache([project])
+                            console.print(f"[green]Project cached: {project.title}")
+                        else:
+                            console.print(f"[red]Download failed")
+                            retries -= 1
+                            if retries > 0:
+                                await asyncio.sleep(2)  # Add delay between retries
+                            continue
+                    return project
                 
         except aiohttp.ClientError as e:
             retries -= 1
@@ -494,6 +495,16 @@ async def main():
     console.print("\nSummary:")
     console.print(summary_table)
     console.print("\n[bold green]Analysis Complete!")
+
+    # After analysis, prepare knowledge base
+    knowledge_base = VisionOSKnowledgeBase()
+    knowledge_base.build_from_analysis(pattern_data)
+    
+    # Initialize code generator
+    code_generator = VisionOSCodeGenerator()
+    
+    # Now ready for LLM use
+    return code_generator
 
 async def process_urls_concurrent(urls: Set[str], url_collector: DocumentationURLCollector):
     processed = set()

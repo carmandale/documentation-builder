@@ -370,18 +370,25 @@ class DocumentationURLCollector:
 
     def _cache_doc_relationship(self, project: ProjectResource):
         """Cache the relationship between sample and documentation"""
-        relationships = {}
-        if self.doc_cache.exists():
-            relationships = json.loads(self.doc_cache.read_text())
-        
-        relationships[project.title] = {
-            'sample_url': project.download_url,
-            'documentation_url': project.documentation_url,
-            'documentation_title': project.documentation_title,
-            'cached_at': datetime.now(UTC).isoformat()
-        }
-        
-        self.doc_cache.write_text(json.dumps(relationships, indent=2))
+        try:
+            relationships = {}
+            if self.doc_cache.exists():
+                relationships = json.loads(self.doc_cache.read_text())
+            
+            relationship_data = {
+                'sample_url': project.download_url,
+                'documentation_url': project.documentation_url,
+                'documentation_title': project.documentation_title,
+                'cached_at': datetime.now(UTC).isoformat()
+            }
+            
+            relationships[project.title] = relationship_data
+            
+            self.doc_cache.write_text(json.dumps(relationships, indent=2))
+            logger.info(f"Cached relationship for {project.title}")
+            
+        except Exception as e:
+            logger.error(f"Error caching relationship for {project.title}: {e}")
 
     async def download_project(self, project: ProjectResource) -> bool:
         """Download and extract a project"""
@@ -437,10 +444,18 @@ class DocumentationURLCollector:
                 return False
                 
             cache_data = json.loads(self.samples_cache.read_text())
-            cache_time = cache_data.get('cached_at', 0)
-            return time.time() - cache_time < 24 * 60 * 60
+            cache_time = datetime.fromisoformat(cache_data.get('cached_at', '1970-01-01T00:00:00+00:00'))
+            age = datetime.now(UTC) - cache_time
             
-        except Exception:
+            # Add size check
+            if len(cache_data.get('samples', [])) == 0:
+                logger.warning("Cache exists but contains no samples")
+                return False
+                
+            return age.days < 1
+            
+        except (json.JSONDecodeError, ValueError) as e:
+            logger.error(f"Cache validation error: {str(e)}")
             return False
 
     def _load_from_cache(self) -> List[ProjectResource]:
@@ -525,7 +540,11 @@ class URLSources:
         self.urls = defaultdict(set)
         
     def add_url(self, url: str, category: str):
-        self.urls[category].add(url)
+        # Normalize URL before adding
+        normalized_url = url.strip().rstrip('/')
+        if normalized_url not in self.urls[category]:
+            self.urls[category].add(normalized_url)
+            logger.debug(f"Added {category} URL: {normalized_url}")
         
     def get_urls(self, category: str = None) -> Set[str]:
         if category:

@@ -1,5 +1,5 @@
 # Configuration settings
-TESTING_MODE = True  # Set to False for full analysis
+TESTING_MODE = False  # Set to False for full analysis
 SKIP_DOWNLOADS = False  # Change this to False to enable downloads
 
 # Test mode configuration
