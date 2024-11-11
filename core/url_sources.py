@@ -447,6 +447,7 @@ class DocumentationURLCollector:
                             zip_ref.extractall(project_dir)
                             
                         project.mark_downloaded(project_dir)
+                        self._cache_doc_relationship(project)
                         return True
                         
         except Exception as e:
