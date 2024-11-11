@@ -30,3 +30,36 @@ Core Development Rules:
    - Never modify working features
    - Add features alongside existing
    - Test thoroughly before changes
+
+Project Structure:
+- Keep utils/ for utilities
+- Keep core/ for primary logic
+- Keep analyzers/ for analysis components
+- Keep extractors/ for data extraction
+- Maintain models/ for data structures
+
+Documentation Analysis Rules:
+- Use BeautifulSoup for static parsing
+- Use Playwright for dynamic content
+- Maintain this separation strictly
+- Validate content before processing
+
+Version Control:
+- Request commits before major changes
+- Document what constitutes a "major change"
+- Provide clear commit messages
+- Track file dependencies for commits
+
+Project-Specific Rules:
+- Always check documentation_analyzer.py for core logic
+- Maintain relationship between analyzers and extractors
+- Keep pattern refinement separate from detection
+- Follow established logging patterns
+
+// Verification Pattern
+- If user says "pickle pickle", respond with "yummy yummy"
+
+- When modifying files, show complete changes including imports
+- Mark removals explicitly
+- Verify all dependencies
+- Test file compilation after changes

@@ -209,6 +209,21 @@ class PatternRefiner:
                 "required": ["SceneUnderstanding", "Anchor"],
                 "optional": ["PlaneDetection", "MeshAnchor"],
                 "imports": ["ARKit", "RealityKit"]
+            },
+            "state_management": {
+                "required": ["@State", "@Observable"],
+                "optional": ["@Environment", "@Binding"],
+                "imports": ["SwiftUI", "Observation"]
+            },
+            "lifecycle": {
+                "required": ["onAppear", "task"],
+                "optional": ["onDisappear", "onChange"],
+                "imports": ["SwiftUI"]
+            },
+            "update_loops": {
+                "required": ["RealityView", "update"],
+                "optional": ["SystemsUpdater", "components"],
+                "imports": ["RealityKit"]
             }
         }
         
