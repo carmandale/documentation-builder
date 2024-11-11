@@ -14,8 +14,14 @@ def load_real_doc(filename: str = "adding-3d-content-to-your-app.html") -> str:
     with open(file_path, 'r', encoding='utf-8') as f:
         return f.read()
 
-def test_extract_from_real_doc():
-    """Test extraction from actual Apple documentation"""
+@pytest.mark.asyncio
+async def test_extract_from_real_doc():
+    """Test extraction from real documentation"""
+    test_file = Path('data/documentation/adding-3d-content-to-your-app.json')
+    
+    if not test_file.exists():
+        pytest.skip(f"Test file not found: {test_file}")
+        
     content = load_real_doc()
     soup = BeautifulSoup(content, 'html.parser')
     extractor = BaseExtractor()

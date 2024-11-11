@@ -1,7 +1,7 @@
 from datetime import datetime, UTC
-from typing import List, Dict, Optional, Set
-from pydantic import BaseModel, Field, ConfigDict
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Set
+from pydantic import BaseModel, Field, ConfigDict
 
 class Topic(BaseModel):
     """Represents a section/topic in the documentation"""
@@ -98,15 +98,35 @@ class DocumentationPage(BaseModel):
         else:
             self.category = 'Other'
     
+class CodeExample(BaseModel):
+    """Code example from documentation"""
+    code: str
+    language: str = "swift"
+    context: Optional[str] = None
+    source_file: Optional[str] = None
+    line_number: Optional[int] = None
+
+class DocumentationEntry(BaseModel):
+    """Documentation entry with code examples"""
+    title: str
+    content: str
+    code_examples: List[CodeExample] = []
+    metadata: Dict[str, Any] = {}
+
 class ProjectResource(BaseModel):
-    """Represents a downloadable project resource"""
+    """Project resource from documentation"""
     title: str
     url: str
-    download_url: Optional[str] = None
-    local_path: Optional[Path] = None
-    downloaded: bool = False
+    download_url: str
     documentation_url: Optional[str] = None
     documentation_title: Optional[str] = None
+    local_path: Optional[Path] = None
+    downloaded: bool = False
+
+    def mark_downloaded(self, path: Path):
+        """Mark project as downloaded and set local path"""
+        self.downloaded = True
+        self.local_path = path
     
     @classmethod
     def model_validate(cls, data: dict):
@@ -114,10 +134,6 @@ class ProjectResource(BaseModel):
         if isinstance(data.get('local_path'), str):
             data['local_path'] = Path(data['local_path'])
         return cls(**data)
-    
-    def mark_downloaded(self, path: Path):
-        self.local_path = path
-        self.downloaded = True
     
     def model_dump(self, *args, **kwargs):
         """Pydantic v2 compatible dump method"""

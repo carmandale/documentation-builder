@@ -7,6 +7,7 @@ from rich.panel import Panel
 from rich.table import Table
 from rich.syntax import Syntax
 import pytest
+from pathlib import Path
 
 # Configure rich logging with more detail
 console = Console()
@@ -23,6 +24,9 @@ def setup_logging(caplog):
 
 def test_validate_cylinder_implementation(capsys, caplog):
     """Test our cylinder rotation implementation against scraped patterns"""
+    # Update path to test fixture
+    sample_path = Path('tests/fixtures/SampleView.swift')
+    
     console.print(Panel.fit("Starting Cylinder Implementation Validation", style="bold green"))
     
     # Initialize our improved interfaces
@@ -30,7 +34,7 @@ def test_validate_cylinder_implementation(capsys, caplog):
     project_analyzer = ProjectAnalyzer()
     
     # Read our implementation
-    with open('SampleView.swift', 'r') as f:
+    with open(sample_path, 'r') as f:
         implementation = f.read()
     
     # Show the code being validated

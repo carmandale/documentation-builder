@@ -64,6 +64,18 @@ class DocumentationURLCollector:
 
         self.logged_samples = set()
 
+        # Add new cache paths without modifying existing ones
+        self.documentation_content_dir = self.cache_dir / 'documentation'
+        self.documentation_content_dir.mkdir(exist_ok=True)
+        
+        # Add new cache file for documentation content
+        self.documentation_content_cache = self.cache_dir / 'documentation_content.json'
+        if not self.documentation_content_cache.exists():
+            self.documentation_content_cache.write_text(json.dumps({
+                'cached_at': datetime.now(UTC).isoformat(),
+                'pages': {}
+            }))
+
     def is_relevant_url(self, url: str) -> bool:
         """Check if URL is relevant for visionOS development"""
         url_lower = url.lower()
@@ -92,7 +104,7 @@ class DocumentationURLCollector:
         return False
 
     async def get_documentation_links(self, base_url: str) -> Dict[str, Set[str]]:
-        """Get categorized documentation links with improved page handling"""
+        """Get documentation links and cache pages"""
         links = defaultdict(set)
         processed_urls = set()
         
@@ -244,6 +256,12 @@ class DocumentationURLCollector:
                     for url in urls:
                         logger.debug(f"  {category}: {url}")
                 
+                # Add caching for discovered URLs:
+                for category, urls in links.items():
+                    if category in ['documentation', 'frameworks', 'tools']:
+                        for url in urls:
+                            await self.cache_documentation_page(url, category)
+                        
                 return dict(links)
                 
         except Exception as e:
@@ -379,16 +397,34 @@ class DocumentationURLCollector:
                 'sample_url': project.download_url,
                 'documentation_url': project.documentation_url,
                 'documentation_title': project.documentation_title,
-                'cached_at': datetime.now(UTC).isoformat()
+                'cached_at': datetime.now(UTC).isoformat(),
+                'doc_type': self._categorize_doc_url(project.documentation_url)
             }
             
             relationships[project.title] = relationship_data
             
             self.doc_cache.write_text(json.dumps(relationships, indent=2))
-            logger.info(f"Cached relationship for {project.title}")
+            logger.debug(f"Cached documentation relationship for {project.title}")
             
         except Exception as e:
             logger.error(f"Error caching relationship for {project.title}: {e}")
+
+    def _categorize_doc_url(self, url: str) -> str:
+        """Categorize documentation URL by type"""
+        if not url:
+            return 'unknown'
+        
+        if '/documentation/visionos/' in url:
+            return 'visionos'
+        elif '/documentation/realitykit/' in url:
+            return 'realitykit'
+        elif '/documentation/swiftui/' in url:
+            return 'swiftui'
+        elif '/documentation/arkit/' in url:
+            return 'arkit'
+        elif '/design/' in url:
+            return 'design'
+        return 'other'
 
     async def download_project(self, project: ProjectResource) -> bool:
         """Download and extract a project"""
@@ -504,35 +540,142 @@ class DocumentationURLCollector:
     def inspect_cache(self):
         """Inspect and report on cache contents"""
         logger.info("\nCache Inspection:")
-        if not self.samples_cache.exists():
-            logger.info("No samples cache found")
-            return
-            
+        if self.samples_cache.exists():
+            try:
+                cache_data = json.loads(self.samples_cache.read_text())
+                samples = cache_data.get('samples', [])
+                
+                logger.info("\nSamples Cache:")
+                logger.info(f"Total samples: {len(samples)}")
+                downloaded = sum(1 for s in samples if s.get('downloaded', False))
+                logger.info(f"Downloaded: {downloaded}")
+                logger.info(f"Not downloaded: {len(samples) - downloaded}")
+                
+                logger.info("\nSample Details:")
+                for i, sample in enumerate(samples, 1):
+                    status = "Downloaded" if sample.get('downloaded') else "Not Downloaded"
+                    logger.info(f"{i:2d}. {sample.get('title')}: {status}")
+                    
+            except json.JSONDecodeError:
+                logger.error("Samples cache is corrupted")
+
+        if self.doc_cache.exists():
+            try:
+                doc_data = json.loads(self.doc_cache.read_text())
+                
+                logger.info("\nDocumentation Links Summary:")
+                logger.debug(f"Found {len(doc_data)} documentation links")
+                
+                url_types = defaultdict(int)
+                for _, data in doc_data.items():
+                    url = data.get('documentation_url', '')
+                    if url:
+                        if '/documentation/visionos/' in url:
+                            url_types['visionos'] += 1
+                        elif '/documentation/realitykit/' in url:
+                            url_types['realitykit'] += 1
+                        elif '/documentation/swiftui/' in url:
+                            url_types['swiftui'] += 1
+                        elif '/documentation/arkit/' in url:
+                            url_types['arkit'] += 1
+                        else:
+                            url_types['other'] += 1
+                
+                for doc_type, count in url_types.items():
+                    logger.info(f"- {doc_type}: {count} URLs")
+                    
+            except Exception as e:
+                logger.error(f"Error analyzing documentation cache: {str(e)}")
+
+        # Add documentation content inspection
         try:
-            cache_data = json.loads(self.samples_cache.read_text())
-            samples = cache_data.get('samples', [])  # Get the samples array from cache_data
+            cache_data = self._load_doc_content_cache()
+            pages = cache_data.get('pages', {})
             
-            logger.info("\nSamples Cache:")
-            logger.info(f"Total samples: {len(samples)}")
+            logger.info("\nDocumentation Pages Cache:")
+            logger.info(f"Total cached pages: {len(pages)}")
             
-            # Count downloaded samples
-            downloaded = sum(1 for s in samples if s.get('downloaded', False))
-            logger.info(f"Downloaded: {downloaded}")
-            logger.info(f"Not downloaded: {len(samples) - downloaded}")
-            
-            logger.info("\nSample Details:")
-            for sample in samples:
-                status = "Downloaded" if sample.get('downloaded') else "Not Downloaded"
-                logger.info(f"- {sample.get('title')}: {status}")
-                if sample.get('local_path'):
-                    path = Path(sample.get('local_path'))
-                    if not path.exists():
-                        logger.warning(f"  Warning: Path does not exist: {path}")
-                        
-        except json.JSONDecodeError:
-            logger.error("Samples cache is corrupted")
+            # Count by category
+            categories = defaultdict(int)
+            for data in pages.values():
+                categories[data.get('category', 'unknown')] += 1
+                
+            for category, count in categories.items():
+                logger.info(f"- {category}: {count} pages")
+                
+            # Show sample-documentation relationships
+            relationships = self._get_sample_doc_relationships()
+            logger.info(f"\nSample-Documentation Relationships: {len(relationships)}")
+            for sample, docs in relationships.items():
+                logger.info(f"- {sample}: {len(docs)} documentation pages")
+                
         except Exception as e:
-            logger.error(f"Error inspecting cache: {str(e)}")
+            logger.error(f"Error inspecting documentation cache: {str(e)}")
+
+    def _get_sample_doc_relationships(self) -> Dict[str, List[str]]:
+        """Get relationships between samples and documentation"""
+        relationships = defaultdict(list)
+        
+        try:
+            if self.doc_cache.exists():
+                doc_data = json.loads(self.doc_cache.read_text())
+                for sample, data in doc_data.items():
+                    if doc_url := data.get('documentation_url'):
+                        relationships[sample].append(doc_url)
+        except Exception as e:
+            logger.error(f"Error getting sample-doc relationships: {str(e)}")
+            
+        return relationships
+
+    async def cache_documentation_page(self, url: str, category: str = 'documentation') -> bool:
+        """Cache a documentation page without affecting existing functionality"""
+        try:
+            logger.info(f"\nCaching documentation page ({category}): {url}")
+            safe_name = re.sub(r'[^\w\-_]', '_', url.split('/')[-1])
+            file_path = self.documentation_content_dir / f"{safe_name}.html"
+            
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url) as response:
+                    if response.status == 200:
+                        content = await response.text()
+                        file_path.write_text(content)
+                        
+                        # Update cache index
+                        cache_data = self._load_doc_content_cache()
+                        cache_data['pages'][url] = {
+                            'local_path': str(file_path),
+                            'category': category,
+                            'cached_at': datetime.now(UTC).isoformat()
+                        }
+                        self._save_doc_content_cache(cache_data)
+                        
+                        logger.info(f"✓ Successfully cached: {url}")
+                        return True
+                    else:
+                        logger.warning(f"× Failed to cache (status {response.status}): {url}")
+                        
+            return False
+            
+        except Exception as e:
+            logger.error(f"× Error caching documentation page {url}: {str(e)}")
+            return False
+
+    def _load_doc_content_cache(self) -> dict:
+        """Load documentation content cache"""
+        try:
+            if self.documentation_content_cache.exists():
+                return json.loads(self.documentation_content_cache.read_text())
+        except Exception as e:
+            logger.error(f"Error loading documentation cache: {str(e)}")
+        
+        return {'cached_at': datetime.now(UTC).isoformat(), 'pages': {}}
+
+    def _save_doc_content_cache(self, cache_data: dict):
+        """Save documentation content cache"""
+        try:
+            self.documentation_content_cache.write_text(json.dumps(cache_data, indent=2))
+        except Exception as e:
+            logger.error(f"Error saving documentation cache: {str(e)}")
 
 class URLSources:
     """Simple URL management class"""

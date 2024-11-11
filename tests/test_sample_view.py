@@ -2,9 +2,13 @@ from analyzers.llm_interface import LLMDocumentationInterface
 from analyzers.project_analyzer import ProjectAnalyzer
 import pytest
 from typing import Dict
+from pathlib import Path
 
 def test_cylinder_rotation_implementation():
     """Test our cylinder rotation implementation against scraped patterns"""
+    
+    # Update path to test fixture
+    sample_path = Path('tests/fixtures/SampleView.swift')
     
     # Initialize interface
     llm_interface = LLMDocumentationInterface()
@@ -21,7 +25,7 @@ def test_cylinder_rotation_implementation():
     }
     
     # Read current implementation
-    with open('SampleView.swift', 'r') as f:
+    with open(sample_path, 'r') as f:
         implementation = f.read()
     
     # Validate implementation

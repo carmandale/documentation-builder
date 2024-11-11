@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Dict, Set, List, Any
+from typing import Dict, Set, List, Any, Optional
 import re
 from collections import defaultdict
 from utils.logging import logger
@@ -13,19 +13,34 @@ class ComponentAnalyzer:
         self.imports: Dict[str, Set[str]] = defaultdict(set)
         self.relationships: Dict[str, Set[str]] = defaultdict(set)
     
-    def analyze_samples(self) -> Dict[str, Any]:
-        """Analyze all Swift files in samples directory"""
-        swift_files = list(self.samples_dir.glob('**/*.swift'))
-        logger.info(f"Found {len(swift_files)} Swift files to analyze")
+    def analyze_samples(self, samples_dir: Optional[Path] = None) -> Dict[str, Any]:
+        """Analyze all Swift files in samples directory
         
-        for file_path in swift_files:
-            try:
-                content = file_path.read_text()
-                self._analyze_file(content, file_path)
-            except Exception as e:
-                logger.error(f"Error analyzing {file_path}: {e}")
+        Args:
+            samples_dir: Optional directory to analyze. Uses self.samples_dir if None.
+            
+        Returns:
+            Dict containing analysis results with components, imports and relationships
+        """
+        if samples_dir is None:
+            samples_dir = self.samples_dir
         
-        return self._generate_report()
+        try:
+            swift_files = list(samples_dir.glob('**/*.swift'))
+            logger.info(f"Found {len(swift_files)} Swift files to analyze")
+            
+            for file_path in swift_files:
+                try:
+                    content = file_path.read_text()
+                    self._analyze_file(content, file_path)
+                except Exception as e:
+                    logger.error(f"Error analyzing {file_path}: {e}")
+            
+            return self._generate_report()
+            
+        except Exception as e:
+            logger.error(f"Error in component analysis: {e}")
+            return {}
     
     def _analyze_file(self, content: str, file_path: Path):
         """Analyze a single Swift file"""

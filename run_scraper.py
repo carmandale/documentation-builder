@@ -40,6 +40,7 @@ from datetime import datetime, UTC
 from rich.progress import Progress
 import random
 from core.llm_interface import VisionOSCodeGenerator
+from analyzers.component_analyzer import ComponentAnalyzer
 
 console = Console()
 
@@ -48,6 +49,7 @@ doc_analyzer = DocumentationAnalyzer(Path('data/knowledge'))
 pattern_evolution = PatternEvolution(Path('data/knowledge'))
 project_analyzer = ProjectAnalyzer()
 relationship_tracker = RelationshipTracker(Path('data/knowledge'))
+component_analyzer = ComponentAnalyzer()
 
 async def process_url(url: str, url_collector: DocumentationURLCollector, skip_downloads: bool = SKIP_DOWNLOADS):
     """Process a single URL with improved error handling"""
@@ -97,22 +99,41 @@ async def discover_urls():
     url_collector = DocumentationURLCollector()
     discovered_urls = defaultdict(set)
     
+    # Track per-base-url discoveries
+    per_base_discoveries = {}
+    
     for base_url in BASE_URLS:
-        logger.debug(f"Processing base URL: {base_url}")
+        logger.info(f"\nProcessing base URL: {base_url}")
         links = await url_collector.get_documentation_links(base_url)
         
-        # Actually process and store the links we find
+        # Store discovered links
         for category, urls in links.items():
             discovered_urls[category].update(urls)
             logger.debug(f"Found {len(urls)} {category} links in {base_url}")
-            for url in urls:
-                logger.debug(f"  {category}: {url}")
+            
+            # Store per-base-url statistics
+            if base_url not in per_base_discoveries:
+                per_base_discoveries[base_url] = defaultdict(set)
+            per_base_discoveries[base_url][category].update(urls)
+            
+            # Detailed logging for documentation URLs
+            if category == 'documentation':
+                logger.info(f"\nDocumentation URLs from {base_url}:")
+                for url in sorted(urls):
+                    logger.info(f"  - {url}")
     
-    # Log summary before returning
-    logger.info("URL Discovery Summary:")
+    # Log detailed summary per base URL
+    logger.info("\nDiscovery Summary by Base URL:")
+    for base_url, categories in per_base_discoveries.items():
+        logger.info(f"\n{base_url}:")
+        for category, urls in categories.items():
+            logger.info(f"  {category}: {len(urls)} URLs")
+    
+    # Overall summary
+    logger.info("\nTotal URL Discovery Summary:")
     for category, urls in discovered_urls.items():
         logger.info(f"{category}: {len(urls)} URLs found")
-    
+        
     return dict(discovered_urls)
 
 def pattern_matches(code: str, pattern_type: str) -> bool:
@@ -502,7 +523,8 @@ async def main():
     # After pattern analysis, before showing results
     console.print("\n[bold cyan]Refining Pattern Analysis...")
     pattern_refiner = PatternRefiner()
-    refined_patterns = pattern_refiner.analyze_existing_patterns(pattern_data)
+    component_patterns = component_analyzer.analyze_samples()
+    refined_patterns = pattern_refiner.analyze_existing_patterns(pattern_data, component_patterns)
     
     # Update pattern data with refined patterns
     for pattern_type, refined_data in refined_patterns.items():

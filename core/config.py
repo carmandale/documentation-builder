@@ -5,6 +5,7 @@ SKIP_DOWNLOADS = False  # Change this to False to enable downloads
 # Test mode configuration
 TEST_SAMPLE_COUNT = 3  # Number of samples to process in test mode
 TEST_PATTERN_VALIDATION = True  # Validate patterns during test runs
+SKIP_URL_DISCOVERY = True  # Add this flag
 PAGE_TIMEOUT = 60000  # Increase timeout to 60 seconds
 
 # Cache settings

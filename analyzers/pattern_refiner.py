@@ -1,9 +1,10 @@
 from pathlib import Path
-from typing import Dict, Any, List, Set
+from typing import Dict, Any, List, Set, Optional
 import json
 import logging
 from utils.logging import logger
 import re
+from models.base import CodePattern, ValidationTest
 
 class PatternRefiner:
     """Refines patterns based on actual Apple documentation and code"""
@@ -13,13 +14,44 @@ class PatternRefiner:
         self.patterns_path = knowledge_dir / 'patterns.json'
         self.refined_patterns_path = knowledge_dir / 'refined_patterns.json'
         
-    def analyze_existing_patterns(self, pattern_data: Dict[str, Any]) -> Dict[str, Any]:
-        """Analyze and refine patterns based on actual usage"""
+    def analyze_existing_patterns(
+        self, 
+        pattern_data: Dict[str, Any],
+        component_patterns: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
+        """Analyze and refine patterns"""
         try:
             refined_patterns = {}
             logger.info("Starting pattern refinement analysis...")
             
             for pattern_type, data in pattern_data.items():
+                # Extract code from file
+                code = ""
+                if data.get('files'):
+                    try:
+                        with open(data['files'][0], 'r') as f:
+                            code = f.read()
+                    except Exception as e:
+                        logger.error(f"Error reading file: {e}")
+                        
+                # Create pattern with proper string values
+                pattern = CodePattern(
+                    pattern_type=pattern_type,
+                    code=code,
+                    source_file=str(data.get('files', [''])[0]),  # Convert Path to string
+                    frameworks=list(data.get('common_imports', [])),
+                    usage_count=data.get('count', 0)
+                )
+                
+                # Get component analysis data if available
+                component_data = component_patterns.get(pattern_type, {}) if component_patterns else {}
+                
+                # Combine pattern detection with component analysis
+                confidence = self._calculate_combined_confidence(
+                    data,
+                    component_data
+                )
+                
                 logger.info(f"\nRefining pattern: {pattern_type}")
                 
                 # Collect all files using this pattern
@@ -68,35 +100,41 @@ class PatternRefiner:
             logger.error(f"Error refining patterns: {e}")
             return {}
     
-    def _extract_usage_patterns(self, files: List[str], pattern_type: str) -> Dict[str, Set[str]]:
+    def _extract_usage_patterns(self, files: List[Path], pattern_type: str) -> Dict[str, Set[str]]:
         """Extract actual usage patterns from files"""
-        patterns = {
-            "terms": set(),
-            "imports": set(),
-            "components": set()
-        }
+        terms = set()
+        imports = set()
+        components = set()
         
-        for file_path in files:
+        for file in files:
             try:
-                if Path(file_path).exists():
-                    content = Path(file_path).read_text()
-                    
-                    # Extract imports
-                    imports = re.findall(r'import\s+(\w+)', content)
-                    patterns["imports"].update(imports)
-                    
-                    # Extract component names
-                    components = re.findall(r'(?:struct|class)\s+(\w+)(?::\s*\w+)?', content)
-                    patterns["components"].update(components)
-                    
-                    # Extract pattern-specific terms
-                    terms = self._extract_pattern_terms(content, pattern_type)
-                    patterns["terms"].update(terms)
-                    
-            except Exception as e:
-                logger.error(f"Error processing file {file_path}: {e}")
+                content = file.read_text()
                 
-        return patterns
+                # Extract imports
+                imports.update(re.findall(r'import\s+(\w+)', content))
+                
+                # Extract gesture patterns
+                if pattern_type == 'gestures':
+                    # Basic gestures
+                    terms.update(re.findall(r'\.gesture\(\s*(\w+Gesture)', content))
+                    # Spatial gestures
+                    terms.update(re.findall(r'(SpatialTapGesture|targetedToAnyEntity)', content))
+                    # Gesture handlers
+                    terms.update(re.findall(r'\.(onEnded|onChanged)\s*{', content))
+                    # Custom gesture components
+                    components.update(re.findall(r'class\s+\w+Gesture', content))
+                
+                # Extract pattern-specific terms
+                terms.update(self._extract_pattern_terms(content, pattern_type))
+                
+            except Exception as e:
+                logger.error(f"Error extracting patterns from {file}: {e}")
+                
+        return {
+            "terms": terms,
+            "imports": imports,
+            "components": components
+        }
     
     def _extract_pattern_terms(self, content: str, pattern_type: str) -> Set[str]:
         """Extract terms specific to a pattern type"""
@@ -144,6 +182,29 @@ class PatternRefiner:
             terms.update(re.findall(r'(?:SceneUnderstanding|SceneReconstruction)', content))
             terms.update(re.findall(r'(?:PlaneAnchor|MeshAnchor|PointCloud)', content))
             terms.update(re.findall(r'\.sceneReconstruction|\.planeDetection', content))
+        
+        elif pattern_type == "gestures":
+            # Basic gesture types
+            terms.update(re.findall(r'(?:TapGesture|DragGesture|LongPressGesture|RotateGesture|MagnifyGesture|SpatialTapGesture)\b', content))
+            
+            # Gesture modifiers and handlers
+            terms.update(re.findall(r'\.gesture\(\s*\w+', content))
+            terms.update(re.findall(r'\.(onEnded|onChanged|onMoved)\s*{', content))
+            
+            # Spatial targeting
+            terms.update(re.findall(r'targetedToAnyEntity|targetedToEntity', content))
+            
+            # Custom gesture components
+            terms.update(re.findall(r'class\s+(\w+Gesture)\b', content))
+            
+            # SwiftUI gesture state
+            terms.update(re.findall(r'@GestureState\b', content))
+            
+            # Gesture state handling
+            terms.update(re.findall(r'GestureState<[^>]+>', content))
+            
+            # Simultaneous and exclusive gestures
+            terms.update(re.findall(r'\.simultaneously\(with:|\.exclusively\(before:', content))
         
         return terms
     
@@ -224,6 +285,23 @@ class PatternRefiner:
                 "required": ["RealityView", "update"],
                 "optional": ["SystemsUpdater", "components"],
                 "imports": ["RealityKit"]
+            },
+            "gestures": {
+                "required": [
+                    "gesture",
+                    "TapGesture",
+                    "DragGesture"
+                ],
+                "optional": [
+                    "onEnded",
+                    "onChanged",
+                    "LongPressGesture",
+                    "RotateGesture",
+                    "MagnifyGesture",
+                    "SpatialTapGesture",
+                    "targetedToAnyEntity"
+                ],
+                "imports": ["SwiftUI"]
             }
         }
         
@@ -249,3 +327,48 @@ class PatternRefiner:
             score += 0.1 * (imports_found / len(rules["imports"]))
             
         return min(1.0, score)
+    
+    def _calculate_combined_confidence(
+        self,
+        pattern_data: Dict[str, Any],
+        component_data: Dict[str, Any]
+    ) -> float:
+        """Calculate confidence score combining pattern and component analysis
+        
+        Args:
+            pattern_data: Pattern detection data
+            component_data: Component analysis data
+            
+        Returns:
+            float: Confidence score between 0-1
+        """
+        base_confidence = 0.5  # Start with neutral confidence
+        
+        # Boost confidence based on:
+        # 1. Number of examples
+        if pattern_data.get('count', 0) > 5:
+            base_confidence += 0.1
+            
+        # 2. Framework imports match expectations
+        expected_imports = {
+            'ui_components': {'SwiftUI'},
+            '3d_content': {'RealityKit'},
+            'animation': {'SwiftUI'},
+            'arkit': {'ARKit'},
+            'gestures': {'SwiftUI'},
+            'spatial_audio': {'AVFoundation'}
+        }
+        
+        pattern_type = pattern_data.get('pattern_type', '')
+        if pattern_type in expected_imports:
+            imports = set(pattern_data.get('common_imports', []))
+            if expected_imports[pattern_type].issubset(imports):
+                base_confidence += 0.1
+                
+        # 3. Component analysis validation
+        if component_data:
+            if component_data.get('validated', False):
+                base_confidence += 0.2
+                
+        # Cap confidence between 0-1
+        return min(1.0, max(0.0, base_confidence))
