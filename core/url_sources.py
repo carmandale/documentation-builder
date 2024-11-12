@@ -81,8 +81,13 @@ class DocumentationURLCollector:
         url_lower = url.lower()
         
         # Direct visionOS content
-        if "/documentation/visionos" in url_lower:
+        if "/documentation/visionos" in url_lower or "/visionos" in url_lower:
             logger.debug(f"Found visionOS URL: {url}")
+            return True
+            
+        # Include design guidelines
+        if "/design/human-interface-guidelines" in url_lower:
+            logger.debug(f"Found design guidelines URL: {url}")
             return True
             
         # Reality Composer Pro content

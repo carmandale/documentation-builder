@@ -103,24 +103,31 @@ async def discover_urls():
     per_base_discoveries = {}
     
     for base_url in BASE_URLS:
-        logger.info(f"\nProcessing base URL: {base_url}")
-        links = await url_collector.get_documentation_links(base_url)
+        logger.info(f"🚀 Starting processing of base URL: {base_url}")
+        try:
+            links = await url_collector.get_documentation_links(base_url)
+            
+            # Store discovered links
+            for category, urls in links.items():
+                discovered_urls[category].update(urls)
+                logger.debug(f"Found {len(urls)} {category} links in {base_url}")
+                
+                # Store per-base-url statistics
+                if base_url not in per_base_discoveries:
+                    per_base_discoveries[base_url] = defaultdict(set)
+                per_base_discoveries[base_url][category].update(urls)
+                
+                # Detailed logging for documentation URLs
+                if category == 'documentation':
+                    logger.info(f"\nDocumentation URLs from {base_url}:")
+                    for url in sorted(urls):
+                        logger.info(f"  - {url}")
         
-        # Store discovered links
-        for category, urls in links.items():
-            discovered_urls[category].update(urls)
-            logger.debug(f"Found {len(urls)} {category} links in {base_url}")
-            
-            # Store per-base-url statistics
-            if base_url not in per_base_discoveries:
-                per_base_discoveries[base_url] = defaultdict(set)
-            per_base_discoveries[base_url][category].update(urls)
-            
-            # Detailed logging for documentation URLs
-            if category == 'documentation':
-                logger.info(f"\nDocumentation URLs from {base_url}:")
-                for url in sorted(urls):
-                    logger.info(f"  - {url}")
+        except Exception as e:
+            logger.error(f"Error processing base URL {base_url}: {str(e)}")
+        
+        finally:
+            logger.info(f"🏁 Finished processing of base URL: {base_url}")
     
     # Log detailed summary per base URL
     logger.info("\nDiscovery Summary by Base URL:")

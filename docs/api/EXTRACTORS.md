@@ -1,37 +1,5 @@
 # Extractors API Reference
 
-## CodeBlockExtractor
-
-```python
-from extractors.code_extractor import CodeBlockExtractor
-
-extractor = CodeBlockExtractor()
-```
-
-### Methods
-
-#### extract_code_blocks
-```python
-def extract_code_blocks(self, content: str) -> List[Dict[str, Any]]
-```
-Extracts code blocks from documentation content.
-
-**Parameters:**
-- `content`: HTML or markdown content containing code blocks
-
-**Returns:**
-- List of code blocks with metadata
-  ```python
-  [
-      {
-          "code": str,          # The code content
-          "language": str,      # Programming language
-          "context": str,       # Surrounding context
-          "file_type": str     # File type if specified
-      }
-  ]
-  ```
-
 ## DocumentationExtractor
 
 ```python
@@ -40,28 +8,61 @@ from extractors.doc_extractor import DocumentationExtractor
 extractor = DocumentationExtractor()
 ```
 
+### Current Implementation ✅
+- Basic HTML content extraction
+- Simple topic hierarchy
+- Basic content organization
+- File-based storage
+
 ### Methods
 
-#### extract_content
+#### extract ✅
 ```python
-def extract_content(self, html_content: str) -> Dict[str, Any]
+def extract(self, soup: BeautifulSoup) -> DocumentationPage
 ```
-Extracts structured content from documentation pages.
+Current Capabilities:
+- Basic page extraction
+- Simple topic organization
+- Code block identification
+- Basic metadata collection
 
-**Parameters:**
-- `html_content`: Raw HTML content
+⚠️ Limitations:
+- No semantic analysis
+- Basic content organization
+- Limited relationship detection
+- Simple validation
 
-**Returns:**
-- Structured documentation content
-  ```python
-  {
-      "title": str,
-      "description": str,
-      "sections": List[Dict],
-      "code_blocks": List[Dict],
-      "related_topics": List[str]
-  }
-  ```
+## CodeBlockExtractor
+
+```python
+from extractors.code_extractor import CodeBlockExtractor
+
+extractor = CodeBlockExtractor()
+```
+
+### Current Implementation ✅
+- Basic code block detection
+- Simple language identification
+- Framework import tracking
+- Pattern matching preparation
+
+### Methods
+
+#### extract_code_blocks ✅
+```python
+def extract_code_blocks(self, content: str) -> List[Dict[str, Any]]
+```
+Current Capabilities:
+- Basic block extraction
+- Simple metadata collection
+- Language detection
+- Context preservation
+
+⚠️ Limitations:
+- No semantic parsing
+- Basic context extraction
+- Limited pattern inference
+- Simple validation
 
 ## RelationshipExtractor
 
@@ -71,70 +72,75 @@ from extractors.relationship_extractor import RelationshipExtractor
 extractor = RelationshipExtractor()
 ```
 
+### Current Implementation ✅
+- Basic relationship detection
+- Simple type tracking
+- File-based storage
+- Basic validation
+
 ### Methods
 
-#### extract_relationships
+#### extract_relationships ✅
 ```python
 def extract_relationships(self, content: str, code_patterns: dict) -> List[ConceptRelationship]
 ```
-Extracts relationships between concepts in documentation.
+Current Capabilities:
+- Basic relationship detection
+- Simple pattern matching
+- Framework relationship tracking
+- Basic validation
 
-**Parameters:**
-- `content`: Documentation content
-- `code_patterns`: Dictionary of code patterns
+⚠️ Limitations:
+- No complex relationships
+- Basic pattern matching
+- Limited validation
+- Simple scoring
 
-**Returns:**
-- List of concept relationships
-  ```python
-  [
-      ConceptRelationship(
-          source="ComponentA",
-          target="ComponentB",
-          relationship_type="depends_on",
-          strength=0.8
-      )
-  ]
-  ```
-
-#### verify_relationships
+#### verify_relationships ✅
 ```python
 def verify_relationships(self, doc_cache_path: Path) -> Dict[str, Any]
 ```
-Verifies relationships between samples and documentation.
+Current Capabilities:
+- Basic cache validation
+- Simple relationship verification
+- Error logging
+- Basic reporting
 
-**Parameters:**
-- `doc_cache_path`: Path to documentation cache
+⚠️ Limitations:
+- Simple validation rules
+- Basic error handling
+- Limited verification depth
+- No advanced recovery
 
-**Returns:**
-- Verification results
-  ```python
-  {
-      "total_relationships": int,
-      "verified": int,
-      "broken": int,
-      "details": Dict[str, Any]
-  }
-  ```
+## Best Practices
 
-## ValidationExtractor
+### Currently Supported ✅
+1. Content Extraction:
+   ```python
+   doc_page = extractor.extract(soup)
+   ```
 
-```python
-from extractors.validation_extractor import ValidationExtractor
+2. Error Handling:
+   ```python
+   try:
+       relationships = extractor.extract_relationships(content, patterns)
+   except Exception as e:
+       logger.error(f"Extraction error: {e}")
+   ```
 
-validator = ValidationExtractor()
-```
+3. Validation:
+   ```python
+   verification_results = extractor.verify_relationships(cache_path)
+   ```
 
-### Methods
+### Development Guidelines ✅
+1. Always validate input content
+2. Handle extraction failures gracefully
+3. Log extraction operations
+4. Verify extracted content
 
-#### validate_pattern
-```python
-def validate_pattern(self, pattern: str, content: str) -> bool
-```
-Validates a pattern against content.
-
-**Parameters:**
-- `pattern`: Pattern to validate
-- `content`: Content to check
-
-**Returns:**
-- True if pattern is valid, False otherwise 
+🚧 Planned Features:
+- Semantic content analysis
+- Deep relationship extraction
+- Advanced pattern inference
+- Context-aware validation

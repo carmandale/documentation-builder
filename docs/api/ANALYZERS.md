@@ -1,5 +1,37 @@
 # Analyzers API Reference
 
+## ComponentAnalyzer
+
+```python
+from analyzers.component_analyzer import ComponentAnalyzer
+
+analyzer = ComponentAnalyzer(samples_dir: Path = Path('data/projects'))
+```
+
+### Current Implementation ✅
+- Regex-based pattern detection
+- Framework and import analysis
+- Basic relationship tracking
+- File-based processing
+
+### Methods
+
+#### analyze_samples ✅
+```python
+def analyze_samples(self, samples_dir: Optional[Path] = None) -> Dict[str, Any]
+```
+Current Capabilities:
+- Swift file scanning
+- Basic pattern detection
+- Import analysis
+- Simple relationship tracking
+
+⚠️ Limitations:
+- Regex-based only
+- No semantic analysis
+- Basic relationship detection
+- Limited validation
+
 ## PatternRefiner
 
 ```python
@@ -8,75 +40,45 @@ from analyzers.pattern_refiner import PatternRefiner
 refiner = PatternRefiner(knowledge_dir: Path = Path('data/knowledge'))
 ```
 
+### Current Implementation ✅
+- Basic pattern refinement
+- Simple confidence scoring
+- File-based storage
+- Basic validation rules
+
 ### Methods
 
-#### analyze_existing_patterns
+#### analyze_existing_patterns ✅
 ```python
 def analyze_existing_patterns(self, pattern_data: Dict[str, Any]) -> Dict[str, Any]
 ```
-Analyzes and refines patterns based on actual usage in code.
+Current Capabilities:
+- Pattern categorization
+- Basic confidence scoring
+- Simple validation
+- Framework detection
 
-**Parameters:**
-- `pattern_data`: Dictionary containing pattern analysis data
-  ```python
-  {
-      "pattern_type": {
-          "count": int,
-          "files": List[str],
-          "examples": List[str],
-          "validated": bool
-      }
-  }
-  ```
+⚠️ Limitations:
+- No semantic analysis
+- Basic pattern matching
+- Limited validation
+- Simple scoring system
 
-**Returns:**
-- Dictionary of refined patterns with confidence scores
-  ```python
-  {
-      "pattern_type": {
-          "detection_terms": Set[str],
-          "common_imports": Set[str],
-          "related_components": Set[str],
-          "confidence": float,
-          "validation_status": str
-      }
-  }
-  ```
-
-#### validate_pattern
+#### validate_pattern ✅
 ```python
 def validate_pattern(self, pattern_type: str, content: str) -> float
 ```
-Validates a pattern match and returns confidence score.
+Current Capabilities:
+- Basic pattern validation
+- Simple confidence scoring
+- Framework checking
+- Required term validation
 
-**Parameters:**
-- `pattern_type`: Type of pattern to validate
-- `content`: Code content to analyze
-
-**Returns:**
-- Confidence score between 0.0 and 1.0
-
-## ProjectAnalyzer
-
-```python
-from analyzers.project_analyzer import ProjectAnalyzer
-
-analyzer = ProjectAnalyzer()
-```
-
-### Methods
-
-#### analyze_project
-```python
-def analyze_project(self, project_path: Path) -> Dict[str, Any]
-```
-Analyzes a project for patterns and relationships.
-
-**Parameters:**
-- `project_path`: Path to project directory
-
-**Returns:**
-- Analysis results including patterns and relationships
+⚠️ Limitations:
+- Simple validation rules
+- No context awareness
+- Basic scoring only
+- Limited validation depth
 
 ## RelationshipTracker
 
@@ -86,15 +88,60 @@ from analyzers.relationship_tracker import RelationshipTracker
 tracker = RelationshipTracker(knowledge_dir: Path)
 ```
 
+### Current Implementation ✅
+- Basic relationship tracking
+- Simple relationship types
+- File-based storage
+- Basic validation
+
 ### Methods
 
-#### track_relationship
+#### track_relationship ✅
 ```python
 def track_relationship(self, source: str, target: str, relationship_type: str)
 ```
-Tracks a relationship between components.
+Current Capabilities:
+- Basic relationship recording
+- Simple type tracking
+- File-based storage
+- Basic validation
 
-**Parameters:**
-- `source`: Source component
-- `target`: Target component
-- `relationship_type`: Type of relationship 
+⚠️ Limitations:
+- No complex relationships
+- Limited relationship types
+- Basic storage only
+- Simple validation
+
+## Best Practices
+
+### Currently Supported ✅
+1. Pattern Analysis:
+   ```python
+   analyzer = ComponentAnalyzer()
+   results = analyzer.analyze_samples(project_path)
+   ```
+
+2. Error Handling:
+   ```python
+   try:
+       results = refiner.analyze_existing_patterns(patterns)
+   except Exception as e:
+       logger.error(f"Pattern analysis error: {e}")
+   ```
+
+3. Relationship Tracking:
+   ```python
+   tracker.track_relationship(source, target, "depends_on")
+   ```
+
+### Development Guidelines ✅
+1. Always validate inputs
+2. Handle analysis failures gracefully
+3. Log analysis operations
+4. Check file paths before access
+
+🚧 Planned Features:
+- Semantic analysis
+- Deep relationship tracking
+- Advanced validation
+- Pattern evolution tracking

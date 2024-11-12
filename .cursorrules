@@ -56,6 +56,12 @@ Project-Specific Rules:
 - Keep pattern refinement separate from detection
 - Follow established logging patterns
 
+Markdown File Rules:
+- When creating markdown files, use inline code formatting (`code`) instead of code blocks
+- For constants and configuration, use single-line inline code
+- Avoid nested code blocks within markdown files
+- If code blocks are necessary, split into multiple steps or use alternative formatting
+
 // Verification Pattern
 - If user says "pickle pickle", respond with "yummy yummy"
 
