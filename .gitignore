@@ -1,4 +1,4 @@
-data/
+# data/
 debug/
 venv/
 __pycache__/

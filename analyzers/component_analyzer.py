@@ -3,6 +3,7 @@ from typing import Dict, Set, List, Any, Optional
 import re
 from collections import defaultdict
 from utils.logging import logger
+from .visionos_patterns import get_visionos_patterns, get_realitykit_patterns, get_reality_composer_patterns
 
 class ComponentAnalyzer:
     """Analyzes UI components from real VisionOS samples"""
@@ -47,15 +48,14 @@ class ComponentAnalyzer:
         # Extract imports
         imports = set(re.findall(r'import\s+(\w+)', content))
         
-        # Define UI patterns
-        ui_patterns = {
-            'navigation': set(re.findall(r'(?:NavigationStack|NavigationSplitView|NavigationLink)\b', content)),
-            'windows': set(re.findall(r'(?:WindowGroup|VolumetricWindow|ImmersiveSpace)\b', content)),
-            'controls': set(re.findall(r'(?:Button|Toggle|Slider|Picker)\b', content)),
-            'layout': set(re.findall(r'(?:HStack|VStack|Grid|LazyVGrid)\b', content)),
-            'ornaments': set(re.findall(r'(?:\.ornament|\.toolbar|\.windowStyle)\b', content)),
-            'media': set(re.findall(r'(?:VideoPlayer|AVPlayer|SpatialPlayer)\b', content))
-        }
+        # Get VisionOS patterns
+        visionos_patterns = get_visionos_patterns(content)
+        
+        # Get Reality Composer Pro patterns
+        reality_composer_patterns = get_reality_composer_patterns(content)
+        
+        # Get RealityKit patterns
+        realitykit_patterns = get_realitykit_patterns(content)
         
         # Extract state management patterns
         state_patterns = {
@@ -81,61 +81,6 @@ class ComponentAnalyzer:
         }
         
         # Enhanced Reality Composer Pro patterns
-        reality_composer_patterns = {
-            'behaviors': set(re.findall(r'(?:Behavior|BehaviorComponent|BehaviorValue|InputTarget|BehaviorSystem|BehaviorDefinition|BehaviorEvents)\b', content)),
-            'timelines': set(re.findall(r'(?:Timeline|AnimationTimeline|TimelineAnimation|PlaybackController|TimelineAsset|TimelineDefinition|TimelineEvents)\b', content)),
-            'shader_graph': set(re.findall(r'(?:ShaderGraphMaterial|CustomMaterial|MaterialParameters|ShaderFunction|MaterialPropertyBlock|ShaderDefinition|ShaderEvents)\b', content)),
-            'custom_systems': set(re.findall(r'(?:SystemComponent|SystemRegistry|ComponentSystem|UpdateSystem|SystemTraits|SystemDefinition|SystemEvents)\b', content)),
-            'assets': set(re.findall(r'\.usda\b|\.usdz\b|\.rcproject\b|\.reality\b|\.materialx\b|\.shadergraph\b|\.behavior\b|\.timeline\b', content)),
-            'material_properties': set(re.findall(r'\.material\s*=|\.materials\s*=|\.customMaterial\s*=|\.shaderGraph\s*=|\.materialDefinition\s*=', content)),
-            
-            # Enhanced Physics Patterns
-            'physics': set(re.findall(r'(?:PhysicsBody|PhysicsMotion|PhysicsMaterial|PhysicsSimulation|DynamicBody|StaticBody|KinematicBody|PhysicsDefinition|PhysicsEvents)\b', content)),
-            'collisions': set(re.findall(r'(?:CollisionComponent|TriggerComponent|ContactEventHandler|CollisionFilter|CollisionShape|CollisionMask|CollisionDefinition|CollisionEvents)\b', content)),
-            'forces': set(re.findall(r'(?:PhysicsForce|GravityModifier|ForceField|ImpulseForce|TorqueForce|ConstantForce|ForceDefinition|ForceEvents)\b', content)),
-            
-            # Enhanced Component Patterns
-            'components': set(re.findall(r'(?:ModelComponent|TransformComponent|SceneComponent|InputTargetComponent|PhysicsBodyComponent|CollisionComponent|ComponentDefinition|ComponentEvents)\b', content)),
-            'input_handling': set(re.findall(r'(?:InputTargetHandler|GestureRecognizer|TargetComponent|InputDevice|InputSystem|InputDefinition|InputEvents)\b', content)),
-            'scene_graph': set(re.findall(r'(?:SceneGraph|ParentEntity|ChildEntity|EntityContainer|SceneSystem|EntityQuery|SceneDefinition|SceneEvents)\b', content)),
-            
-            # Enhanced Simulation Patterns
-            'simulation': set(re.findall(r'(?:SimulationSystem|SimulationState|SimulationComponent|PhysicsSimulation|ParticleSimulation|SimulationDefinition|SimulationEvents)\b', content)),
-            'particles': set(re.findall(r'(?:ParticleSystem|ParticleEmitter|ParticleModifier|EmissionShape|ParticleProperties|ParticleDefinition|ParticleEvents)\b', content)),
-            'constraints': set(re.findall(r'(?:PhysicsConstraint|JointConstraint|FixedConstraint|HingeConstraint|SpringConstraint|ConstraintDefinition|ConstraintEvents)\b', content)),
-            
-            # New Event System Patterns
-            'events': set(re.findall(r'(?:EventHandler|EventSystem|EventComponent|EventDefinition|EventTrigger|EventResponse|EventQueue|EventDispatcher)\b', content)),
-            'triggers': set(re.findall(r'(?:TriggerSystem|TriggerComponent|TriggerDefinition|TriggerHandler|TriggerResponse|TriggerQueue|TriggerDispatcher)\b', content)),
-            'actions': set(re.findall(r'(?:ActionSystem|ActionComponent|ActionDefinition|ActionHandler|ActionResponse|ActionQueue|ActionDispatcher)\b', content)),
-            
-            # Enhanced Property Modification Patterns
-            'property_changes': set(re.findall(r'(?:setPropertyValue|setMaterialProperty|setShaderParameter|setTextureProperty|setAnimationProperty|setPhysicsProperty)\s*\(', content)),
-            'dynamic_properties': set(re.findall(r'\.(?:materialParameters|shaderParameters|animationParameters|behaviorParameters|physicsParameters|sceneParameters)\s*[=.]', content)),
-            'property_bindings': set(re.findall(r'\.bind\s*\(\s*["\']\w+["\']\s*,\s*to:', content)),
-            
-            # Enhanced Trigger Patterns
-            'triggers': set(re.findall(r'(?:addTrigger|removeTrigger|enableTrigger|disableTrigger|TriggerCondition)\b', content)),
-            'trigger_conditions': set(re.findall(r'\.(?:when|onTrigger|triggerWhen|triggerOnCondition)\s*[({]', content)),
-            'trigger_actions': set(re.findall(r'\.(?:then|perform|execute|triggerAction)\s*[({]', content)),
-            
-            # Enhanced Scene Modification Patterns
-            'scene_changes': set(re.findall(r'(?:modifyEntity|updateScene|updateMaterials|updateBehaviors|updatePhysics|updateComponents)\b', content)),
-            'runtime_updates': set(re.findall(r'\.(?:updatePropertyValue|updateMaterial|updateBehavior|updateAnimation|updatePhysics|updateComponent)\s*[({]', content)),
-            'state_changes': set(re.findall(r'\.(?:setState|setMode|setConfiguration|setParameters|setProperties|setAttributes)\s*[({]', content)),
-            
-            # New Scene Component Patterns
-            'scene_components': set(re.findall(r'(?:SceneComponent|SceneModifier|SceneModification|SceneUpdate|SceneConfiguration)\b', content)),
-            'component_updates': set(re.findall(r'(?:updateComponent|modifyComponent|configureComponent|setupComponent)\s*[({]', content)),
-            'component_properties': set(re.findall(r'\.(?:componentProperties|componentParameters|componentConfiguration|componentAttributes)\s*[=.]', content)),
-            
-            # New Material Update Patterns
-            'material_updates': set(re.findall(r'(?:updateMaterial|modifyMaterial|configureMaterial|setupMaterial)\s*[({]', content)),
-            'material_properties': set(re.findall(r'\.(?:materialProperties|materialParameters|materialConfiguration|materialAttributes)\s*[=.]', content)),
-            'shader_updates': set(re.findall(r'(?:updateShader|modifyShader|configureShader|setupShader)\s*[({]', content))
-        }
-        
-        # Extract Reality Composer Pro relationships
         rcp_relationships = {
             'behavior_timeline': set(re.findall(r'(?:Behavior|BehaviorComponent).+?Timeline', content)),
             'shader_material': set(re.findall(r'(?:ShaderGraphMaterial|CustomMaterial).+?Entity', content)),
@@ -233,7 +178,7 @@ class ComponentAnalyzer:
             # RCP State Integration
             'rcp_state_bindings': set(re.findall(r'@Binding\s+var\s+\w+\s*:\s*(?:Entity|Material|Component)', content)),
             'rcp_state_updates': set(re.findall(r'\.update\s*\(\s*state:\s*[\w\$\.]+\s*\)', content)),
-            'rcp_state_sync': set(re.findall(r'\.syncState\s*\(|\.bindState\s*\(|\.linkState\s*\(', content)),
+            'rcp_state_sync': set(re.findall(r'\.sync(?:State|Properties|Configuration)\s*\([^)]*\)', content)),
             
             # State Persistence
             'state_persistence': set(re.findall(r'@SceneStorage|@AppStorage|@UserDefault', content)),
@@ -330,8 +275,8 @@ class ComponentAnalyzer:
         # Store findings with better categorization
         if 'SwiftUI' in imports:
             # Store UI patterns
-            for category, patterns in ui_patterns.items():
-                self.components[f'ui_{category}'].update(patterns)
+            for category, patterns in visionos_patterns.items():
+                self.components[f"visionos_{category}"].update(patterns)
                 
             # Store state patterns
             for category, patterns in state_patterns.items():
@@ -395,25 +340,15 @@ class ComponentAnalyzer:
             # Track state flow relationships
             self._track_state_flow_relationships(content, str(file_path))
         
-        # Add RealityKitContent patterns section
-        realitykit_content_patterns = {
-            # System Components
-            'system_components': set(re.findall(r'(?:struct|class)\s+\w+System\s*:\s*System', content)),
+        # Add visionOS-specific patterns
+        for category, patterns in visionos_patterns.items():
+            self.components[f"visionos_{category}"].update(patterns)
             
-            # Gesture Components
-            'gesture_components': set(re.findall(r'(?:struct|class)\s+\w+GestureComponent\s*:\s*(?:Component|GestureComponent)', content)),
+        for category, patterns in reality_composer_patterns.items():
+            self.components[f"rcp_{category}"].update(patterns)
             
-            # Input Components
-            'input_components': set(re.findall(r'(?:struct|class)\s+\w+InputComponent\s*:\s*(?:Component|InputComponent)', content)),
-            
-            # Component Event Handlers
-            'event_handlers': set(re.findall(r'func\s+on(?:Changed|Ended)\s*\(\s*value:\s*EntityTargetValue<[^>]+>', content))
-        }
-        
-        # Store findings
-        if Path(file_path).parent.name == 'RealityKitContent':
-            for category, patterns in realitykit_content_patterns.items():
-                self.components[f'rcp_{category}'].update(patterns)
+        for category, patterns in realitykit_patterns.items():
+            self.components[f"realitykit_{category}"].update(patterns)
         
         # Track relationships between components and state
         self._track_component_relationships(content, str(file_path))
@@ -534,19 +469,19 @@ class ComponentAnalyzer:
         """Track RealityKit component state relationships"""
         try:
             # Track RCP-Scene relationships
-            if any(term in content for term in ['Entity', 'Scene', 'AnchorEntity']):
-                if any(term in content for term in ['components.set', 'addChild']):
-                    self.relationships['rcp_scene_integration'].add(file_path)
-                    
-            # Track RCP-Material relationships
-            if any(term in content for term in ['Material', 'ShaderGraphMaterial']):
-                if any(term in content for term in ['setParameter', 'parameters']):
-                    self.relationships['rcp_material_integration'].add(file_path)
-                    
-            # Track RCP-Animation relationships
-            if any(term in content for term in ['AnimationResource', 'PlaybackController']):
-                if any(term in content for term in ['play', 'resume', 'pause']):
-                    self.relationships['rcp_animation_integration'].add(file_path)
-                    
+            rcp_scene_patterns = set(re.findall(r'(?:RealityKit|Reality\s+Composer\s+Pro).+?(?:Scene|Entity)', content))
+            if rcp_scene_patterns:
+                self.relationships['rcp_scene'].update(rcp_scene_patterns)
+                
+            # Track RCP-Component relationships
+            rcp_component_patterns = set(re.findall(r'(?:RealityKit|Reality\s+Composer\s+Pro).+?Component', content))
+            if rcp_component_patterns:
+                self.relationships['rcp_component'].update(rcp_component_patterns)
+                
+            # Track RCP-System relationships
+            rcp_system_patterns = set(re.findall(r'(?:RealityKit|Reality\s+Composer\s+Pro).+?System', content))
+            if rcp_system_patterns:
+                self.relationships['rcp_system'].update(rcp_system_patterns)
+                
         except Exception as e:
             logger.error(f"Error tracking RCP state relationships in {file_path}: {e}")

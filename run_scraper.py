@@ -41,6 +41,7 @@ from rich.progress import Progress
 import random
 from core.llm_interface import VisionOSCodeGenerator
 from analyzers.component_analyzer import ComponentAnalyzer
+import argparse
 
 console = Console()
 
@@ -66,6 +67,14 @@ async def process_url(url: str, url_collector: DocumentationURLCollector, skip_d
                         url=url,
                         download_url=url
                     )
+                    
+                    # Check if project is already downloaded
+                    project_name = re.sub(r'[^\w\-_]', '_', project.title)
+                    project_dir = url_collector.projects_dir / project_name
+                    if project_dir.exists():
+                        project.mark_downloaded(project_dir)
+                        console.print(f"[green]Project already downloaded: {project_dir}")
+                        return project
                     
                     if not skip_downloads:
                         console.print(f"[yellow]Attempting download to {url_collector.projects_dir}...")
@@ -350,109 +359,80 @@ def select_test_samples(samples: List[str], strategy: str = TEST_SAMPLE_STRATEGY
     else:  # diverse
         return samples[:TEST_SAMPLE_COUNT]
 
-async def main():
+async def main(clear_cache: bool = False):
+    """Main scraper function.
+    
+    Args:
+        clear_cache: If True, clear the cache before running
+    """
     logger.debug("Starting documentation scraper")
     url_collector = DocumentationURLCollector()
     
-    # First inspect cache
     logger.debug("Inspecting cache...")
     console.print("[bold cyan]Inspecting cache...")
     url_collector.inspect_cache()
     
-    # Ask if cache should be cleared
-    if console.input("\nWould you like to clear the cache and start fresh? (y/n): ").lower() == 'y':
+    if clear_cache:
         logger.debug("Clearing cache...")
         url_collector.clear_cache()
         console.print("[yellow]Cache cleared. Starting fresh discovery...")
         all_samples = []
     else:
-        # Check cache
-        logger.debug("Checking sample cache...")
-        console.print("\n[bold cyan]Checking sample cache...")
-        all_samples = await url_collector.discover_all_samples()
+        all_samples = url_collector._load_from_cache()
     
-    # Show detailed sample information
-    if all_samples:
-        console.print("\n[bold cyan]Found Samples in Cache:")
-        sample_table = Table(
-            title="Cached Samples",
-            show_lines=True,
-            width=120,
-            pad_edge=False
-        )
-        sample_table.add_column("Title", style="green", width=30, overflow="fold")
-        sample_table.add_column("URL", style="blue", width=50, overflow="ellipsis")
-        sample_table.add_column("Local Path", style="yellow", width=20, overflow="ellipsis")
-        sample_table.add_column("Status", style="magenta", width=15, justify="center")
-        
-        # Download missing samples with progress
-        if not SKIP_DOWNLOADS:
-            missing_samples = [s for s in all_samples if not s.downloaded]
-            if missing_samples:
-                console.print(f"\n[yellow]Found {len(missing_samples)} samples to download...")
-                with Progress() as progress:
-                    task = progress.add_task("[cyan]Downloading samples...", total=len(missing_samples))
-                    
-                    for sample in missing_samples:
-                        try:
-                            success = await url_collector.download_project(sample)
-                            if success:
-                                console.print(f"[green]Downloaded: {sample.title}")
-                            else:
-                                console.print(f"[red]Failed to download: {sample.title}")
-                            progress.update(task, advance=1)
-                        except Exception as e:
-                            console.print(f"[red]Error downloading {sample.title}: {str(e)}")
-                            progress.update(task, advance=1)
-        
-        # Update table with current status
-        for sample in all_samples:
-            status = "✓ Downloaded" if sample.local_path else "Not Downloaded"
-            # Truncate and format URL for display
-            url_display = sample.url[:47] + "..." if len(sample.url) > 50 else sample.url
-            sample_table.add_row(
-                sample.title,
-                url_display,
-                str(sample.local_path) if sample.local_path else "-",
-                status
-            )
-        console.print(sample_table)
-    else:
-        logger.debug("Cache miss - discovering samples...")
-        console.print("[yellow]Cache miss - discovering samples...")
-        discovered_urls = await discover_urls()
-        
-        # Log discovered URLs
-        for category, urls in discovered_urls.items():
-            logger.debug(f"Found {len(urls)} {category} URLs")
-            for url in urls:
-                logger.debug(f"{category}: {url}")
-        
-        # Process discovered URLs
-        console.print("\n[bold cyan]Found URLs by Category:")
-        for category, urls in discovered_urls.items():
-            console.print(f"[yellow]{category}: [green]{len(urls)} URLs")
-        
-        # Process URLs based on mode
-        if TESTING_MODE:
-            console.print("\n[yellow]Running in TEST MODE with first 3 samples")
-            sample_urls = list(discovered_urls.get('samples', set()))
-            
-            # Use the sample selection strategy
-            test_urls = select_test_samples(sample_urls, TEST_SAMPLE_STRATEGY)
-            
-            console.print("\nProcessing these sample URLs:")
-            for url in test_urls:
-                console.print(f"[green]- {url}")
+    # Discover new URLs
+    discovered_urls = await discover_urls()
+    
+    if not clear_cache:
+        # Filter out already processed URLs
+        new_urls = {category: urls - url_collector.processed_urls for category, urls in discovered_urls.items()}
+        if not any(new_urls.values()):
+            logger.info("No new URLs to process")
+            if all_samples:  # If we have cached samples, continue with analysis
+                discovered_urls = {}
+            else:
+                return
         else:
-            test_urls = discovered_urls.get('samples', set())
+            logger.info("Found new URLs to process:")
+            for category, urls in new_urls.items():
+                if urls:
+                    logger.info(f"{category}: {len(urls)} new URLs")
+            discovered_urls = new_urls
+    
+    # Process discovered URLs
+    console.print("\n[bold cyan]Found URLs by Category:")
+    for category, urls in discovered_urls.items():
+        console.print(f"[yellow]{category}: [green]{len(urls)} URLs")
+    
+    # Process URLs based on mode
+    if TESTING_MODE:
+        console.print("\n[yellow]Running in TEST MODE with first 3 samples")
+        sample_urls = list(discovered_urls.get('samples', set()))
         
-        # Process URLs concurrently
-        processed_projects = await process_urls_concurrent(test_urls, url_collector)
-        processed_projects = [p for p in processed_projects if p is not None]
+        # Use the sample selection strategy
+        test_urls = select_test_samples(sample_urls, TEST_SAMPLE_STRATEGY)
         
-        console.print(f"\nSuccessfully processed: {len(processed_projects)} projects")
-        all_samples = processed_projects
+        console.print("\nProcessing these sample URLs:")
+        for url in test_urls:
+            console.print(f"[green]- {url}")
+    else:
+        test_urls = discovered_urls.get('samples', set())
+    
+    # Process URLs concurrently
+    processed_projects = await process_urls_concurrent(test_urls, url_collector)
+    processed_projects = [p for p in processed_projects if p is not None]
+    
+    console.print(f"\nSuccessfully processed: {len(processed_projects)} projects")
+    all_samples = processed_projects
+    
+    # Update processed URLs cache
+    if not clear_cache:
+        for urls in discovered_urls.values():
+            url_collector.processed_urls.update(urls)
+        url_collector.url_cache.write_text(json.dumps({
+            'processed_urls': list(url_collector.processed_urls),
+            'last_updated': datetime.now(UTC).isoformat()
+        }))
     
     # Analyze results
     console.print("\n[bold cyan]Analysis Summary:")
@@ -619,4 +599,9 @@ async def analyze_real_samples():
         console.print(f"Confidence: {data['confidence']:.2f}")
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    parser = argparse.ArgumentParser(description='Run the VisionOS documentation scraper')
+    parser.add_argument('--clear-cache', action='store_true', help='Clear the cache before running')
+    parser.add_argument('--no-prompt', action='store_true', help='Run without prompting')
+    args = parser.parse_args()
+    
+    asyncio.run(main(clear_cache=args.clear_cache))

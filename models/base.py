@@ -1,7 +1,8 @@
 from datetime import datetime, UTC
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional, Set, Tuple
 from pydantic import BaseModel, Field, ConfigDict
+from enum import Enum
 
 class Topic(BaseModel):
     """Represents a section/topic in the documentation"""
@@ -145,4 +146,80 @@ class ProjectResource(BaseModel):
     def dict(self, *args, **kwargs):
         """Legacy dict method for compatibility"""
         return self.model_dump(*args, **kwargs)
+    
+class PatternType(Enum):
+    FRAMEWORK = "framework"
+    UI = "ui"
+    ENTITY = "entity"
+    STATE = "state"
+    GESTURE = "gesture"
+    ANIMATION = "animation"
+    LIFECYCLE = "lifecycle"
+    RELATIONSHIP = "relationship"
+    REALITY_COMPOSER = "reality_composer"
+    COMPONENT = "component"
+    SPATIAL = "spatial"
+    INTERACTION = "interaction"
+
+class Pattern(BaseModel):
+    """Represents a detected code pattern"""
+    name: str
+    type: PatternType
+    confidence: float
+    source_code: Optional[str] = None
+    line_number: Optional[int] = None
+    file_path: Optional[str] = None
+
+class PatternRelationship(BaseModel):
+    """Represents a relationship between patterns"""
+    source: Pattern
+    target: Pattern
+    relationship_type: str
+    confidence: float
+
+class ValidationResult(BaseModel):
+    """Results of pattern validation"""
+    framework_requirements_met: bool
+    has_required_patterns: bool
+    relationships_valid: bool
+    missing_patterns: List[str] = []
+    invalid_relationships: List[str] = []
+    validation_messages: List[str] = []
+    
+class PatternContext(BaseModel):
+    """Represents the context in which a pattern appears"""
+    pattern: Pattern
+    context_type: str
+    related_patterns: List[Pattern]
+    scope: Dict[str, int]  # start/end line numbers
+    is_valid: bool
+    validation_messages: List[str] = Field(default_factory=list)
+    confidence: float = Field(default=1.0)
+    
+    def __str__(self) -> str:
+        return f"{self.context_type} context for {self.pattern.name} ({len(self.related_patterns)} related patterns)"
+    
+    def add_validation_message(self, message: str):
+        """Add a validation message"""
+        self.validation_messages.append(message)
+        
+    def get_patterns_by_type(self, pattern_type: PatternType) -> List[Pattern]:
+        """Get all related patterns of a specific type"""
+        return [p for p in self.related_patterns if p.type == pattern_type]
+    
+    def has_pattern(self, pattern_name: str) -> bool:
+        """Check if a specific pattern exists in this context"""
+        return any(p.name == pattern_name for p in self.related_patterns)
+    
+    def get_scope_lines(self) -> range:
+        """Get the line range for this context"""
+        return range(self.scope['start'], self.scope['end'] + 1)
+    
+class SemanticAnalysis(BaseModel):
+    """Results of semantic analysis"""
+    pattern_roles: Dict[str, Set[str]]  # Pattern name -> set of roles
+    relationships: List[Tuple[Pattern, str, Pattern]]  # (source, relationship_type, target)
+    semantic_groups: Dict[str, Set[str]]  # Group type -> set of pattern names
+    confidence_scores: Dict[str, float]  # Pattern name -> confidence score
+    context_hierarchy: Dict[str, List[str]]  # Parent pattern -> list of child patterns
     

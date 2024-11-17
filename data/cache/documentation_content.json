@@ -1,0 +1,640 @@
+{
+  "cached_at": "2024-11-17T10:48:48.048223+00:00",
+  "pages": {
+    "https://developer.apple.com/documentation/visionos/locating-and-decoding-barcodes-in-3d-space": {
+      "local_path": "data/cache/documentation/locating-and-decoding-barcodes-in-3d-space.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:16.580029+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/#ARKit": {
+      "local_path": "data/cache/documentation/_ARKit.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:16.760483+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/understanding-the-realitykit-modular-architecture": {
+      "local_path": "data/cache/documentation/understanding-the-realitykit-modular-architecture.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:56:45.371165+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/swift-splash": {
+      "local_path": "data/cache/documentation/swift-splash.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:56:45.726160+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/#Design": {
+      "local_path": "data/cache/documentation/_Design.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:17.773398+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/#Overview": {
+      "local_path": "data/cache/documentation/_Overview.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:18.003110+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/implementing-object-tracking-in-your-visionos-app": {
+      "local_path": "data/cache/documentation/implementing-object-tracking-in-your-visionos-app.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:18.344551+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/adopting-best-practices-for-privacy": {
+      "local_path": "data/cache/documentation/adopting-best-practices-for-privacy.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:18.683544+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/#Expand-your-app-into-immersive-spaces": {
+      "local_path": "data/cache/documentation/_Expand-your-app-into-immersive-spaces.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:18.874953+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/#RealityKit-and-Reality-Composer-Pro": {
+      "local_path": "data/cache/documentation/_RealityKit-and-Reality-Composer-Pro.html",
+      "category": "tools",
+      "cached_at": "2024-11-17T10:52:31.918497+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/tracking-images-in-3d-space": {
+      "local_path": "data/cache/documentation/tracking-images-in-3d-space.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:19.349517+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/#App-construction": {
+      "local_path": "data/cache/documentation/_App-construction.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:19.530008+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/bot-anist": {
+      "local_path": "data/cache/documentation/bot-anist.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:19.862501+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/world": {
+      "local_path": "data/cache/documentation/world.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:20.066815+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/creating-a-performance-plan-for-visionos-app": {
+      "local_path": "data/cache/documentation/creating-a-performance-plan-for-visionos-app.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:20.398878+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/positioning-and-sizing-windows": {
+      "local_path": "data/cache/documentation/positioning-and-sizing-windows.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:20.605071+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/#Video-playback": {
+      "local_path": "data/cache/documentation/_Video-playback.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:20.943630+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/creating-your-first-visionos-app": {
+      "local_path": "data/cache/documentation/creating-your-first-visionos-app.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:21.140183+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/analyzing-the-performance-of-your-visionos-app": {
+      "local_path": "data/cache/documentation/analyzing-the-performance-of-your-visionos-app.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:21.543450+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/building-spatial-experiences-for-business-apps-with-enterprise-apis": {
+      "local_path": "data/cache/documentation/building-spatial-experiences-for-business-apps-with-enterprise-apis.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:21.823415+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/presenting-windows-and-spaces": {
+      "local_path": "data/cache/documentation/presenting-windows-and-spaces.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:22.031681+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/#Performance": {
+      "local_path": "data/cache/documentation/_Performance.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:22.347428+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/reducing-the-rendering-cost-of-realitykit-content-on-visionos": {
+      "local_path": "data/cache/documentation/reducing-the-rendering-cost-of-realitykit-content-on-visionos.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:22.533501+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/checking-whether-your-app-is-compatible-with-visionos": {
+      "local_path": "data/cache/documentation/checking-whether-your-app-is-compatible-with-visionos.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:22.875591+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/bringing-your-arkit-app-to-visionos": {
+      "local_path": "data/cache/documentation/bringing-your-arkit-app-to-visionos.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:23.066906+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/#Enterprise-APIs-for-visionOS": {
+      "local_path": "data/cache/documentation/_Enterprise-APIs-for-visionOS.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:23.327384+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/placing-content-on-detected-planes": {
+      "local_path": "data/cache/documentation/placing-content-on-detected-planes.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:23.518662+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/#Explore-new-kinds-of-interaction": {
+      "local_path": "data/cache/documentation/_Explore-new-kinds-of-interaction.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:23.698251+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/tracking-points-in-world-space": {
+      "local_path": "data/cache/documentation/tracking-points-in-world-space.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:23.875984+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/enabling-video-reflections-in-an-immersive-environment": {
+      "local_path": "data/cache/documentation/enabling-video-reflections-in-an-immersive-environment.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:24.059396+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/creating-fully-immersive-experiences": {
+      "local_path": "data/cache/documentation/creating-fully-immersive-experiences.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:24.242767+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/improving-accessibility-support-in-your-app": {
+      "local_path": "data/cache/documentation/improving-accessibility-support-in-your-app.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:24.586027+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/happybeam": {
+      "local_path": "data/cache/documentation/happybeam.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:24.812995+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/setting-up-access-to-arkit-data": {
+      "local_path": "data/cache/documentation/setting-up-access-to-arkit-data.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:57:19.094119+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/building-an-immersive-media-viewing-experience": {
+      "local_path": "data/cache/documentation/building-an-immersive-media-viewing-experience.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:25.493211+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos": {
+      "local_path": "data/cache/documentation/visionos.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:25.691452+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/exploring_object_tracking_with_arkit": {
+      "local_path": "data/cache/documentation/exploring_object_tracking_with_arkit.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:26.018533+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/#topics": {
+      "local_path": "data/cache/documentation/_topics.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:26.220933+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/adding-3d-content-to-your-app": {
+      "local_path": "data/cache/documentation/adding-3d-content-to-your-app.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:26.543453+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/bringing-your-app-to-visionos": {
+      "local_path": "data/cache/documentation/bringing-your-app-to-visionos.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:26.767541+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/drawing-sharp-layer-based-content": {
+      "local_path": "data/cache/documentation/drawing-sharp-layer-based-content.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:27.066704+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/diorama": {
+      "local_path": "data/cache/documentation/diorama.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:56:47.318278+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/accessing-the-main-camera": {
+      "local_path": "data/cache/documentation/accessing-the-main-camera.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:27.439022+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/incorporating-real-world-surroundings-in-an-immersive-experience": {
+      "local_path": "data/cache/documentation/incorporating-real-world-surroundings-in-an-immersive-experience.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:27.767185+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/#Xcode-and-Simulator": {
+      "local_path": "data/cache/documentation/_Xcode-and-Simulator.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:28.116623+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/making-your-app-compatible-with-visionos": {
+      "local_path": "data/cache/documentation/making-your-app-compatible-with-visionos.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:28.308756+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/#Dive-into-featured-sample-apps": {
+      "local_path": "data/cache/documentation/_Dive-into-featured-sample-apps.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:28.639601+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/building_local_experiences_with_room_tracking": {
+      "local_path": "data/cache/documentation/building_local_experiences_with_room_tracking.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:28.834948+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/reducing-the-rendering-cost-of-your-ui-on-visionos": {
+      "local_path": "data/cache/documentation/reducing-the-rendering-cost-of-your-ui-on-visionos.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:29.162965+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/placing-entities-using-head-and-device-transform": {
+      "local_path": "data/cache/documentation/placing-entities-using-head-and-device-transform.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:29.350079+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/#SwiftUI": {
+      "local_path": "data/cache/documentation/_SwiftUI.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:29.537922+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/destination-video": {
+      "local_path": "data/cache/documentation/destination-video.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:29.861899+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/introductory-visionos-samples": {
+      "local_path": "data/cache/documentation/introductory-visionos-samples.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:30.058129+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/designing-realitykit-content-with-reality-composer-pro": {
+      "local_path": "data/cache/documentation/designing-realitykit-content-with-reality-composer-pro.html",
+      "category": "tools",
+      "cached_at": "2024-11-17T10:57:08.438352+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/capturing-screenshots-and-video-from-your-apple-vision-pro-for-2d-viewing": {
+      "local_path": "data/cache/documentation/capturing-screenshots-and-video-from-your-apple-vision-pro-for-2d-viewing.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:30.737391+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/#iOS-migration-and-compatibility": {
+      "local_path": "data/cache/documentation/_iOS-migration-and-compatibility.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:30.918863+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/understanding-the-visionos-render-pipeline": {
+      "local_path": "data/cache/documentation/understanding-the-visionos-render-pipeline.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:31.260358+00:00"
+    },
+    "https://developer.apple.com/documentation/visionos/#app-top": {
+      "local_path": "data/cache/documentation/_app-top.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:52:31.473219+00:00"
+    },
+    "https://developer.apple.com/documentation/RealityKit": {
+      "local_path": "data/cache/documentation/RealityKit.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:52:32.119691+00:00"
+    },
+    "https://developer.apple.com/documentation/RealityKit/combining-2d-and-3d-views-in-an-immersive-app": {
+      "local_path": "data/cache/documentation/combining-2d-and-3d-views-in-an-immersive-app.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:52:32.443385+00:00"
+    },
+    "https://developer.apple.com/documentation/RealityKit/RealityView": {
+      "local_path": "data/cache/documentation/RealityView.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:52:32.597777+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/combining-2d-and-3d-views-in-an-immersive-app": {
+      "local_path": "data/cache/documentation/combining-2d-and-3d-views-in-an-immersive-app.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:57:06.158119+00:00"
+    },
+    "https://developer.apple.com/documentation/visionOS/incorporating-real-world-surroundings-in-an-immersive-experience": {
+      "local_path": "data/cache/documentation/incorporating-real-world-surroundings-in-an-immersive-experience.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:53:36.937565+00:00"
+    },
+    "https://developer.apple.com/documentation/visionOS/creating-fully-immersive-experiences": {
+      "local_path": "data/cache/documentation/creating-fully-immersive-experiences.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:53:37.140560+00:00"
+    },
+    "https://developer.apple.com/documentation/SwiftUI/Immersive-spaces": {
+      "local_path": "data/cache/documentation/Immersive-spaces.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:53:37.471306+00:00"
+    },
+    "https://developer.apple.com/documentation/visionOS/creating-your-first-visionos-app": {
+      "local_path": "data/cache/documentation/creating-your-first-visionos-app.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:54:33.143531+00:00"
+    },
+    "https://developer.apple.com/documentation/visionOS/swift-splash": {
+      "local_path": "data/cache/documentation/swift-splash.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:56:44.828276+00:00"
+    },
+    "https://developer.apple.com/documentation/visionOS/understanding-the-realitykit-modular-architecture": {
+      "local_path": "data/cache/documentation/understanding-the-realitykit-modular-architecture.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:56:45.168630+00:00"
+    },
+    "https://developer.apple.com/documentation/visionOS/World": {
+      "local_path": "data/cache/documentation/World.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:57:32.563786+00:00"
+    },
+    "https://developer.apple.com/documentation/visionOS/enabling-video-reflections-in-an-immersive-environment": {
+      "local_path": "data/cache/documentation/enabling-video-reflections-in-an-immersive-environment.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:56:46.588299+00:00"
+    },
+    "https://developer.apple.com/documentation/visionOS/designing-realitykit-content-with-reality-composer-pro": {
+      "local_path": "data/cache/documentation/designing-realitykit-content-with-reality-composer-pro.html",
+      "category": "tools",
+      "cached_at": "2024-11-17T10:57:08.247782+00:00"
+    },
+    "https://developer.apple.com/documentation/visionOS/diorama": {
+      "local_path": "data/cache/documentation/diorama.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:56:47.112908+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/scene-content-content-synchronization": {
+      "local_path": "data/cache/documentation/scene-content-content-synchronization.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:56:47.636663+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/#Scene-management-and-logic": {
+      "local_path": "data/cache/documentation/_Scene-management-and-logic.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:56:47.843006+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/resource": {
+      "local_path": "data/cache/documentation/resource.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:56:48.160704+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/#Scene-content": {
+      "local_path": "data/cache/documentation/_Scene-content.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:56:48.337646+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/#topics": {
+      "local_path": "data/cache/documentation/_topics.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:56:48.685150+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/entity": {
+      "local_path": "data/cache/documentation/entity.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:56:48.871737+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/#Physics-simulation": {
+      "local_path": "data/cache/documentation/_Physics-simulation.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:56:49.053326+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/improving-the-performance-of-a-realitykit-app": {
+      "local_path": "data/cache/documentation/improving-the-performance-of-a-realitykit-app.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:56:49.440683+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/game-development-character-skeletons": {
+      "local_path": "data/cache/documentation/game-development-character-skeletons.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:56:49.733827+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/ecs-systems": {
+      "local_path": "data/cache/documentation/ecs-systems.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:56:49.929736+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/transforming-realitykit-entities-with-gestures": {
+      "local_path": "data/cache/documentation/transforming-realitykit-entities-with-gestures.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:56:50.258858+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/ecs-events": {
+      "local_path": "data/cache/documentation/ecs-events.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:56:50.449402+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/reducing-gpu-utilization-in-your-realitykit-app": {
+      "local_path": "data/cache/documentation/reducing-gpu-utilization-in-your-realitykit-app.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:56:50.789472+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/building_an_immersive_experience_with_realitykit": {
+      "local_path": "data/cache/documentation/building_an_immersive_experience_with_realitykit.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:56:51.003230+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/#Presentation": {
+      "local_path": "data/cache/documentation/_Presentation.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:56:51.307802+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/creating-a-dynamic-height-map-with-low-level-texture": {
+      "local_path": "data/cache/documentation/creating-a-dynamic-height-map-with-low-level-texture.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:56:51.525063+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/component": {
+      "local_path": "data/cache/documentation/component.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:56:52.110943+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/scene-content-lights-and-cameras": {
+      "local_path": "data/cache/documentation/scene-content-lights-and-cameras.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:56:52.362258+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit": {
+      "local_path": "data/cache/documentation/realitykit.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:56:52.590335+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/game-development-entity-animations": {
+      "local_path": "data/cache/documentation/game-development-entity-animations.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:56:52.879683+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/composing-interactive-3d-content-with-realitykit-and-reality-composer-pro": {
+      "local_path": "data/cache/documentation/composing-interactive-3d-content-with-realitykit-and-reality-composer-pro.html",
+      "category": "tools",
+      "cached_at": "2024-11-17T10:57:08.778518+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/scene-content-models-and-meshes": {
+      "local_path": "data/cache/documentation/scene-content-models-and-meshes.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:56:53.403603+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/ecs-scenes": {
+      "local_path": "data/cache/documentation/ecs-scenes.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:56:53.610101+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/creating-a-spatial-drawing-app-with-realitykit": {
+      "local_path": "data/cache/documentation/creating-a-spatial-drawing-app-with-realitykit.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:56:53.927141+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/#Essentials": {
+      "local_path": "data/cache/documentation/_Essentials.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:56:54.111814+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/scene-content-materials-and-shaders": {
+      "local_path": "data/cache/documentation/scene-content-materials-and-shaders.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:56:54.300932+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/construct-an-immersive-environment-for-visionos": {
+      "local_path": "data/cache/documentation/construct-an-immersive-environment-for-visionos.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:56:54.625852+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/#Game-development": {
+      "local_path": "data/cache/documentation/_Game-development.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:56:56.549320+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/physics-joints-and-pins": {
+      "local_path": "data/cache/documentation/physics-joints-and-pins.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:56:57.783784+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/physics-force-effects": {
+      "local_path": "data/cache/documentation/physics-force-effects.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:56:59.494103+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/reducing-cpu-utilization-in-your-realitykit-app": {
+      "local_path": "data/cache/documentation/reducing-cpu-utilization-in-your-realitykit-app.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:56:59.837755+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/scene-content-audio": {
+      "local_path": "data/cache/documentation/scene-content-audio.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:57:02.317990+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/game-development-sample-code": {
+      "local_path": "data/cache/documentation/game-development-sample-code.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:57:03.469842+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/passing-metal-command-objects-around-your-application": {
+      "local_path": "data/cache/documentation/passing-metal-command-objects-around-your-application.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:57:03.679478+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/#Overview": {
+      "local_path": "data/cache/documentation/_Overview.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:57:03.888963+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/#Asset-creation": {
+      "local_path": "data/cache/documentation/_Asset-creation.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:57:04.092358+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/#Performance-improvements": {
+      "local_path": "data/cache/documentation/_Performance-improvements.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:57:04.413296+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/physics-simulations-and-motion": {
+      "local_path": "data/cache/documentation/physics-simulations-and-motion.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:57:04.560536+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/ecs-entity-actions": {
+      "local_path": "data/cache/documentation/ecs-entity-actions.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:57:04.753140+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/realitykit-object-capture": {
+      "local_path": "data/cache/documentation/realitykit-object-capture.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:57:05.094351+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/realitykit-usd-assets": {
+      "local_path": "data/cache/documentation/realitykit-usd-assets.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:57:05.295012+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/generating-interactive-geometry-with-realitykit": {
+      "local_path": "data/cache/documentation/generating-interactive-geometry-with-realitykit.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:57:05.635101+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/creating-a-plane-with-low-level-mesh": {
+      "local_path": "data/cache/documentation/creating-a-plane-with-low-level-mesh.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:57:05.824079+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/scene-content-anchors": {
+      "local_path": "data/cache/documentation/scene-content-anchors.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:57:06.352523+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/scene-content-videos": {
+      "local_path": "data/cache/documentation/scene-content-videos.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:57:06.675432+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/presentation-views-and-attachments": {
+      "local_path": "data/cache/documentation/presentation-views-and-attachments.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:57:06.866854+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/realitykit-reality-composer": {
+      "local_path": "data/cache/documentation/realitykit-reality-composer.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:57:07.205967+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/physics-collision-detection": {
+      "local_path": "data/cache/documentation/physics-collision-detection.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:57:07.394769+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/presentation-user-interface": {
+      "local_path": "data/cache/documentation/presentation-user-interface.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:57:07.727474+00:00"
+    },
+    "https://developer.apple.com/documentation/realitykit/presenting-an-artists-scene": {
+      "local_path": "data/cache/documentation/presenting-an-artists-scene.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:57:07.919457+00:00"
+    },
+    "https://developer.apple.com/documentation/arkit/arkit_in_visionos_c_api": {
+      "local_path": "data/cache/documentation/arkit_in_visionos_c_api.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:57:19.283327+00:00"
+    },
+    "https://developer.apple.com/documentation/arkit/arkit_in_visionos": {
+      "local_path": "data/cache/documentation/arkit_in_visionos.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:57:19.619285+00:00"
+    },
+    "https://developer.apple.com/documentation/visionOS/BOT-anist": {
+      "local_path": "data/cache/documentation/BOT-anist.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:57:32.358153+00:00"
+    },
+    "https://developer.apple.com/documentation/visionOS/destination-video": {
+      "local_path": "data/cache/documentation/destination-video.html",
+      "category": "documentation",
+      "cached_at": "2024-11-17T10:57:32.898176+00:00"
+    },
+    "https://developer.apple.com/documentation/swiftui/immersive-spaces": {
+      "local_path": "data/cache/documentation/immersive-spaces.html",
+      "category": "frameworks",
+      "cached_at": "2024-11-17T10:57:33.099100+00:00"
+    }
+  }
+}

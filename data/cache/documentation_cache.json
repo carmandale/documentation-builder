@@ -1,0 +1,261 @@
+{
+  "Creating3DEntitiesInVisionOSWithRealityKit": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/eca86063e133/Creating3DEntitiesInVisionOSWithRealityKit.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:57:33.340917+00:00",
+    "doc_type": "unknown"
+  },
+  "DisplayingA3DObjectThatMovesToStayInAPersonsView": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/55e1c3199fc3/DisplayingA3DObjectThatMovesToStayInAPersonsView.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:57:33.356399+00:00",
+    "doc_type": "unknown"
+  },
+  "BuildingLocalExperiencesWithRoomTracking": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/e1b86cf8321c/BuildingLocalExperiencesWithRoomTracking.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:57:33.362215+00:00",
+    "doc_type": "unknown"
+  },
+  "SceneReconstructionExample": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/70a43f0ea7e5/SceneReconstructionExample.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:57:33.369424+00:00",
+    "doc_type": "unknown"
+  },
+  "CreatingANewSwiftUIWindowViewInVisionOS": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/5375dccbb927/CreatingANewSwiftUIWindowViewInVisionOS.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:57:33.375593+00:00",
+    "doc_type": "unknown"
+  },
+  "CreatingA3DPaintingSpaceInVisionOS": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/95fb0d2bec32/CreatingA3DPaintingSpaceInVisionOS.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:57:33.384330+00:00",
+    "doc_type": "unknown"
+  },
+  "AddingADepthEffectToTextInVisionOS": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/dd2db0b42cec/AddingADepthEffectToTextInVisionOS.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:57:33.392736+00:00",
+    "doc_type": "unknown"
+  },
+  "DisplayingTextInVisionOS": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/5587970351ca/DisplayingTextInVisionOS.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:57:33.400647+00:00",
+    "doc_type": "unknown"
+  },
+  "ObjectPlacementExample": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/c52a77b613db/ObjectPlacementExample.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:57:33.415566+00:00",
+    "doc_type": "unknown"
+  },
+  "Creating2DShapesInVisionOSWithSwiftUI": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/5d97d949da4b/Creating2DShapesInVisionOSWithSwiftUI.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:57:33.423584+00:00",
+    "doc_type": "unknown"
+  },
+  "TransformingRealityKitEntitiesUsingGestures": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/4366c51c6b3a/TransformingRealityKitEntitiesUsingGestures.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:57:33.446836+00:00",
+    "doc_type": "unknown"
+  },
+  "Combining2DAnd3DViewsInAnImmersiveApp": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/5416127e3d80/Combining2DAnd3DViewsInAnImmersiveApp.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:57:33.462142+00:00",
+    "doc_type": "unknown"
+  },
+  "ApplyingMeshToRealWorldSurroundings": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/f97546eebe73/ApplyingMeshToRealWorldSurroundings.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:57:33.469259+00:00",
+    "doc_type": "unknown"
+  },
+  "PlayingSpatialAudioInVisionOS": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/d80280abbf97/PlayingSpatialAudioInVisionOS.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:57:33.486765+00:00",
+    "doc_type": "unknown"
+  },
+  "TrackingAndVisualizingHandMovement": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/8d71d7152c2f/TrackingAndVisualizingHandMovement.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:57:33.821007+00:00",
+    "doc_type": "unknown"
+  },
+  "CreatingASpatialDrawingAppWithRealityKit": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/4dffd26dd4a9/CreatingASpatialDrawingAppWithRealityKit.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:57:33.835434+00:00",
+    "doc_type": "unknown"
+  },
+  "CreatingStereoscopicImageInVisionOS": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/73c9f527940d/CreatingStereoscopicImageInVisionOS.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:57:33.992702+00:00",
+    "doc_type": "unknown"
+  },
+  "GeneratingProceduralTexturesInVisionOS": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/8395d34a7ab2/GeneratingProceduralTexturesInVisionOS.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:57:34.093496+00:00",
+    "doc_type": "unknown"
+  },
+  "GeneratingInteractiveGeometryWithRealityKit": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/722f0701c26a/GeneratingInteractiveGeometryWithRealityKit.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:57:34.489003+00:00",
+    "doc_type": "unknown"
+  },
+  "CreatingGlassMaterialFor3DShapesInVisionOS": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/93452ff38109/CreatingGlassMaterialFor3DShapesInVisionOS.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:57:34.866667+00:00",
+    "doc_type": "unknown"
+  },
+  "CreatingImmersiveSpacesInVisionOSWithSwiftUI": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/66347c531199/CreatingImmersiveSpacesInVisionOSWithSwiftUI.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:57:35.001801+00:00",
+    "doc_type": "unknown"
+  },
+  "AllowingObjectsToInteractWithRealWorldObjects": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/fdec7d3cd980/AllowingObjectsToInteractWithRealWorldObjects.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:57:35.166299+00:00",
+    "doc_type": "unknown"
+  },
+  "CreatingAVolumetricWindowInVisionOS": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/92430dc8f42e/CreatingAVolumetricWindowInVisionOS.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:57:35.965535+00:00",
+    "doc_type": "unknown"
+  },
+  "ExploringObjectTrackingWithARKit": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/66b7ac751448/ExploringObjectTrackingWithARKit.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:57:36.219332+00:00",
+    "doc_type": "unknown"
+  },
+  "CreatingA3DModelWithGesturesInVisionOS": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/7b5bc90de8c3/CreatingA3DModelWithGesturesInVisionOS.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:57:37.921369+00:00",
+    "doc_type": "unknown"
+  },
+  "DisplayingA3DEnvironmentThroughAPortal": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/77de9001a179/DisplayingA3DEnvironmentThroughAPortal.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:57:38.936592+00:00",
+    "doc_type": "unknown"
+  },
+  "HappyBeam": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/8650c3b94efb/HappyBeam.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:57:49.028878+00:00",
+    "doc_type": "unknown"
+  },
+  "PlacingEntitiesUsingHeadAndDeviceTransform": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/87329c74e5cd/PlacingEntitiesUsingHeadAndDeviceTransform.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:57:51.007911+00:00",
+    "doc_type": "unknown"
+  },
+  "HelloWorld": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/afe8dfd556ef/HelloWorld.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:57:56.034385+00:00",
+    "doc_type": "unknown"
+  },
+  "Diorama": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/f60567d1cc7d/Diorama.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:58:12.581364+00:00",
+    "doc_type": "unknown"
+  },
+  "PresentingAnArtistsScene": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/0a07d751f3a7/PresentingAnArtistsScene.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:58:20.563296+00:00",
+    "doc_type": "unknown"
+  },
+  "SwiftSplash": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/c615c66bc630/SwiftSplash.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:58:21.769852+00:00",
+    "doc_type": "unknown"
+  },
+  "BOTAnist": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/0bc6997cb1f0/BOTAnist.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:58:23.618465+00:00",
+    "doc_type": "unknown"
+  },
+  "BuildingAnImmersiveExperienceWithRealityKit": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/9c120bd602/BuildingAnImmersiveExperienceWithRealityKit.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:58:27.606834+00:00",
+    "doc_type": "unknown"
+  },
+  "ConstructAnImmersiveEnvironmentForVisionOS": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/e2ab5db2b288/ConstructAnImmersiveEnvironmentForVisionOS.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:58:33.002591+00:00",
+    "doc_type": "unknown"
+  },
+  "DestinationVideo": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/08bd3c5ea0b3/DestinationVideo.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:58:36.880306+00:00",
+    "doc_type": "unknown"
+  },
+  "ComposingInteractive3DContentWithRealityKitAndRealityComposerPro": {
+    "sample_url": "https://docs-assets.developer.apple.com/published/6a4be286f383/ComposingInteractive3DContentWithRealityKitAndRealityComposerPro.zip",
+    "documentation_url": null,
+    "documentation_title": null,
+    "cached_at": "2024-11-17T10:58:56.786741+00:00",
+    "doc_type": "unknown"
+  }
+}

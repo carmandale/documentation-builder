@@ -15,6 +15,7 @@ import zipfile
 import io
 from datetime import datetime, UTC
 from models.base import ProjectResource
+from core.serialization import JSONSerializer
 
 class DocumentationURLCollector:
     """Handles documentation URL discovery and sample collection"""
@@ -436,6 +437,14 @@ class DocumentationURLCollector:
         if not project.download_url:
             return False
             
+        # Check if already downloaded
+        project_name = re.sub(r'[^\w\-_]', '_', project.title)
+        project_dir = self.projects_dir / project_name
+        if project_dir.exists():
+            project.mark_downloaded(project_dir)
+            logger.debug(f"Project already downloaded: {project_dir}")
+            return True
+            
         try:
             async with aiohttp.ClientSession() as session:
                 async with session.get(project.download_url) as response:
@@ -443,7 +452,6 @@ class DocumentationURLCollector:
                         content = await response.read()
                         
                         # Create project directory
-                        project_name = re.sub(r'[^\w\-_]', '_', project.title)
                         project_dir = self.projects_dir / project_name
                         project_dir.mkdir(exist_ok=True)
                         
@@ -512,7 +520,6 @@ class DocumentationURLCollector:
     def _update_cache(self, new_samples: List[ProjectResource]):
         """Update samples cache by merging with existing samples"""
         try:
-            # Load existing cache
             existing_samples = self._load_from_cache()
             
             # Create a dict of existing samples by URL for easy lookup
@@ -528,9 +535,12 @@ class DocumentationURLCollector:
                 'samples': [s.model_dump() for s in existing_by_url.values()]
             }
             
-            self.samples_cache.write_text(json.dumps(cache_data, indent=2))
+            # Use serializer to save cache
+            JSONSerializer.save_json(cache_data, self.samples_cache)
+            
             logger.info(f"Successfully cached {len(new_samples)} samples (Total: {len(existing_by_url)})")
             logger.debug(f"Cache updated at: {cache_data['cached_at']}")
+            
         except Exception as e:
             logger.error(f"Error updating cache: {str(e)}")
 

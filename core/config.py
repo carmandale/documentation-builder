@@ -1,6 +1,6 @@
 # Configuration settings
 TESTING_MODE = False  # Set to False for full analysis
-SKIP_DOWNLOADS = False  # Change this to False to enable downloads
+SKIP_DOWNLOADS = True  # Skip downloads and use cached content
 
 # Test mode configuration
 TEST_SAMPLE_COUNT = 3  # Number of samples to process in test mode
@@ -10,7 +10,7 @@ PAGE_TIMEOUT = 60000  # Increase timeout to 60 seconds
 
 # Cache settings
 CACHE_DURATION = 24 * 60 * 60  # 24 hours in seconds
-FORCE_DOWNLOAD = True  # Set to True to force re-download of samples
+FORCE_DOWNLOAD = False  # Use cached content instead of re-downloading
 
 # Sample selection strategy
 TEST_SAMPLE_STRATEGY = "arkit_first"  # Options: "first", "diverse", "random", "arkit_first"
@@ -28,7 +28,10 @@ BASE_URLS = [
     "https://developer.apple.com/documentation/visionos/",
     "https://developer.apple.com/design/human-interface-guidelines/immersive-experiences",
     "https://developer.apple.com/design/human-interface-guidelines/designing-for-visionos",
-    "https://developer.apple.com/visionos/"
+    "https://developer.apple.com/visionos/",
+    "https://developer.apple.com/documentation/realitykit/",
+    "https://developer.apple.com/documentation/arkit/",
+    "https://developer.apple.com/documentation/swiftui/"
 ]
 
 # Known sample projects
