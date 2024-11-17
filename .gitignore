@@ -1,7 +1,18 @@
-# data/
+# Ignore downloaded data and cache
+data/projects/
+data/cache/
+data/logs/
+data/debug/
+
+# Python
 debug/
 venv/
 __pycache__/
 *.pyc
+
+# System files
 .DS_Store
 .env
+
+# Analysis outputs
+PROJECT_ANALYSIS/
