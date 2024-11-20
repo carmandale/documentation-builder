@@ -147,19 +147,104 @@ class ProjectResource(BaseModel):
         """Legacy dict method for compatibility"""
         return self.model_dump(*args, **kwargs)
     
-class PatternType(Enum):
-    FRAMEWORK = "framework"
-    UI = "ui"
+class PatternType(str, Enum):
+    """Pattern types for code analysis"""
+    # Framework patterns
+    SWIFTUI = "swiftui"
+    REALITYKIT = "realitykit"
+    
+    # UI patterns
+    VIEW = "view"
+    REALITY_VIEW = "reality_view"
+    TEXT = "text"
+    
+    # Entity patterns
+    MODEL_ENTITY = "model_entity"
     ENTITY = "entity"
+    
+    # State patterns
     STATE = "state"
+    OBSERVED_OBJECT = "observed_object"
+    STATE_OBJECT = "state_object"
+    
+    # Gesture patterns
+    DRAG_GESTURE = "drag_gesture"
+    TAP_GESTURE = "tap_gesture"
     GESTURE = "gesture"
+    
+    # Animation patterns
+    WITH_ANIMATION = "with_animation"
     ANIMATION = "animation"
-    LIFECYCLE = "lifecycle"
-    RELATIONSHIP = "relationship"
-    REALITY_COMPOSER = "reality_composer"
-    COMPONENT = "component"
-    SPATIAL = "spatial"
-    INTERACTION = "interaction"
+    TRANSITION = "transition"
+    
+    # Lifecycle patterns
+    ON_APPEAR = "on_appear"
+    ON_DISAPPEAR = "on_disappear"
+    TASK = "task"
+    ON_CHANGE = "on_change"
+    
+    # Spatial patterns
+    POSITION = "position"
+    SCALE = "scale"
+    ROTATION = "rotation"
+    TRANSFORM = "transform"
+    
+    # Interaction patterns
+    ON_TAP_GESTURE = "on_tap_gesture"
+    ON_LONG_PRESS_GESTURE = "on_long_press_gesture"
+    SIMULTANEOUS_GESTURE = "simultaneous_gesture"
+    HIGH_PRIORITY_GESTURE = "high_priority_gesture"
+    
+    # Reality Composer Pro patterns
+    USDZ_LOADING = "usdz_loading"
+    REALITY_FILE = "reality_file"
+    MATERIAL_VARIANTS = "material_variants"
+    ANIMATION_CONTROLLER = "animation_controller"
+    REALITY_COMPOSER_IMPORT = "reality_composer_import"
+    REALITY_COMPOSER_ASSET = "reality_composer_asset"
+    
+    # Component System patterns
+    COMPONENT_DEFINITION = "component_definition"
+    COMPONENT_ACCESS = "component_access"
+    COMPONENT_ADD = "component_add"
+    COMPONENT_SYSTEM = "component_system"
+    COMPONENT_QUERY = "component_query"
+    COMPONENT_UPDATE = "component_update"
+    
+    # RealityKit System patterns
+    SCENE_SYSTEM = "scene_system"
+    SCENE_UPDATE = "scene_update"
+    SCENE_SETUP = "scene_setup"
+    ENTITY_SYSTEM = "entity_system"
+    ENTITY_QUERY = "entity_query"
+    ENTITY_SUBSCRIPTION = "entity_subscription"
+    COMPONENT_REGISTRATION = "component_registration"
+    EVENT_SYSTEM = "event_system"
+    EVENT_HANDLING = "event_handling"
+    EVENT_SUBSCRIPTION = "event_subscription"
+    
+    # Entity Action patterns
+    TRANSFORM_ACTION = "transform_action"
+    TRANSFORM_ANIMATE = "transform_animate"
+    TRANSFORM_SEQUENCE = "transform_sequence"
+    PHYSICS_ACTION = "physics_action"
+    PHYSICS_CONSTRAINT = "physics_constraint"
+    HIERARCHY_ACTION = "hierarchy_action"
+    HIERARCHY_QUERY = "hierarchy_query"
+    ANIMATION_ACTION = "animation_action"
+    ANIMATION_CONTROL = "animation_control"
+    INTERACTION_ACTION = "interaction_action"
+    GESTURE_ACTION = "gesture_action"
+    
+    # View Attachment patterns
+    VIEW_ATTACH = "view_attach"
+    VIEW_ENTITY = "view_entity"
+    VIEW_GEOMETRY = "view_geometry"
+    ATTACH_TRANSFORM = "attach_transform"
+    ATTACH_ORIENTATION = "attach_orientation"
+    ATTACH_POSITION = "attach_position"
+    REALITY_VIEW_CONTENT = "reality_view_content"
+    REALITY_VIEW_UPDATE = "reality_view_update"
 
 class Pattern(BaseModel):
     """Represents a detected code pattern"""
@@ -169,6 +254,8 @@ class Pattern(BaseModel):
     source_code: Optional[str] = None
     line_number: Optional[int] = None
     file_path: Optional[str] = None
+    start: int = 0  # Start position in the code
+    end: int = 0    # End position in the code
 
 class PatternRelationship(BaseModel):
     """Represents a relationship between patterns"""
@@ -222,4 +309,3 @@ class SemanticAnalysis(BaseModel):
     semantic_groups: Dict[str, Set[str]]  # Group type -> set of pattern names
     confidence_scores: Dict[str, float]  # Pattern name -> confidence score
     context_hierarchy: Dict[str, List[str]]  # Parent pattern -> list of child patterns
-    

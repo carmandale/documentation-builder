@@ -565,38 +565,171 @@ async def process_urls_concurrent(urls: Set[str], url_collector: DocumentationUR
 
 async def analyze_real_samples():
     """Analyze patterns in downloaded samples"""
-    # Get real sample paths
-    sample_paths = list(Path('data/projects').glob('**/*.swift'))
+    console.print("\n[bold cyan]Starting Pattern Analysis of Downloaded Samples[/]")
     
-    # Group files by pattern type
-    pattern_data = {
-        "scene_understanding": {
-            "count": 0,
-            "files": [],
-            "examples": []
+    # Get real sample paths
+    sample_paths = []
+    for ext in ['*.swift']:
+        sample_paths.extend(list(Path('data/projects').rglob(ext)))
+    
+    console.print(f"\nFound [green]{len(sample_paths)}[/] Swift files to analyze")
+    
+    # Initialize pattern refiner
+    pattern_refiner = PatternRefiner()
+    
+    # Initialize pattern statistics
+    pattern_stats = defaultdict(lambda: {
+        'count': 0,
+        'files': set(),
+        'examples': [],
+        'co_occurrences': defaultdict(int),
+        'projects': set(),  # Track which projects use each pattern
+        'contexts': defaultdict(int)  # Track common usage contexts
+    })
+    
+    # Track project-level statistics
+    project_stats = defaultdict(lambda: {
+        'pattern_count': 0,
+        'unique_patterns': set(),
+        'relationship_count': 0,
+        'file_count': 0
+    })
+    
+    # Progress bar for analysis
+    with Progress() as progress:
+        analyze_task = progress.add_task("[cyan]Analyzing files...", total=len(sample_paths))
+        
+        # Analyze each file
+        for file_path in sample_paths:
+            progress.update(analyze_task, advance=1)
+            try:
+                content = file_path.read_text()
+                project_name = file_path.parts[file_path.parts.index('projects') + 1]
+                
+                # Update project stats
+                project_stats[project_name]['file_count'] += 1
+                
+                # Detect patterns in the file
+                detected_patterns = pattern_refiner.detect_patterns(content)
+                
+                # Update project pattern count
+                project_stats[project_name]['pattern_count'] += len(detected_patterns)
+                
+                # Analyze relationships
+                relationships = pattern_refiner.analyze_relationships(detected_patterns)
+                project_stats[project_name]['relationship_count'] += len(relationships)
+                
+                # Update statistics for each detected pattern
+                for pattern in detected_patterns:
+                    pattern_stats[pattern.type]['count'] += 1
+                    pattern_stats[pattern.type]['files'].add(str(file_path))
+                    pattern_stats[pattern.type]['projects'].add(project_name)
+                    project_stats[project_name]['unique_patterns'].add(pattern.type)
+                    
+                    # Store a short example if we don't have many
+                    if len(pattern_stats[pattern.type]['examples']) < 3:
+                        # Get context (5 lines before and after)
+                        lines = content.splitlines()
+                        pattern_line = content[:pattern.start].count('\n')
+                        start_line = max(0, pattern_line - 5)
+                        end_line = min(len(lines), pattern_line + 6)
+                        example = '\n'.join(lines[start_line:end_line])
+                        if example not in pattern_stats[pattern.type]['examples']:
+                            pattern_stats[pattern.type]['examples'].append(example)
+                    
+                    # Track co-occurrences with other patterns
+                    for other_pattern in detected_patterns:
+                        if other_pattern.type != pattern.type:
+                            pattern_stats[pattern.type]['co_occurrences'][other_pattern.type] += 1
+                    
+                    # Analyze context
+                    context_lines = content.splitlines()[max(0, pattern.line_number - 3):pattern.line_number]
+                    context = ' '.join(context_lines)
+                    if 'init' in context or 'setup' in context:
+                        pattern_stats[pattern.type]['contexts']['initialization'] += 1
+                    if 'update' in context:
+                        pattern_stats[pattern.type]['contexts']['update'] += 1
+                    if 'gesture' in context or 'interaction' in context:
+                        pattern_stats[pattern.type]['contexts']['interaction'] += 1
+                    if 'animation' in context:
+                        pattern_stats[pattern.type]['contexts']['animation'] += 1
+            
+            except Exception as e:
+                logger.error(f"Error analyzing {file_path}: {str(e)}")
+    
+    # Generate comprehensive report
+    output_path = Path('data/analysis/pattern_analysis.json')
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    
+    # Convert sets to lists for JSON serialization
+    serializable_stats = {
+        'patterns': {},
+        'projects': {},
+        'summary': {
+            'total_files': len(sample_paths),
+            'total_projects': len(project_stats),
+            'total_patterns_found': sum(stat['count'] for stat in pattern_stats.values()),
+            'most_common_patterns': [],
+            'most_common_relationships': [],
+            'pattern_distribution': {}
         }
-        # ... other patterns ...
     }
     
-    # Analyze each file
-    for file_path in sample_paths:
-        content = file_path.read_text()
+    # Process pattern stats
+    for pattern_type, data in pattern_stats.items():
+        serializable_stats['patterns'][pattern_type.value] = {
+            'count': data['count'],
+            'files': list(data['files']),
+            'examples': data['examples'],
+            'co_occurrences': dict(data['co_occurrences']),
+            'projects': list(data['projects']),
+            'contexts': dict(data['contexts'])
+        }
         
-        # Check for scene understanding patterns
-        if any(term in content for term in ["SceneUnderstanding", "PlaneAnchor", "MeshAnchor"]):
-            pattern_data["scene_understanding"]["files"].append(str(file_path))
-            pattern_data["scene_understanding"]["count"] += 1
+        # Update pattern distribution
+        serializable_stats['summary']['pattern_distribution'][pattern_type.value] = {
+            'count': data['count'],
+            'project_coverage': len(data['projects']) / len(project_stats) * 100
+        }
     
-    # Refine patterns
-    pattern_refiner = PatternRefiner()
-    refined_patterns = pattern_refiner.analyze_existing_patterns(pattern_data)
+    # Process project stats
+    for project_name, data in project_stats.items():
+        serializable_stats['projects'][project_name] = {
+            'pattern_count': data['pattern_count'],
+            'unique_patterns': len(data['unique_patterns']),
+            'relationship_count': data['relationship_count'],
+            'file_count': data['file_count'],
+            'pattern_density': data['pattern_count'] / data['file_count'] if data['file_count'] > 0 else 0
+        }
     
-    # Show results
-    console.print("\nPattern Analysis Results:")
-    for pattern_type, data in refined_patterns.items():
-        console.print(f"\n[cyan]{pattern_type}:")
-        console.print(f"Terms found: {data['detection_terms']}")
-        console.print(f"Confidence: {data['confidence']:.2f}")
+    # Sort and get most common patterns
+    sorted_patterns = sorted(
+        [(k.value, v['count'], len(v['projects'])) for k, v in pattern_stats.items()],
+        key=lambda x: (x[1], x[2]),
+        reverse=True
+    )
+    serializable_stats['summary']['most_common_patterns'] = [
+        {'pattern': p[0], 'count': p[1], 'project_coverage': p[2]}
+        for p in sorted_patterns[:10]
+    ]
+    
+    # Save detailed analysis
+    with open(output_path, 'w') as f:
+        json.dump(serializable_stats, f, indent=2)
+    
+    # Print summary report
+    console.print("\n[bold cyan]Pattern Analysis Summary[/]")
+    console.print(f"Total files analyzed: [green]{len(sample_paths)}[/]")
+    console.print(f"Total projects analyzed: [green]{len(project_stats)}[/]")
+    console.print(f"Total patterns found: [green]{sum(stat['count'] for stat in pattern_stats.values())}[/]")
+    
+    console.print("\n[bold]Top 10 Most Common Patterns:[/]")
+    for pattern in sorted_patterns[:10]:
+        console.print(f"- {pattern[0]}: {pattern[1]} occurrences in {pattern[2]} projects")
+    
+    console.print(f"\nDetailed analysis saved to: [green]{output_path}[/]")
+    
+    return pattern_stats, project_stats
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Run the VisionOS documentation scraper')

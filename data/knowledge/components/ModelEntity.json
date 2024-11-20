@@ -1,0 +1,31 @@
+{
+  "name": "ModelEntity",
+  "type": "RealityKit",
+  "required_imports": [
+    "RealityKit",
+    "SwiftUI"
+  ],
+  "initialization_pattern": "ModelEntity(mesh: mesh, materials: [material])",
+  "required_permissions": [],
+  "common_properties": [
+    {
+      "name": "body",
+      "type": "some View",
+      "default_value": null
+    }
+  ],
+  "example_implementations": [
+    {
+      "source": "/Users/dalecarman/Groove Jones Dropbox/Dale Carman/Projects/documentation_builder/tests/fixtures/VolumetricView.swift",
+      "code": "import SwiftUI\nimport RealityKit\n\nstruct VolumetricView: View {\n    @State private var showVolume = true\n    \n    var body: some View {\n        RealityView { content in\n            // Create volumetric material\n            var material = VolumetricMaterial()\n            material.scattering = .init(0.2)\n            material.absorption = .init(0.1)\n            \n            // Create volumetric entity\n            let mesh = MeshResource.generateBox(size: 0.2)\n            let entity = ModelEntity(mesh: mesh, materials: [material])\n            \n            // Add to scene\n            content.add(entity)\n        }\n        .volumetric(showVolume)\n        .frame(depth: 0.3)\n        .sensoryFeedback(.impact, trigger: showVolume)\n    }\n}\n"
+    }
+  ],
+  "related_components": [
+    "RealityView",
+    "ModelEntity"
+  ],
+  "constraints": [],
+  "best_practices": [],
+  "documentation_url": "https://developer.apple.com/documentation/visionos/modelentity",
+  "last_updated": "2024-11-17T06:19:49.829592"
+}

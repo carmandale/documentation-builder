@@ -6,11 +6,11 @@ import re
 from dataclasses import dataclass
 import json
 from collections import defaultdict
-from playwright.async_api import async_playwright
+from playwright.async_api import async_playwright, Page
 import time
 import asyncio
 from utils.logging import logger
-from core.config import TEST_SAMPLE_COUNT, BASE_URLS
+from core.config import TEST_SAMPLE_COUNT, BASE_URLS, MAX_CRAWL_DEPTH
 import zipfile
 import io
 from datetime import datetime, UTC
@@ -40,6 +40,25 @@ class DocumentationURLCollector:
         'a[href*="download"][href$=".zip"]',
         '.sample-card a[href$=".zip"]'
     ]
+
+    # Documentation content selectors
+    DOCUMENTATION_SELECTORS = {
+        'title': ['.topictitle h1', '.documentation-hero h1'],
+        'type': ['.eyebrow', '.topictitle .eyebrow'],
+        'description': ['.abstract.content', '.doc-content .description'],
+        'availability': ['.availability span.platform', '.summary-section.availability .platform'],
+        'code_blocks': ['.declarations-container pre.source', '.declaration-list pre.source'],
+        'navigation_path': ['.nav-menu-items.hierarchy .nav-menu-item a', '.breadcrumbs-list li a'],
+        'parameters': ['.parameters dl', '.parameters-section dl'],
+        'relationships': ['.contenttable-section .link-block'],
+        'examples': ['.example-container', '.sample-code'],
+        'metadata': {
+            'crawl_timestamp': datetime.now(UTC).isoformat(),
+            'format_version': '1.1',
+            'source': 'Apple Developer Documentation',
+            'extraction_status': 'complete'
+        }
+    }
 
     def __init__(self, base_dir: Path = Path('data')):
         # Directory setup
@@ -468,15 +487,25 @@ class DocumentationURLCollector:
             
         return False
 
+    def _normalize_url(self, url: str) -> str:
+        """Normalize a URL by removing fragments and query parameters"""
+        # Remove fragment
+        url = url.split('#')[0]
+        # Remove query parameters
+        url = url.split('?')[0]
+        # Ensure absolute URL
+        if url.startswith('/'):
+            url = self.BASE_URL + url
+        return url
+
     def _make_absolute_url(self, url: str) -> str:
         """Convert relative URLs to absolute URLs"""
-        if url.startswith('http'):
+        if url.startswith('/'):
+            return self.BASE_URL + url
+        elif url.startswith('http'):
             return url
-        elif url.startswith('//'):
-            return f"https:{url}"
-        elif url.startswith('/'):
-            return f"{self.BASE_URL}{url}"
-        return f"{self.BASE_URL}/{url}"
+        else:
+            return self.BASE_URL + '/' + url
 
     def _validate_sample_url(self, url: str) -> bool:
         """Validate if a URL is likely a sample project"""
@@ -643,38 +672,167 @@ class DocumentationURLCollector:
             
         return relationships
 
-    async def cache_documentation_page(self, url: str, category: str = 'documentation') -> bool:
-        """Cache a documentation page without affecting existing functionality"""
-        try:
-            logger.info(f"\nCaching documentation page ({category}): {url}")
-            safe_name = re.sub(r'[^\w\-_]', '_', url.split('/')[-1])
-            file_path = self.documentation_content_dir / f"{safe_name}.html"
+    async def cache_documentation_page(self, url: str, category: str = 'documentation', visited_urls: Set[str] = None, current_depth: int = 0, max_depth: int = None) -> bool:
+        """Cache a documentation page with full dynamic content and recursively process child pages
+        
+        Args:
+            url: The documentation page URL to cache
+            category: The category of documentation
+            visited_urls: Set of already visited URLs to prevent loops
+            current_depth: Current recursion depth
+            max_depth: Maximum depth to traverse (default MAX_CRAWL_DEPTH)
+        """
+        if max_depth is None:
+            max_depth = MAX_CRAWL_DEPTH
             
-            async with aiohttp.ClientSession() as session:
-                async with session.get(url) as response:
-                    if response.status == 200:
-                        content = await response.text()
-                        file_path.write_text(content)
-                        
-                        # Update cache index
-                        cache_data = self._load_doc_content_cache()
-                        cache_data['pages'][url] = {
-                            'local_path': str(file_path),
-                            'category': category,
-                            'cached_at': datetime.now(UTC).isoformat()
-                        }
-                        self._save_doc_content_cache(cache_data)
-                        
-                        logger.info(f"✓ Successfully cached: {url}")
-                        return True
-                    else:
-                        logger.warning(f"× Failed to cache (status {response.status}): {url}")
-                        
+        if visited_urls is None:
+            visited_urls = set()
+            self.depth_stats = defaultdict(set)  # Track URLs at each depth
+            
+        if url in visited_urls:
+            logger.debug(f"Skipping already visited URL: {url}")
+            return True
+            
+        if current_depth > max_depth:
+            logger.debug(f"Reached max depth ({max_depth}) at URL: {url}")
+            return True
+            
+        visited_urls.add(url)
+        self.depth_stats[current_depth].add(url)
+        
+        try:
+            logger.info(f"\nCaching documentation page ({category}) [Depth {current_depth}/{max_depth}]: {url}")
+            safe_name = re.sub(r'[^\w\-_]', '_', url.split('/')[-1])
+            file_path = self.documentation_content_dir / f"{safe_name}.json"
+            
+            async with async_playwright() as p:
+                browser = await p.chromium.launch()
+                page = await browser.new_page()
+                
+                try:
+                    # Navigate and wait for dynamic content
+                    logger.debug(f"Navigating to: {url}")
+                    await page.goto(url)
+                    await page.wait_for_load_state('networkidle')
+                    
+                    # Save raw HTML for debugging
+                    debug_path = self.debug_dir / f"doc_page_{safe_name}.html"
+                    debug_path.write_text(await page.content())
+                    logger.debug(f"Saved raw HTML to {debug_path}")
+                    
+                    # Extract current page content
+                    content = await self._extract_page_content(page, url, category)
+                    
+                    # Save the content
+                    file_path.write_text(json.dumps(content, indent=2))
+                    
+                    # Update cache index
+                    cache_data = self._load_doc_content_cache()
+                    cache_data['pages'][url] = {
+                        'local_path': str(file_path),
+                        'category': category,
+                        'cached_at': datetime.now(UTC).isoformat(),
+                        'title': content.get('title', ''),
+                        'type': content.get('type', ''),
+                        'description': content.get('description', ''),
+                        'child_pages': content.get('child_pages', [])
+                    }
+                    self._save_doc_content_cache(cache_data)
+                    
+                    # Visit each child page
+                    for child_url in content.get('child_pages', []):
+                        if child_url not in visited_urls:
+                            logger.debug(f"Visiting child page: {child_url}")
+                            child_page = await browser.new_page()
+                            try:
+                                await self.cache_documentation_page(
+                                    child_url, 
+                                    category, 
+                                    visited_urls,
+                                    current_depth + 1,
+                                    max_depth
+                                )
+                            finally:
+                                await child_page.close()
+                    
+                    logger.info(f"Successfully cached documentation page: {content.get('title', url)}")
+                    logger.debug(f"Content extracted: {json.dumps(content, indent=2)}")
+                    return True
+                    
+                finally:
+                    await page.close()
+                    await browser.close()
+                    
+        except Exception as e:
+            logger.error(f"Error caching documentation page {url}: {str(e)}")
+            logger.debug("Error details:", exc_info=True)
             return False
+
+        # After processing all child pages, log depth statistics if we're at the root
+        if current_depth == 0:
+            logger.info("\n=== Documentation Crawl Statistics ===")
+            total_pages = sum(len(urls) for urls in self.depth_stats.values())
+            logger.info(f"Total pages processed: {total_pages}")
+            for depth, urls in sorted(self.depth_stats.items()):
+                logger.info(f"Depth {depth}: {len(urls)} pages")
+                for url in urls:
+                    logger.debug(f"  - {url}")
+            logger.info("===================================\n")
+
+    async def _extract_page_content(self, page: Page, url: str, category: str) -> Dict[str, Any]:
+        """Extract all relevant content from a documentation page."""
+        try:
+            content = {}
+            
+            # Extract title
+            title_element = await page.query_selector('h1')
+            if title_element:
+                content['title'] = await title_element.text_content()
+                
+            # Extract description
+            desc_element = await page.query_selector('.description')
+            if desc_element:
+                content['description'] = await desc_element.text_content()
+                
+            # Extract declaration
+            decl_element = await page.query_selector('.declaration, .swift')
+            if decl_element:
+                swift_text = await decl_element.text_content()
+                formatted_html = await decl_element.inner_html()
+                content['declaration'] = {
+                    'swift': swift_text.strip() if swift_text else '',
+                    'formatted': formatted_html.strip() if formatted_html else ''
+                }
+                
+            # Extract parameters
+            params_section = await page.query_selector('.parameters')
+            if params_section:
+                parameters = []
+                param_items = await params_section.query_selector_all('dt, dd')
+                
+                current_param = None
+                for item in param_items:
+                    tag_name = await (await item.get_property('tagName')).json_value()
+                    text_content = await item.text_content()
+                    
+                    if tag_name.lower() == 'dt':
+                        if current_param:
+                            parameters.append(current_param)
+                        current_param = {'name': text_content.strip()}
+                    elif tag_name.lower() == 'dd' and current_param:
+                        current_param['description'] = text_content.strip()
+                
+                if current_param:
+                    parameters.append(current_param)
+                    
+                content['parameters'] = parameters
+            
+            return content
             
         except Exception as e:
-            logger.error(f"× Error caching documentation page {url}: {str(e)}")
-            return False
+            logger.error(f"Error extracting page content: {str(e)}")
+            logger.debug("Error details:", exc_info=True)
+            return {}
 
     def _load_doc_content_cache(self) -> dict:
         """Load documentation content cache"""
@@ -692,6 +850,52 @@ class DocumentationURLCollector:
             self.documentation_content_cache.write_text(json.dumps(cache_data, indent=2))
         except Exception as e:
             logger.error(f"Error saving documentation cache: {str(e)}")
+
+    async def search_documentation(self, query: str) -> List[Dict]:
+        """Search through cached documentation"""
+        results = []
+        try:
+            cache_data = self._load_doc_content_cache()
+            
+            for url, page_info in cache_data['pages'].items():
+                try:
+                    file_path = Path(page_info['local_path'])
+                    if not file_path.exists():
+                        continue
+                        
+                    content = json.loads(file_path.read_text())
+                    
+                    # Search in main documentation
+                    doc_text = content.get('documentation', '').lower()
+                    if query.lower() in doc_text:
+                        results.append({
+                            'url': url,
+                            'title': content.get('title', ''),
+                            'type': 'documentation',
+                            'match': 'Documentation content match'
+                        })
+                    
+                    # Search in API details
+                    for api in content.get('api_details', []):
+                        api_text = f"{api.get('name', '')} {api.get('description', '')}".lower()
+                        if query.lower() in api_text:
+                            results.append({
+                                'url': url,
+                                'title': content.get('title', ''),
+                                'type': 'api',
+                                'api_name': api.get('name', ''),
+                                'api_description': api.get('description', ''),
+                                'api_example': api.get('example', '')
+                            })
+                            
+                except Exception as e:
+                    logger.error(f"Error searching file {file_path}: {str(e)}")
+                    
+            return results
+            
+        except Exception as e:
+            logger.error(f"Error searching documentation: {str(e)}")
+            return []
 
 class URLSources:
     """Simple URL management class"""

@@ -1,0 +1,35 @@
+{
+  "name": "Entity",
+  "type": "RealityKit",
+  "required_imports": [
+    "RealityKitContent",
+    "RealityKit",
+    "SwiftUI"
+  ],
+  "initialization_pattern": "Entity(named: \"Scene\", in: realityKitContentBundle)",
+  "required_permissions": [
+    "immersiveSpace"
+  ],
+  "common_properties": [
+    {
+      "name": "body",
+      "type": "some View",
+      "default_value": null
+    }
+  ],
+  "example_implementations": [
+    {
+      "source": "/Users/dalecarman/Groove Jones Dropbox/Dale Carman/Projects/documentation_builder/tests/fixtures/ImmersiveSpaceView.swift",
+      "code": "import SwiftUI\nimport RealityKit\nimport RealityKitContent\n\nstruct ImmersiveSpaceView: View {\n    @Environment(\\.openImmersiveSpace) var openImmersiveSpace\n    @Environment(\\.dismissImmersiveSpace) var dismissImmersiveSpace\n    \n    var body: some View {\n        VStack {\n            RealityView { content in\n                // Load 3D model\n                if let entity = try? await Entity(named: \"Scene\", in: realityKitContentBundle) {\n                    content.add(entity)\n                    \n                    // Add anchoring\n                    if let anchorEntity = entity.findEntity(named: \"Anchor\") as? AnchorEntity {\n                        anchorEntity.position = SIMD3(x: 0, y: 1.5, z: -2)\n                    }\n                }\n            }\n            .gesture(TapGesture().targetedToAnyEntity().onEnded { _ in\n                // Handle taps on 3D content\n            })\n        }\n        .task {\n            // Request immersive space\n            await openImmersiveSpace(id: \"ImmersiveSpace\")\n        }\n    }\n}\n"
+    }
+  ],
+  "related_components": [
+    "RealityView",
+    "ImmersiveSpace",
+    "AnchorEntity"
+  ],
+  "constraints": [],
+  "best_practices": [],
+  "documentation_url": "https://developer.apple.com/documentation/visionos/entity",
+  "last_updated": "2024-11-17T06:19:49.828351"
+}
